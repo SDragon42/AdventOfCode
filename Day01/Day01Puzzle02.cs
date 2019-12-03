@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent_of_Code.Day1
+namespace Advent_of_Code.Day01
 {
     class Day01Puzzle02 : IPuzzle
     {

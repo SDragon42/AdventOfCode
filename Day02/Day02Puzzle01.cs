@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Advent_of_Code.Day2
+namespace Advent_of_Code.Day02
 {
     class Day02Puzzle01 : IPuzzle
     {
