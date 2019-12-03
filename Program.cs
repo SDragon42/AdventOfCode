@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 
@@ -14,7 +15,7 @@ namespace Advent_of_Code
                 .Where(t => !t.IsInterface)
                 .Where(t => !t.IsAbstract)
                 .OrderBy(t => t.Name)
-                .ToList();
+                .ToList(); 
 
             //typeList.ForEach(RunPuzzle);
             RunPuzzle(typeList.LastOrDefault());
@@ -26,7 +27,11 @@ namespace Advent_of_Code
             if (puzzle == null)
                 return;
             Line();
+            //var sw = new Stopwatch();
+            //sw.Start();
             puzzle.Run();
+            //sw.Stop();
+            //Console.WriteLine($"RunTime: {sw.ElapsedMilliseconds}");
         }
 
         static void Line() => Console.WriteLine(string.Empty.PadRight(60, '-'));
