@@ -24,11 +24,7 @@ namespace Advent_of_Code
                 Line();
                 puzzle?.Run();
             }
-
-
-            Console.WriteLine();
-            Console.WriteLine("Press any key...");
-            Console.ReadKey();
+            
         }
 
         static void Line () => Console.WriteLine(string.Empty.PadRight(60, '-'));
