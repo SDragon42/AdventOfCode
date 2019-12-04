@@ -150,11 +150,9 @@ namespace Advent_of_Code.Day03
         }
         private bool IsBetween(int a, int b, int value)
         {
-            if (a <= b)
-                return (a <= value && value <= b);
-            if (a >= b)
-                return (a >= value && value >= b);
-            return false;
+            return (a <= b)
+                ? (a <= value && value <= b)
+                : (a >= value && value >= b);
         }
 
 
