@@ -10,5 +10,8 @@ namespace Advent_of_Code.Day04
         {
 
         }
+
+        public const int PasswordRangeMIN = 264360;
+        public const int PasswordRangeMAX = 746325;
     }
 }
