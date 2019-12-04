@@ -106,7 +106,7 @@ namespace Advent_of_Code.Day02
 
         public void Run()
         {
-            Console.WriteLine("--- Part Two ---");
+            Console.WriteLine("--- Day 2: 1202 Program Alarm (Part 2) ---");
 
             var noun = 0;
             var verb = 0;

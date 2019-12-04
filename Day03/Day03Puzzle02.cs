@@ -51,7 +51,7 @@ namespace Advent_of_Code.Day03
     {
         public void Run()
         {
-            Console.WriteLine("--- Day 3: Part two ---");
+            Console.WriteLine("--- Day 3: Crossed Wires (Part 2) ---");
 
             var line1Segments = BuildLineSegments(Day3Common.Line1Commands).ToList();
             var line2Segments = BuildLineSegments(Day3Common.Line2Commands).ToList();
