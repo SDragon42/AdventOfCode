@@ -35,7 +35,6 @@ namespace Advent_of_Code.Day04
         {
             Console.WriteLine("--- Day 4: Secure Container ---");
 
-
             TestValue(111111, true);
             TestValue(223450, false);
             TestValue(123789, false);
