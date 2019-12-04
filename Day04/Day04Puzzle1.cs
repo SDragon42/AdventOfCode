@@ -33,7 +33,7 @@ namespace Advent_of_Code.Day04
 
         public void Run()
         {
-            Console.WriteLine("--- Day 3: Crossed Wires ---");
+            Console.WriteLine("--- Day 4: Secure Container ---");
 
 
             TestValue(111111, true);

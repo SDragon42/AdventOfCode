@@ -48,7 +48,7 @@ namespace Advent_of_Code.Day01
 
         public void Run()
         {
-            Console.WriteLine("--- Part Two ---");
+            Console.WriteLine("--- Day 1: The Tyranny of the Rocket Equation (Part 2) ---");
 
             var totalFuel = input.Sum(moduleMass => CalcFuel(moduleMass));
 
