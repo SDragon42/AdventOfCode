@@ -158,33 +158,32 @@ namespace Advent_of_Code.Day03
 
             var intersect = new Point(newX, newY);
 
-            if (!IsOnLine(line1, intersect)) return null;
-            if (!IsOnLine(line2, intersect)) return null;
+            if (!IsOnLine(line1, intersect))
+                return null;
+            if (!IsOnLine(line2, intersect))
+                return null;
 
             return intersect;
         }
 
-        private bool IsBetween(int a, int b, int value)
+        private bool IsOnLine(PointPair line, Point intersect)
         {
-            if (a <= b) return (a <= value && value <= b);
-            if (a >= b) return (a >= value && value >= b);
+            if (IsSame(line.P1.X, line.P2.X, intersect.X))
+                return IsBetween(line.P1.Y, line.P2.Y, intersect.Y);
+            else if (IsSame(line.P1.Y, line.P2.Y, intersect.Y))
+                return IsBetween(line.P1.X, line.P2.X, intersect.X);
             return false;
         }
         private bool IsSame(int a, int b, int value)
         {
             return (a == b && b == value);
         }
-
-        private bool IsOnLine(PointPair line, Point intersect)
+        private bool IsBetween(int a, int b, int value)
         {
-            if (IsSame(line.P1.X, line.P2.X, intersect.X))
-            {
-                return IsBetween(line.P1.Y, line.P2.Y, intersect.Y);
-            }
-            else if (IsSame(line.P1.Y, line.P2.Y, intersect.Y))
-            {
-                return IsBetween(line.P1.X, line.P2.X, intersect.X);
-            }
+            if (a <= b)
+                return (a <= value && value <= b);
+            if (a >= b)
+                return (a >= value && value >= b);
             return false;
         }
 
