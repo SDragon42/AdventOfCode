@@ -6,13 +6,8 @@ namespace Advent_of_Code
 {
     class IntCode
     {
-        const int OpCode_Add = 1;
-        const int OpCode_Multiply = 2;
-        const int OpCode_Input = 3;
-        const int OpCode_Output = 4;
         const int OpCode_Finished = 99;
-
-        const int commandDigits = 2;
+        const int NumOpCodeDigits = 2;
 
         enum ParamaterMode
         {
@@ -20,14 +15,18 @@ namespace Advent_of_Code
             Immediate = 1
         }
 
-        readonly Dictionary<int, Action> CommandList = new Dictionary<int, Action>();
+        readonly Dictionary<int, Action> OpCodes = new Dictionary<int, Action>();
 
         public IntCode()
         {
-            CommandList.Add(OpCode_Add, OpAdd);
-            CommandList.Add(OpCode_Multiply, OpMultiply);
-            CommandList.Add(OpCode_Input, OpInput);
-            CommandList.Add(OpCode_Output, OpOutput);
+            OpCodes.Add(1, OpAdd);
+            OpCodes.Add(2, OpMultiply);
+            OpCodes.Add(3, OpInput);
+            OpCodes.Add(4, OpOutput);
+            OpCodes.Add(5, OpJumpIfTrue);
+            OpCodes.Add(6, OpJumpIfFalse);
+            OpCodes.Add(7, OpLessThan);
+            OpCodes.Add(8, OpEquals);
         }
 
         public void Init(int[] code)
@@ -52,13 +51,13 @@ namespace Advent_of_Code
             if (opCode == OpCode_Finished)
                 return false;
 
-            if (!CommandList.ContainsKey(opCode))
+            if (!OpCodes.ContainsKey(opCode))
             {
                 Console.WriteLine("Something went Wrong!");
                 return false;
             }
 
-            CommandList[opCode].Invoke();
+            OpCodes[opCode].Invoke();
 
             return true;
         }
@@ -66,11 +65,11 @@ namespace Advent_of_Code
         private void ReadCommand()
         {
             var value = memory[position].ToString();
-            opCode = (value.Length >= commandDigits)
-                ? Convert.ToInt32(value.Substring(value.Length - commandDigits))
+            opCode = (value.Length >= NumOpCodeDigits)
+                ? Convert.ToInt32(value.Substring(value.Length - NumOpCodeDigits))
                 : Convert.ToInt32(value);
-            paramValue = (value.Length > commandDigits)
-                ? Convert.ToInt32(value.Substring(0, value.Length - commandDigits))
+            paramValue = (value.Length > NumOpCodeDigits)
+                ? Convert.ToInt32(value.Substring(0, value.Length - NumOpCodeDigits))
                 : 0;
         }
 
@@ -110,7 +109,6 @@ namespace Advent_of_Code
             SetValue(position + 3, ParamaterMode.Position, value);
             position += 4;
         }
-
         private void OpMultiply()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
@@ -119,7 +117,6 @@ namespace Advent_of_Code
             SetValue(position + 3, ParamaterMode.Position, value);
             position += 4;
         }
-
         private void OpInput()
         {
             Console.Write("INPUT (int): ");
@@ -128,12 +125,51 @@ namespace Advent_of_Code
             SetValue(position + 1, ParamaterMode.Position, value);
             position += 2;
         }
-
         private void OpOutput()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             Console.WriteLine($"OUTPUT: {param1}");
             position += 2;
+        }
+        private void OpJumpIfTrue()
+        {
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            if (param1 != 0)
+                position = param2;
+            else
+                position += 3;
+        }
+        private void OpJumpIfFalse()
+        {
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            if (param1 == 0)
+                position = param2;
+            else
+                position += 3;
+        }
+        private void OpLessThan()
+        {
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param3 = GetValue(position + 3, GetParamaterMode(paramValue, 3));
+
+            var value = (param1 < param2) ? 1 : 0;
+
+            SetValue(position + 3, ParamaterMode.Position, value);
+            position += 4;
+        }
+        private void OpEquals()
+        {
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param3 = GetValue(position + 3, GetParamaterMode(paramValue, 3));
+
+            var value = (param1 == param2) ? 1 : 0;
+
+            SetValue(position + 3, ParamaterMode.Position, value);
+            position += 4;
         }
 
 
