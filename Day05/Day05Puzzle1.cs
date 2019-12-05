@@ -63,9 +63,6 @@ namespace Advent_of_Code.Day05
 
             //RunTest(Day05Common.IntCodeMemory.ToArray());
             RunLive(Day05Common.IntCodeMemory.ToArray()); // Input: 1   Last Output: 4887191
-
-            Console.WriteLine();
-            Console.WriteLine("~ fin ~");
         }
 
         private static void RunTest(int[] data)
