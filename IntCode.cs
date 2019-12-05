@@ -14,137 +14,132 @@ namespace Advent_of_Code
 
         const int commandDigits = 2;
 
-        //enum ParamaterMode
-        //{
-        //    Position = 0,
-        //    Immediate = 1
-        //}
+        enum ParamaterMode
+        {
+            Position = 0,
+            Immediate = 1
+        }
 
         readonly Dictionary<int, Action> CommandList = new Dictionary<int, Action>();
 
         public IntCode()
         {
-            CommandList.Add(1, OpAdd);
-            CommandList.Add(2, OpMultiply);
-            CommandList.Add(3, OpInput);
-            CommandList.Add(4, OpOutput);
+            CommandList.Add(OpCode_Add, OpAdd);
+            CommandList.Add(OpCode_Multiply, OpMultiply);
+            CommandList.Add(OpCode_Input, OpInput);
+            CommandList.Add(OpCode_Output, OpOutput);
         }
 
         public void Init(int[] code)
         {
-            input = code;
+            memory = code;
             position = 0;
-            //op = 0;
-            //opMode = ParamaterMode.Position;
             opCode = 99;
             paramValue = 0;
         }
 
 
-        private int[] input;
+        private int[] memory;
         private int position;
         int opCode = 0;
         int paramValue = 0;
 
-        //int op => GetDigit(opCode, 1);
-        //ParamaterMode opMode => (ParamaterMode)GetDigit(opCode, 2);
-
 
         public bool RunStep()
         {
-            try
+            ReadCommand();
+
+            if (opCode == OpCode_Finished)
+                return false;
+
+            if (!CommandList.ContainsKey(opCode))
             {
-                ReadCommand();
-
-                if (opCode == OpCode_Finished)
-                    return false;
-
-                if (!CommandList.ContainsKey(opCode))
-                {
-                    Console.WriteLine("Something went Wrong!");
-                    return false;
-                }
-
-                CommandList[opCode].Invoke();
-
-                return true;
+                Console.WriteLine("Something went Wrong!");
+                return false;
             }
-            finally
-            {
-                position++;
-            }
+
+            CommandList[opCode].Invoke();
+
+            return true;
         }
 
         private void ReadCommand()
         {
-            var value = input[position].ToString();
-            opCode = Convert.ToInt32(value.Substring(value.Length - 2));
-            paramValue = Convert.ToInt32(value.Substring(0, value.Length - 2));
+            var value = memory[position].ToString();
+            opCode = (value.Length >= commandDigits)
+                ? Convert.ToInt32(value.Substring(value.Length - commandDigits))
+                : Convert.ToInt32(value);
+            paramValue = (value.Length > commandDigits)
+                ? Convert.ToInt32(value.Substring(0, value.Length - commandDigits))
+                : 0;
         }
 
-        /// <summary>
-        /// Gets a single digit from the specified number.
-        /// </summary>
-        /// <param name="value">The number value.</param>
-        /// <param name="digitPosition">The digit position, from right to left.</param>
-        /// <returns></returns>
-        private static int GetDigit(int value, int digitPosition)
+        private ParamaterMode GetParamaterMode(int value, int paramNumber)
         {
-            var numDigits = Convert.ToInt32(Math.Floor(Math.Log10(value) + 1));
-            if (digitPosition < 1)
-                digitPosition = 1;
-            var offset = numDigits - digitPosition + 1;
-            var result = Math.Truncate(value / Math.Pow(10, numDigits - offset))
-                      - (Math.Truncate(value / Math.Pow(10, numDigits - offset + 1)) * 10);
-            return Convert.ToInt32(result);
+            var result = Helper.GetDigitRight(value, paramNumber);
+            if (!Enum.IsDefined(typeof(ParamaterMode), result))
+                throw new InvalidOperationException();
+            return (ParamaterMode)result;
         }
 
 
-        private int GetValue(int pos, int mode)
+        private int GetValue(int pos, ParamaterMode mode)
         {
             switch (mode)
             {
-                case 0: return input[input[pos]];
-                case 1: return input[pos];
+                case ParamaterMode.Position: return memory[memory[pos]];
+                case ParamaterMode.Immediate: return memory[pos];
                 default: throw new InvalidOperationException();
             }
         }
-        private void SetValue(int pos, int mode, int value)
+        private void SetValue(int pos, ParamaterMode mode, int value)
         {
             switch (mode)
             {
-                case 0: input[input[pos]] = value; break;
-                case 1: input[pos] = value; break;
+                case ParamaterMode.Position: memory[memory[pos]] = value; break;
+                case ParamaterMode.Immediate: memory[pos] = value; break;
                 default: throw new InvalidOperationException();
             }
         }
 
-        public void OpAdd()
+        private void OpAdd()
         {
-            var param1 = GetValue(++position, GetDigit(paramValue, 1));
-            var param2 = GetValue(++position, GetDigit(paramValue, 2));
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
             var value = param1 + param2;
-            SetValue(++position, GetDigit(paramValue, 3), value);
+            SetValue(position + 3, ParamaterMode.Position, value);
+            position += 4;
         }
 
-        public void OpMultiply()
+        private void OpMultiply()
         {
-            var param1 = GetValue(++position, GetDigit(paramValue, 1));
-            var param2 = GetValue(++position, GetDigit(paramValue, 2));
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
             var value = param1 * param2;
-            SetValue(++position, GetDigit(paramValue, 3), value);
+            SetValue(position + 3, ParamaterMode.Position, value);
+            position += 4;
         }
 
-        public void OpInput()
+        private void OpInput()
         {
-            var address = input[++position];
-            input[address] = paramValue;
+            Console.Write("INPUT (int): ");
+            var input = Console.ReadLine();
+            var value = Convert.ToInt32(input);
+            SetValue(position + 1, ParamaterMode.Position, value);
+            position += 2;
         }
 
-        public void OpOutput()
+        private void OpOutput()
         {
-            var address = input[++position];
-            paramValue = input[address];
+            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            Console.WriteLine($"OUTPUT: {param1}");
+            position += 2;
+        }
+
+
+        public void ShowMemoryDump()
+        {
+            Console.WriteLine($"MEM: {string.Join(',', memory)}");
         }
 
     }

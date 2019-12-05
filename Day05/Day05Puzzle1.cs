@@ -57,6 +57,45 @@ namespace Advent_of_Code.Day05
         public void Run()
         {
             Console.WriteLine("--- Day 5: Sunny with a Chance of Asteroids ---");
+
+            //RunTest(new int[] { 1002, 4, 3, 4, 33 });
+            //RunTest(new int[] { 1101, 100, -1, 4, 0 });
+
+            //RunTest(Day05Common.IntCodeMemory.ToArray());
+            RunLive(Day05Common.IntCodeMemory.ToArray()); // Input: 1   Last Output: 4887191
+
+            Console.WriteLine();
+            Console.WriteLine("~ fin ~");
+        }
+
+        private static void RunTest(int[] data)
+        {
+            Console.WriteLine();
+            Console.WriteLine("** TEST **");
+            var computer = new IntCode();
+            computer.Init(data);
+            computer.ShowMemoryDump();
+
+            var keepRunning = true;
+            do
+            {
+                keepRunning = computer.RunStep();
+                computer.ShowMemoryDump();
+            } while (keepRunning);
+
+            Console.WriteLine("**********");
+        }
+
+        private static void RunLive(int[] data)
+        {
+            var computer = new IntCode();
+            computer.Init(data);
+
+            var keepRunning = true;
+            do
+            {
+                keepRunning = computer.RunStep();
+            } while (keepRunning);
         }
     }
 }
