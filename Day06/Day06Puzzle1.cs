@@ -74,7 +74,6 @@ namespace Advent_of_Code.Day06
         }
 
         readonly Dictionary<string, OrbitPair> uniqueBodies = new Dictionary<string, OrbitPair>();
-        OrbitPair universalCOM = null;
 
         void BuildOrbitTree(IEnumerable<string> orbitMapData)
         {
@@ -103,11 +102,6 @@ namespace Advent_of_Code.Day06
 
                 orbitObj.Orbits = comObj;
             }
-
-            universalCOM = uniqueBodies
-                .Where(kp => kp.Value.Orbits == null)
-                .FirstOrDefault()
-                .Value;
         }
 
         private int CountAllOrbits()
