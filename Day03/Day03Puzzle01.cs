@@ -73,8 +73,8 @@ namespace Advent_of_Code.Day03
         {
             Console.WriteLine("--- Day 3: Crossed Wires ---");
 
-            var line1Segments = BuildLineSegments(Day3Common.Line1Commands).ToList();
-            var line2Segments = BuildLineSegments(Day3Common.Line2Commands).ToList();
+            var line1Segments = BuildLineSegments(Day03Common.Line1Commands).ToList();
+            var line2Segments = BuildLineSegments(Day03Common.Line2Commands).ToList();
 
 
             var intersectionPoints = new List<Point>();
@@ -96,8 +96,8 @@ namespace Advent_of_Code.Day03
                 .Min();
 
             Console.WriteLine($"Closest distance: {minDist}");
-            if (Day3Common.DesiredClosestIntersectDistance >= 0)
-                Console.WriteLine("    " + (Day3Common.DesiredClosestIntersectDistance == minDist ? "CORRECT" : "You done it wrong!"));
+            if (Day03Common.DesiredClosestIntersectDistance >= 0)
+                Console.WriteLine("    " + (Day03Common.DesiredClosestIntersectDistance == minDist ? "CORRECT" : "You done it wrong!"));
             Console.WriteLine();
         }
 
