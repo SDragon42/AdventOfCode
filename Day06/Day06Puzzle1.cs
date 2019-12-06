@@ -62,6 +62,83 @@ namespace Advent_of_Code.Day06
         public void Run()
         {
             Console.WriteLine("--- Day 6: Universal Orbit Map ---");
+
+
+            BuildOrbitTree(Day06Common.OrbitMap);
+            var foundOrbits = CountAllOrbits();
+
+            Console.WriteLine($"Orbits found: {foundOrbits}");
+            if (Day06Common.ExpectedOrbits >= 0)
+                Console.WriteLine("    " + (Day06Common.ExpectedOrbits == foundOrbits ? "CORRECT" : "You done it wrong!"));
+            Console.WriteLine();
+        }
+
+        readonly Dictionary<string, OrbitPair> uniqueBodies = new Dictionary<string, OrbitPair>();
+        OrbitPair universalCOM = null;
+
+        void BuildOrbitTree(IEnumerable<string> orbitMapData)
+        {
+            uniqueBodies.Clear();
+
+            var orbitMap = orbitMapData
+                .Select(m => m.Split(')'))
+                .Select(p => new { com = p[0], satalite = p[1] })
+                .ToList();
+
+            var coms = orbitMap.Select(m => m.com);
+            var sats = orbitMap.Select(m => m.satalite);
+            var uniqueObjects = coms.Union(sats).Distinct();
+            foreach (var com in uniqueObjects)
+                uniqueBodies.Add(com, new OrbitPair(com));
+
+            foreach (var orbit in orbitMap)
+            {
+                var comObj = uniqueBodies[orbit.com];
+                var orbitObj = uniqueBodies[orbit.satalite];
+
+                if (!comObj.OrbitedBy.Contains(orbitObj))
+                    comObj.OrbitedBy.Add(orbitObj);
+                if (orbitObj.Orbits != null)
+                    throw new InvalidOperationException();
+
+                orbitObj.Orbits = comObj;
+            }
+
+            universalCOM = uniqueBodies
+                .Where(kp => kp.Value.Orbits == null)
+                .FirstOrDefault()
+                .Value;
+        }
+
+        private int CountAllOrbits()
+        {
+            var orbitCount = 0;
+
+            foreach (var key in uniqueBodies.Keys)
+                orbitCount += CountChain(uniqueBodies[key]);
+
+            return orbitCount;
+        }
+
+        private int CountChain(OrbitPair item)
+        {
+            if (item.Orbits == null)
+                return 0;
+            return 1 + CountChain(item.Orbits);
+        }
+
+
+        class OrbitPair
+        {
+            public OrbitPair(string com)
+            {
+                COM = com;
+            }
+
+            public string COM { get; private set; }
+
+            public OrbitPair Orbits { get; set; }
+            public List<OrbitPair> OrbitedBy { get; } = new List<OrbitPair>();
         }
     }
 }
