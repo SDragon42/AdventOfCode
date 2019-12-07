@@ -31,7 +31,7 @@ namespace Advent_of_Code.Day01
     into account the mass of the added fuel? (Calculate the fuel requirements for each module separately, 
     then add them all up at the end.)
     */
-    class Day01Puzzle02 : IPuzzle
+    class Day01Puzzle2 : IPuzzle
     {
         
         readonly long[] input = new long[] {
