@@ -18,10 +18,12 @@ namespace Advent_of_Code
 
         readonly Dictionary<int, MethodInfo> OpCodes = new Dictionary<int, MethodInfo>();
         readonly bool showMemoryOnStep = false;
+        readonly bool showMessages = false;
 
-        public IntCode(bool showMemoryOnStep = false)
+        public IntCode(bool showMemoryOnStep = false, bool showMessages = false)
         {
             this.showMemoryOnStep = showMemoryOnStep;
+            this.showMessages = showMessages;
 
             // Load all OpCodes
             GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -164,15 +166,18 @@ namespace Advent_of_Code
         [OpCode(3)]
         void OpInput()
         {
-            Console.Write("INPUT: ");
             int value;
             if (inputValues.Count > 0)
             {
+                if (showMessages)
+                    Console.Write("INPUT: ");
                 value = inputValues.Dequeue();
-                Console.WriteLine(value);
+                if (showMessages)
+                    Console.WriteLine(value);
             }
             else
             {
+                Console.Write("INPUT: ");
                 var input = Console.ReadLine();
                 value = Convert.ToInt32(input);
             }
@@ -184,7 +189,8 @@ namespace Advent_of_Code
         {
             var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             OutputValues.Add(value);
-            Console.WriteLine($"OUTPUT: {value}");
+            if (showMessages)
+                Console.WriteLine($"OUTPUT: {value}");
             position += 2;
         }
         [OpCode(5)]
