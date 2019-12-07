@@ -48,10 +48,17 @@ namespace Advent_of_Code.Day05
             Console.WriteLine("--- Day 5: Sunny with a Chance of Asteroids  (Part 2) ---");
 
             // Compare tests
-            //RunProgram(new int[] { 3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8 }); // Input: =8  Output: 1  else 0
-            //RunProgram(new int[] { 3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8 }); // Input: <8  Output: 1  else 0
-            //RunProgram(new int[] { 3, 3, 1108, -1, 8, 3, 4, 3, 99 }); // Input: =8  Output: 1  else 0
-            //RunProgram(new int[] { 3, 3, 1107, -1, 8, 3, 4, 3, 99 }); // Input: <8  Output: 1  else 0
+            //Console.WriteLine("Test 1 ".PadRight(40, '-'));
+            //RunProgram(new int[] { 3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8 }, input: 8, showMemory: true); // Input: =8  Output: 1  else 0
+
+            //Console.WriteLine("Test 2 ".PadRight(40, '-'));
+            //RunProgram(new int[] { 3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8 }, input: 5, showMemory: true); // Input: <8  Output: 1  else 0
+
+            //Console.WriteLine("Test 3 ".PadRight(40, '-'));
+            //RunProgram(new int[] { 3, 3, 1108, -1, 8, 3, 4, 3, 99 }, input: 8, showMemory: true); // Input: =8  Output: 1  else 0
+
+            //Console.WriteLine("Test 4 ".PadRight(40, '-'));
+            //RunProgram(new int[] { 3, 3, 1107, -1, 8, 3, 4, 3, 99 }, input: 5, showMemory: true); // Input: <8  Output: 1  else 0
 
             // Jump tests
             //RunProgram(new int[] { 3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9 }); // Input: =0  Output: 0  else 1
@@ -64,23 +71,23 @@ namespace Advent_of_Code.Day05
              * Input: >8  Output: 1001
              */
 
-            RunProgram(Day05Common.IntCodeMemory.ToArray()); // Input: 5   Last Output: 3419022
+            RunProgram(Day05Common.IntCodeMemory.ToArray(), 5); // Input: 5   Last Output: 3419022
         }
 
-        private static void RunProgram(int[] data, bool showMemory = false)
+        private static void RunProgram(int[] data, int? input = null, bool showMemory = false)
         {
-            var computer = new IntCode();
+            var computer = new IntCode(showMemory);
             computer.Init(data);
             if (showMemory)
                 computer.ShowMemoryDump();
 
-            var keepRunning = true;
-            do
-            {
-                keepRunning = computer.RunStep();
-                if (showMemory)
-                    computer.ShowMemoryDump();
-            } while (keepRunning);
+            if (input.HasValue)
+                computer.Run(input.Value);
+            else
+                computer.Run();
+
+            if (showMemory)
+                computer.ShowMemoryDump();
         }
     }
 }
