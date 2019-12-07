@@ -58,41 +58,25 @@ namespace Advent_of_Code.Day05
         {
             Console.WriteLine("--- Day 5: Sunny with a Chance of Asteroids ---");
 
-            //RunTest(new int[] { 1002, 4, 3, 4, 33 });
-            //RunTest(new int[] { 1101, 100, -1, 4, 0 });
-
-            //RunTest(Day05Common.IntCodeMemory.ToArray());
-            RunLive(Day05Common.IntCodeMemory.ToArray()); // Input: 1   Last Output: 4887191
+            //RunProgram(new int[] { 1002, 4, 3, 4, 33 }, showMemory: true);
+            //RunProgram(new int[] { 1101, 100, -1, 4, 0 }, showMemory: true);
+            RunProgram(Day05Common.IntCodeMemory.ToArray(), 1); // Input: 1   Last Output: 4887191
         }
 
-        private static void RunTest(int[] data)
+        private static void RunProgram(int[] data, int? input = null, bool showMemory = false)
         {
-            Console.WriteLine();
-            Console.WriteLine("** TEST **");
-            var computer = new IntCode();
+            var computer = new IntCode(showMemory);
             computer.Init(data);
-            computer.ShowMemoryDump();
-
-            var keepRunning = true;
-            do
-            {
-                keepRunning = computer.RunStep();
+            if (showMemory)
                 computer.ShowMemoryDump();
-            } while (keepRunning);
 
-            Console.WriteLine("**********");
-        }
+            if (input.HasValue)
+                computer.Run(input.Value);
+            else
+                computer.Run();
 
-        private static void RunLive(int[] data)
-        {
-            var computer = new IntCode();
-            computer.Init(data);
-
-            var keepRunning = true;
-            do
-            {
-                keepRunning = computer.RunStep();
-            } while (keepRunning);
+            if (showMemory)
+                computer.ShowMemoryDump();
         }
     }
 }
