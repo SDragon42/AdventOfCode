@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace Advent_of_Code
 {
     class IntCode
     {
-        const int OpCode_Finished = 99;
         const int NumOpCodeDigits = 2;
 
         enum ParamaterMode
@@ -16,19 +16,32 @@ namespace Advent_of_Code
             Immediate = 1
         }
 
-        readonly Dictionary<int, Action> OpCodes = new Dictionary<int, Action>();
+        readonly Dictionary<int, MethodInfo> OpCodes = new Dictionary<int, MethodInfo>();
+        readonly bool showMemoryOnStep = false;
 
-        public IntCode()
+        public IntCode(bool showMemoryOnStep = false)
         {
-            OpCodes.Add(1, OpAdd);
-            OpCodes.Add(2, OpMultiply);
-            OpCodes.Add(3, OpInput);
-            OpCodes.Add(4, OpOutput);
-            OpCodes.Add(5, OpJumpIfTrue);
-            OpCodes.Add(6, OpJumpIfFalse);
-            OpCodes.Add(7, OpLessThan);
-            OpCodes.Add(8, OpEquals);
+            this.showMemoryOnStep = showMemoryOnStep;
+
+            // Load all OpCodes
+            GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Select(m => new { methodInfo = m, OpCodeAttribute = m.GetCustomAttribute<OpCodeAttribute>() })
+                .Where(m => m.OpCodeAttribute != null)
+                .ForEach(m => OpCodes.Add(m.OpCodeAttribute.OpCode, m.methodInfo));
         }
+
+
+
+        bool continueExecution = true;
+        int[] memory;
+        int position;
+        int opCode = 0;
+        int paramValue = 0;
+        readonly Queue<int> inputValues = new Queue<int>();
+
+        public List<int> OutputValues { get; } = new List<int>();
+
+
 
         public void Init(int[] code)
         {
@@ -40,45 +53,40 @@ namespace Advent_of_Code
             OutputValues.Clear();
         }
 
-
-        private int[] memory;
-        private int position;
-        int opCode = 0;
-        int paramValue = 0;
-        private readonly Queue<int> inputValues = new Queue<int>();
-        public List<int> OutputValues { get; } = new List<int>();
-
-        [Obsolete("Kill me later", false)]
-        public bool RunStep()
-        {
-            ReadCommand();
-
-            if (opCode == OpCode_Finished)
-                return false;
-
-            if (!OpCodes.ContainsKey(opCode))
-            {
-                Console.WriteLine("Something went Wrong!");
-                return false;
-            }
-
-            OpCodes[opCode].Invoke();
-
-            return true;
-        }
         public void Run(params int[] values)
         {
             LoadInputValues(values);
             OutputValues.Clear();
 
-            var keepRunning = true;
-            do
+            while (continueExecution)
+                RunStep();
+        }
+        public void RunStep()
+        {
+            ReadCommand();
+
+            if (!OpCodes.ContainsKey(opCode))
             {
-                keepRunning = RunStep();
-            } while (keepRunning);
+                Console.WriteLine("Something went Wrong!");
+                continueExecution = true;
+                return;
+            }
+
+            OpCodes[opCode].Invoke(this, null);
+
+            if (showMemoryOnStep)
+                ShowMemoryDump();
         }
 
-        private void LoadInputValues(int[] values)
+        public void ShowMemoryDump()
+        {
+            Console.WriteLine($"MEM: {string.Join(',', memory)}");
+        }
+
+
+
+
+        void LoadInputValues(int[] values)
         {
             inputValues.Clear();
             if (values == null)
@@ -87,7 +95,7 @@ namespace Advent_of_Code
                 inputValues.Enqueue(v);
         }
 
-        private void ReadCommand()
+        void ReadCommand()
         {
             var value = memory[position].ToString();
             opCode = (value.Length >= NumOpCodeDigits)
@@ -98,7 +106,7 @@ namespace Advent_of_Code
                 : 0;
         }
 
-        private ParamaterMode GetParamaterMode(int value, int paramNumber)
+        ParamaterMode GetParamaterMode(int value, int paramNumber)
         {
             var result = Helper.GetDigitRight(value, paramNumber);
             if (!Enum.IsDefined(typeof(ParamaterMode), result))
@@ -107,7 +115,7 @@ namespace Advent_of_Code
         }
 
 
-        private int GetValue(int pos, ParamaterMode mode)
+        int GetValue(int pos, ParamaterMode mode)
         {
             switch (mode)
             {
@@ -116,7 +124,7 @@ namespace Advent_of_Code
                 default: throw new InvalidOperationException();
             }
         }
-        private void SetValue(int pos, ParamaterMode mode, int value)
+        void SetValue(int pos, ParamaterMode mode, int value)
         {
             switch (mode)
             {
@@ -126,7 +134,8 @@ namespace Advent_of_Code
             }
         }
 
-        private void OpAdd()
+        [OpCode(1)]
+        void OpAdd()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
@@ -134,7 +143,8 @@ namespace Advent_of_Code
             SetValue(position + 3, ParamaterMode.Position, value);
             position += 4;
         }
-        private void OpMultiply()
+        [OpCode(2)]
+        void OpMultiply()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
@@ -142,30 +152,34 @@ namespace Advent_of_Code
             SetValue(position + 3, ParamaterMode.Position, value);
             position += 4;
         }
-        private void OpInput()
+        [OpCode(3)]
+        void OpInput()
         {
-            var value = 0;
+            Console.Write("INPUT: ");
+            int value;
             if (inputValues.Count > 0)
             {
                 value = inputValues.Dequeue();
+                Console.WriteLine(value);
             }
             else
             {
-                Console.Write("INPUT (int): ");
                 var input = Console.ReadLine();
                 value = Convert.ToInt32(input);
             }
             SetValue(position + 1, ParamaterMode.Position, value);
             position += 2;
         }
-        private void OpOutput()
+        [OpCode(4)]
+        void OpOutput()
         {
             var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             OutputValues.Add(value);
             Console.WriteLine($"OUTPUT: {value}");
             position += 2;
         }
-        private void OpJumpIfTrue()
+        [OpCode(5)]
+        void OpJumpIfTrue()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
@@ -174,7 +188,8 @@ namespace Advent_of_Code
             else
                 position += 3;
         }
-        private void OpJumpIfFalse()
+        [OpCode(6)]
+        void OpJumpIfFalse()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
@@ -183,7 +198,8 @@ namespace Advent_of_Code
             else
                 position += 3;
         }
-        private void OpLessThan()
+        [OpCode(7)]
+        void OpLessThan()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
@@ -194,7 +210,8 @@ namespace Advent_of_Code
             SetValue(position + 3, ParamaterMode.Position, value);
             position += 4;
         }
-        private void OpEquals()
+        [OpCode(8)]
+        void OpEquals()
         {
             var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
@@ -206,11 +223,24 @@ namespace Advent_of_Code
             position += 4;
         }
 
-
-        public void ShowMemoryDump()
+        [OpCode(99)]
+        void OpQuitExecution()
         {
-            Console.WriteLine($"MEM: {string.Join(',', memory)}");
+            continueExecution = false;
         }
 
+
+
+    }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    class OpCodeAttribute : Attribute
+    {
+        public OpCodeAttribute(int opCode)
+        {
+            OpCode = opCode;
+        }
+
+        public int OpCode { get; private set; }
     }
 }
