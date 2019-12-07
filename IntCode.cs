@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent_of_Code
@@ -35,6 +36,8 @@ namespace Advent_of_Code
             position = 0;
             opCode = 99;
             paramValue = 0;
+            inputValues.Clear();
+            OutputValues.Clear();
         }
 
 
@@ -42,8 +45,10 @@ namespace Advent_of_Code
         private int position;
         int opCode = 0;
         int paramValue = 0;
+        private readonly Queue<int> inputValues = new Queue<int>();
+        public List<int> OutputValues { get; } = new List<int>();
 
-
+        [Obsolete("Kill me later", false)]
         public bool RunStep()
         {
             ReadCommand();
@@ -60,6 +65,26 @@ namespace Advent_of_Code
             OpCodes[opCode].Invoke();
 
             return true;
+        }
+        public void Run(params int[] values)
+        {
+            LoadInputValues(values);
+            OutputValues.Clear();
+
+            var keepRunning = true;
+            do
+            {
+                keepRunning = RunStep();
+            } while (keepRunning);
+        }
+
+        private void LoadInputValues(int[] values)
+        {
+            inputValues.Clear();
+            if (values == null)
+                return;
+            foreach (var v in values)
+                inputValues.Enqueue(v);
         }
 
         private void ReadCommand()
@@ -119,16 +144,25 @@ namespace Advent_of_Code
         }
         private void OpInput()
         {
-            Console.Write("INPUT (int): ");
-            var input = Console.ReadLine();
-            var value = Convert.ToInt32(input);
+            var value = 0;
+            if (inputValues.Count > 0)
+            {
+                value = inputValues.Dequeue();
+            }
+            else
+            {
+                Console.Write("INPUT (int): ");
+                var input = Console.ReadLine();
+                value = Convert.ToInt32(input);
+            }
             SetValue(position + 1, ParamaterMode.Position, value);
             position += 2;
         }
         private void OpOutput()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            Console.WriteLine($"OUTPUT: {param1}");
+            var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
+            OutputValues.Add(value);
+            Console.WriteLine($"OUTPUT: {value}");
             position += 2;
         }
         private void OpJumpIfTrue()
