@@ -57,6 +57,7 @@ namespace Advent_of_Code
         {
             LoadInputValues(values);
             OutputValues.Clear();
+            continueExecution = true;
 
             while (continueExecution)
                 RunStep();
