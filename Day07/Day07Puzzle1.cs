@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent_of_Code.Day07
@@ -50,6 +51,48 @@ namespace Advent_of_Code.Day07
         public void Run()
         {
             Console.WriteLine("--- Day 7: Amplification Circuit ---");
+
+            var computer = new IntCode();
+            var maxThrust = 0;
+            var phaseWithMax = default(int[]);
+
+            foreach (var phase in GetAllPhaseSettings())
+            {
+                var value2 = 0;
+                foreach (var value1 in phase)
+                {
+                    computer.Init(Day07Common.IntCodeMemory.ToArray());
+                    computer.Run(value1, value2);
+
+                    value2 = computer.OutputValues.FirstOrDefault();
+                }
+
+                if (value2 > maxThrust)
+                {
+                    maxThrust = value2;
+                    phaseWithMax = phase;
+                }
+            }
+
+            Console.WriteLine($"Phase Sequence: [{string.Join(',', phaseWithMax)}]   Max Thrust: {maxThrust}");
+            if (Day07Common.ExpectedResult > 0)
+                Console.WriteLine("    " + (Day07Common.ExpectedResult == maxThrust ? "CORRECT" : "You done it wrong!"));
+            Console.WriteLine();
         }
+
+        IEnumerable<int[]> GetAllPhaseSettings()
+        {
+            if (Day07Common.PhaseSetting.Count > 0)
+            {
+                yield return Day07Common.PhaseSetting.ToArray();
+                yield break;
+            }
+
+            int[] sourceValues = new int[] { 0, 1, 2, 3, 4 };
+            var result = Helper.GetPermutations(sourceValues);
+            foreach (var item in result)
+                yield return item.ToArray();
+        }
+        
     }
 }

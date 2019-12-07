@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent_of_Code
@@ -36,5 +37,34 @@ namespace Advent_of_Code
             var result = Math.Truncate(value / Math.Pow(10, 6 - position)) - (Math.Truncate(value / Math.Pow(10, 6 - position + 1)) * 10);
             return Convert.ToInt32(result);
         }
+
+
+        /// <summary>
+        /// Returns a list of all possible combinations of the item list.
+        /// (item list only tested with unique values)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sourced and modified from:
+        /// https://stackoverflow.com/questions/5132758/words-combinations-without-repetition
+        /// </remarks>
+        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
+        {
+            if (items.Count() == 1)
+            {
+                yield return new T[] { items.First() };
+                yield break;
+            }
+
+            foreach (var item in items)
+            {
+                var nextItems = items.Where(i => !i.Equals(item));
+                foreach (var result in GetPermutations(nextItems))
+                    yield return new T[] { item }.Concat(result);
+            }
+        }
+
     }
 }
