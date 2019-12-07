@@ -47,62 +47,7 @@ namespace Advent_of_Code.Day02
     */
     class Day02Puzzle02 : IPuzzle
     {
-        public Day02Puzzle02()
-        {
-            InitialValues = new int[] {
-            1, 0, 0, 3,
-            1, 1, 2, 3,
-            1, 3, 4, 3,
-            1, 5, 0, 3,
-            2, 13, 1, 19,
-            1, 10, 19, 23,
-            1, 23, 9, 27,
-            1, 5, 27, 31,
-            2, 31, 13, 35,
-            1, 35, 5, 39,
-            1, 39, 5, 43,
-            2, 13, 43, 47,
-            2, 47, 10, 51,
-            1, 51, 6, 55,
-            2, 55, 9, 59,
-            1, 59, 5, 63,
-            1, 63, 13, 67,
-            2, 67, 6, 71,
-            1, 71, 5, 75,
-            1, 75, 5, 79,
-            1, 79, 9, 83,
-            1, 10, 83, 87,
-            1, 87, 10, 91,
-            1, 91, 9, 95,
-            1, 10, 95, 99,
-            1, 10, 99, 103,
-            2, 103, 10, 107,
-            1, 107, 9, 111,
-            2, 6, 111, 115,
-            1, 5, 115, 119,
-            2, 119, 13, 123,
-            1, 6, 123, 127,
-            2, 9, 127, 131,
-            1, 131, 5, 135,
-            1, 135, 13, 139,
-            1, 139, 10, 143,
-            1, 2, 143, 147,
-            1, 147, 10, 0,
-            99,
-            2, 0, 14, 0 };
-        }
-
         const int DesiredResult = 19690720;
-
-        readonly IReadOnlyList<int> InitialValues;
-
-        //int[] input;
-
-        const int Step = 4;
-
-        const int OpCode_Add = 1;
-        const int OpCode_Multiply = 2;
-        const int OpCode_Finished = 99;
 
         public void Run()
         {
@@ -112,11 +57,21 @@ namespace Advent_of_Code.Day02
             var verb = 0;
             var found = false;
 
+            var computer = new IntCode();
+            
+
             while (noun <= 99 && !found)
             {
                 while (verb <= 99 && !found)
                 {
-                    var runResult = RunOpCode(noun, verb);
+                    computer.Init(Day02Common.IntCodeMemory.ToArray());
+                    computer.Poke(1, noun);
+                    computer.Poke(2, verb);
+
+                    computer.Run();
+
+                    var runResult = computer.Peek(0);
+
                     if (runResult == DesiredResult)
                         found = true;
                     if (!found)
@@ -132,7 +87,9 @@ namespace Advent_of_Code.Day02
             if (found)
             {
                 var result = 100 * noun + verb;
-                Console.WriteLine($"result is: {result}");
+                Console.WriteLine($"result is: {result}"); // Correct is 5335
+                if (result == 5335)
+                    Console.WriteLine("    CORRECT!");
             }
             else
             {
@@ -142,54 +99,5 @@ namespace Advent_of_Code.Day02
             Console.WriteLine();
         }
 
-
-        private int RunOpCode(int noun, int verb)
-        {
-            var input = InitialValues.ToArray();
-            input[1] = noun;
-            input[2] = verb;
-
-            var position = 0;
-            var keepRunning = true;
-            ShowInput();
-            while (keepRunning)
-            {
-                var opCode = input[position];
-
-                switch (opCode)
-                {
-                    case OpCode_Add:
-                        RunOp(input, position, OpAdd);
-                        break;
-                    case OpCode_Multiply:
-                        RunOp(input, position, OpMultiply);
-                        break;
-                    case OpCode_Finished:
-                        keepRunning = false;
-                        break;
-                    default:
-                        Console.WriteLine("Something went Wrong!");
-                        return -1;
-                }
-                position += Step;
-            }
-
-            return input[0];
-        }
-
-        private int OpAdd(int value1, int value2) => value1 + value2;
-        private int OpMultiply(int value1, int value2) => value1 * value2;
-
-        private void RunOp(int[] input, int index, Func<int, int, int> operation)
-        {
-            var value1 = input[input[index + 1]];
-            var value2 = input[input[index + 2]];
-            input[input[index + 3]] = operation(value1, value2);
-        }
-
-        private void ShowInput()
-        {
-            //Console.WriteLine($"Input: {string.Join(',', input)}");
-        }
     }
 }
