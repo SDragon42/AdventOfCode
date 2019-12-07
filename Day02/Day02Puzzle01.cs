@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Advent_of_Code.Day02
@@ -75,33 +76,12 @@ namespace Advent_of_Code.Day02
     */
     class Day02Puzzle01 : IPuzzle
     {
-        int[] input = new int[] {
-            1, 0, 0, 3, 1, 1, 2, 3, 1, 3,
-            4, 3, 1, 5, 0, 3, 2, 13, 1, 19,
-            1, 10, 19, 23, 1, 23, 9, 27, 1, 5,
-            27, 31, 2, 31, 13, 35, 1, 35, 5, 39,
-            1, 39, 5, 43, 2, 13, 43, 47, 2, 47,
-            10, 51, 1, 51, 6, 55, 2, 55, 9, 59,
-            1, 59, 5, 63, 1, 63, 13, 67, 2, 67,
-            6, 71, 1, 71, 5, 75, 1, 75, 5, 79,
-            1, 79, 9, 83, 1, 10, 83, 87, 1, 87,
-            10, 91, 1, 91, 9, 95, 1, 10, 95, 99,
-            1, 10, 99, 103, 2, 103, 10, 107, 1, 107,
-            9, 111, 2, 6, 111, 115, 1, 5, 115, 119,
-            2, 119, 13, 123, 1, 6, 123, 127, 2, 9,
-            127, 131, 1, 131, 5, 135, 1, 135, 13, 139,
-            1, 139, 10, 143, 1, 2, 143, 147, 1, 147,
-            10, 0, 99, 2, 0, 14, 0};
-
-        const int Step = 4;
-
-        const int OpCode_Add = 1;
-        const int OpCode_Multiply = 2;
-        const int OpCode_Finished = 99;
+        
 
         public void Run()
         {
             Console.WriteLine("--- Day 2: 1202 Program Alarm ---");
+            var input = Day02Common.IntCodeMemory.ToArray();
             input[1] = 12;
             input[2] = 2;
 
@@ -110,51 +90,16 @@ namespace Advent_of_Code.Day02
             //input = new int[] { 2, 3, 0, 3, 99 };
             //input = new int[] { 2, 4, 4, 5, 99, 0 };
 
-            var position = 0;
-            var keepRunning = true;
-            ShowInput();
-            while (keepRunning)
-            {
-                //ShowInput();
-                var opCode = input[position];
+            var computer = new IntCode();
+            computer.Init(input);
+            computer.Run();
+            var value = computer.Peek(0);
 
-                switch (opCode)
-                {
-                    case OpCode_Add:
-                        RunOp(position, OpAdd);
-                        break;
-                    case OpCode_Multiply:
-                        RunOp(position, OpMultiply);
-                        break;
-                    case OpCode_Finished:
-                        keepRunning = false;
-                        break;
-                    default:
-                        Console.WriteLine("Something went Wrong!");
-                        return;
-                }
-                position += Step;
-            }
-
-            ShowInput();
-            Console.WriteLine($"Value at [0]: {input[0]}");
+            Console.WriteLine($"Value at [0]: {value}");  // correct is 4930687
+            if (value == 4930687)
+                Console.WriteLine("    CORRECT!");
             Console.WriteLine();
         }
 
-
-        private int OpAdd(int value1, int value2) => value1 + value2;
-        private int OpMultiply(int value1, int value2) => value1 * value2;
-
-        private void RunOp(int index, Func<int, int, int> operation)
-        {
-            var value1 = input[input[index + 1]];
-            var value2 = input[input[index + 2]];
-            input[input[index + 3]] = operation(value1, value2);
-        }
-
-        private void ShowInput()
-        {
-            //Console.WriteLine($"Input: {string.Join(',', input)}");
-        }
     }
 }
