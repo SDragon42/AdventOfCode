@@ -78,6 +78,14 @@ namespace Advent_of_Code
                 ShowMemoryDump();
         }
 
+        public int Peek(int address)
+        {
+            return memory[address];
+        }
+        public void Poke(int address, int value)
+        {
+            memory[address] = value;
+        }
         public void ShowMemoryDump()
         {
             Console.WriteLine($"MEM: {string.Join(',', memory)}");
