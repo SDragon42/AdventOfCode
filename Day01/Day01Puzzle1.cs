@@ -32,7 +32,7 @@ namespace Advent_of_Code.Day01
 
     What is the sum of the fuel requirements for all of the modules on your spacecraft?
     */
-    class Day01Puzzle01 : IPuzzle
+    class Day01Puzzle1 : IPuzzle
     {
         readonly long[] input = new long[] {
             51753,53456,128133,118219,136490,113318,134001,99775,84746,68712,

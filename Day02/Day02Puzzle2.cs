@@ -45,7 +45,7 @@ namespace Advent_of_Code.Day02
     Find the input noun and verb that cause the program to produce the output 19690720. 
     What is 100 * noun + verb? (For example, if noun=12 and verb=2, the answer would be 1202.)
     */
-    class Day02Puzzle02 : IPuzzle
+    class Day02Puzzle2 : IPuzzle
     {
         const int DesiredResult = 19690720;
 
