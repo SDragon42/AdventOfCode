@@ -48,6 +48,32 @@ namespace Advent_of_Code.Day07
     */
     class Day07Puzzle1 : IPuzzle
     {
+        public Day07Puzzle1()
+        {
+            // Main
+            IntCodeMemory = new int[] { 3, 8, 1001, 8, 10, 8, 105, 1, 0, 0, 21, 30, 47, 64, 81, 98, 179, 260, 341, 422, 99999, 3, 9, 1001, 9, 5, 9, 4, 9, 99, 3, 9, 1002, 9, 5, 9, 101, 4, 9, 9, 102, 2, 9, 9, 4, 9, 99, 3, 9, 102, 3, 9, 9, 101, 2, 9, 9, 1002, 9, 3, 9, 4, 9, 99, 3, 9, 1001, 9, 5, 9, 1002, 9, 3, 9, 1001, 9, 3, 9, 4, 9, 99, 3, 9, 1002, 9, 3, 9, 101, 2, 9, 9, 102, 5, 9, 9, 4, 9, 99, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 99, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 99, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 99, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 99, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 99 };
+
+            // Test 1
+            //IntCodeMemory = new int[] { 3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0 };
+            //PhaseSetting = new int[] { 4, 3, 2, 1, 0 };
+            //ExpectedResult = 43210;
+
+            // Test 2
+            //IntCodeMemory = new int[] { 3, 23, 3, 24, 1002, 24, 10, 24, 1002, 23, -1, 23, 101, 5, 23, 23, 1, 24, 23, 23, 4, 23, 99, 0, 0 };
+            //PhaseSetting = new int[] { 0, 1, 2, 3, 4 };
+            //ExpectedResult = 54321;
+
+            // Test 3
+            //IntCodeMemory = new int[] { 3, 31, 3, 32, 1002, 32, 10, 32, 1001, 31, -2, 31, 1007, 31, 0, 33, 1002, 33, 7, 33, 1, 33, 31, 31, 1, 32, 31, 31, 4, 31, 99, 0, 0, 0 };
+            //PhaseSetting = new int[] { 1, 0, 4, 3, 2 };
+            //ExpectedResult = 65210;
+        }
+
+        readonly IReadOnlyList<int> IntCodeMemory = new int[] { };
+        readonly IReadOnlyList<int> PhaseSetting = new int[] { };
+        readonly int ExpectedResult = 0;
+
+
         public void Run()
         {
             Console.WriteLine("--- Day 7: Amplification Circuit ---");
@@ -56,12 +82,12 @@ namespace Advent_of_Code.Day07
             var maxThrust = 0;
             var phaseWithMax = default(int[]);
 
-            foreach (var phase in GetAllPhaseSettings())
+            foreach (var phase in GetAllPhaseSettings(0, 1, 2, 3, 4))
             {
                 var value2 = 0;
                 foreach (var value1 in phase)
                 {
-                    computer.Init(Day07Common.IntCodeMemory.ToArray());
+                    computer.Init(IntCodeMemory.ToArray());
                     computer.Run(value1, value2);
 
                     value2 = computer.OutputValues.FirstOrDefault();
@@ -75,24 +101,24 @@ namespace Advent_of_Code.Day07
             }
 
             Console.WriteLine($"Phase Sequence: [{string.Join(',', phaseWithMax)}]   Max Thrust: {maxThrust}");
-            if (Day07Common.ExpectedResult > 0)
-                Console.WriteLine("    " + (Day07Common.ExpectedResult == maxThrust ? "CORRECT" : "You done it wrong!"));
+
+            var expectedResult = (ExpectedResult > 0) ? ExpectedResult : 45730;
+            Console.WriteLine("    " + (expectedResult == maxThrust ? "CORRECT" : "You done it wrong!"));
             Console.WriteLine();
         }
 
-        IEnumerable<int[]> GetAllPhaseSettings()
+        IEnumerable<int[]> GetAllPhaseSettings(params int[] sourceValues)
         {
-            if (Day07Common.PhaseSetting.Count > 0)
+            if (PhaseSetting.Count > 0)
             {
-                yield return Day07Common.PhaseSetting.ToArray();
+                yield return PhaseSetting.ToArray();
                 yield break;
             }
 
-            int[] sourceValues = new int[] { 0, 1, 2, 3, 4 };
             var result = Helper.GetPermutations(sourceValues);
             foreach (var item in result)
                 yield return item.ToArray();
         }
-        
+
     }
 }
