@@ -62,41 +62,16 @@ namespace Advent_of_Code.Day07
         {
             Console.WriteLine("--- Day 7: Amplification Circuit (Part 2) ---");
 
-            //var computer = new IntCode(showMessages: false);
-            var amp1 = new IntCode();
-            var amp2 = new IntCode();
-            var amp3 = new IntCode();
-            var amp4 = new IntCode();
-            var amp5 = new IntCode();
-
-            amp1.Init(IntCodeMemory.ToArray());
-            amp2.Init(IntCodeMemory.ToArray());
-            amp3.Init(IntCodeMemory.ToArray());
-            amp4.Init(IntCodeMemory.ToArray());
-            amp5.Init(IntCodeMemory.ToArray());
-
             var maxThrust = 0;
             var phaseWithMax = default(int[]);
 
             foreach (var phase in GetAllPhaseSettings(5, 6, 7, 8, 9))
-            //foreach (var phase in GetAllPhaseSettings(0, 1, 2, 3, 4))
             {
-                //amp1.Init(IntCodeMemory.ToArray());
-                //amp2.Init(IntCodeMemory.ToArray());
-                //amp3.Init(IntCodeMemory.ToArray());
-                //amp4.Init(IntCodeMemory.ToArray());
-                //amp5.Init(IntCodeMemory.ToArray());
+                var foundThrust = RunPhase(phase);
 
-                amp1.Run(phase[0], amp5.OutputValues.FirstOrDefault());
-                amp2.Run(phase[1], amp1.OutputValues.FirstOrDefault());
-                amp3.Run(phase[2], amp2.OutputValues.FirstOrDefault());
-                amp4.Run(phase[3], amp3.OutputValues.FirstOrDefault());
-                amp5.Run(phase[4], amp4.OutputValues.FirstOrDefault());
-
-                var value2 = amp5.OutputValues.FirstOrDefault();
-                if (value2 > maxThrust)
+                if (foundThrust > maxThrust)
                 {
-                    maxThrust = value2;
+                    maxThrust = foundThrust;
                     phaseWithMax = phase;
                 }
             }
@@ -119,6 +94,43 @@ namespace Advent_of_Code.Day07
             var result = Helper.GetPermutations(sourceValues);
             foreach (var item in result)
                 yield return item.ToArray();
+        }
+
+        int RunPhase(int[] phase)
+        {
+            var currentSignal = 0;
+
+            var amp1 = new IntCodeV2(IntCodeMemory.ToArray());
+            amp1.Input += (s, e) => { };
+            amp1.Output += (s, e) => { };
+
+            var amp2 = new IntCodeV2(IntCodeMemory.ToArray());
+            amp2.Input += (s, e) => { };
+            amp2.Output += (s, e) => { };
+
+            var amp3 = new IntCodeV2(IntCodeMemory.ToArray());
+            amp3.Input += (s, e) => { };
+            amp3.Output += (s, e) => { };
+
+            var amp4 = new IntCodeV2(IntCodeMemory.ToArray());
+            amp4.Input += (s, e) => { };
+            amp4.Output += (s, e) => { };
+
+            var amp5 = new IntCodeV2(IntCodeMemory.ToArray());
+            amp5.Input += (s, e) => { };
+            amp5.Output += (s, e) => { };
+
+            amp1.Run();
+            //amp1.Run(phase[0], amp5.OutputValues.FirstOrDefault());
+            //amp2.Run(phase[1], amp1.OutputValues.FirstOrDefault());
+            //amp3.Run(phase[2], amp2.OutputValues.FirstOrDefault());
+            //amp4.Run(phase[3], amp3.OutputValues.FirstOrDefault());
+            //amp5.Run(phase[4], amp4.OutputValues.FirstOrDefault());
+
+            //var value2 = amp5.OutputValues.FirstOrDefault();
+
+
+            return currentSignal;
         }
 
     }

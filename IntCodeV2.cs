@@ -6,7 +6,39 @@ using System.Reflection;
 
 namespace Advent_of_Code
 {
-    class IntCode
+    interface IIntCodeV2
+    {
+        event EventHandler<InputEventArgs> Input;
+        event EventHandler<OutputEventArgs> Output;
+        event EventHandler<EventArgs> AfterStep;
+
+        IReadOnlyList<int> Code { get; }
+
+        void Init(int[] code);
+        void Run();
+
+        int Peek(int address);
+        void Poke(int address, int value);
+    }
+
+    class InputEventArgs : EventArgs
+    {
+        public InputEventArgs() : base() { }
+
+        public int InputValue { get; set; }
+    }
+
+    class OutputEventArgs : EventArgs
+    {
+        public OutputEventArgs(int value) : base()
+        {
+            OutputValue = value;
+        }
+        public int OutputValue { get; private set; }
+    }
+
+
+    class IntCodeV2 : IIntCodeV2
     {
         const int NumOpCodeDigits = 2;
 
@@ -17,19 +49,18 @@ namespace Advent_of_Code
         }
 
         readonly Dictionary<int, MethodInfo> OpCodes = new Dictionary<int, MethodInfo>();
-        readonly bool showMemoryOnStep = false;
-        readonly bool showMessages = false;
 
-        public IntCode(bool showMemoryOnStep = false, bool showMessages = false)
+        public IntCodeV2()
         {
-            this.showMemoryOnStep = showMemoryOnStep;
-            this.showMessages = showMessages;
-
             // Load all OpCodes
             GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                 .Select(m => new { methodInfo = m, OpCodeAttribute = m.GetCustomAttribute<OpCodeAttribute>() })
                 .Where(m => m.OpCodeAttribute != null)
                 .ForEach(m => OpCodes.Add(m.OpCodeAttribute.OpCode, m.methodInfo));
+        }
+        public IntCodeV2(int[] code) : this()
+        {
+            Init(code);
         }
 
 
@@ -39,10 +70,15 @@ namespace Advent_of_Code
         int position;
         int opCode = 0;
         int paramValue = 0;
-        readonly Queue<int> inputValues = new Queue<int>();
 
-        public List<int> OutputValues { get; } = new List<int>();
 
+
+        public event EventHandler<InputEventArgs> Input;
+        public event EventHandler<OutputEventArgs> Output;
+        public event EventHandler<EventArgs> AfterStep;
+
+
+        public IReadOnlyList<int> Code => memory;
 
 
         public void Init(int[] code)
@@ -51,16 +87,11 @@ namespace Advent_of_Code
             position = 0;
             opCode = 99;
             paramValue = 0;
-            inputValues.Clear();
-            OutputValues.Clear();
         }
 
-        public void Run(params int[] values)
+        public void Run()
         {
-            LoadInputValues(values);
-            OutputValues.Clear();
             continueExecution = true;
-
             while (continueExecution)
                 RunStep();
         }
@@ -77,8 +108,7 @@ namespace Advent_of_Code
 
             OpCodes[opCode].Invoke(this, null);
 
-            if (showMemoryOnStep)
-                ShowMemoryDump();
+            AfterStep?.Invoke(this, EventArgs.Empty);
         }
 
         public int Peek(int address)
@@ -89,22 +119,11 @@ namespace Advent_of_Code
         {
             memory[address] = value;
         }
-        public void ShowMemoryDump()
-        {
-            Console.WriteLine($"MEM: {string.Join(',', memory)}");
-        }
 
 
 
 
-        void LoadInputValues(int[] values)
-        {
-            inputValues.Clear();
-            if (values == null)
-                return;
-            foreach (var v in values)
-                inputValues.Enqueue(v);
-        }
+
 
         void ReadCommand()
         {
@@ -166,31 +185,20 @@ namespace Advent_of_Code
         [OpCode(3)]
         void OpInput()
         {
-            int value;
-            if (inputValues.Count > 0)
-            {
-                if (showMessages)
-                    Console.Write("INPUT: ");
-                value = inputValues.Dequeue();
-                if (showMessages)
-                    Console.WriteLine(value);
-            }
-            else
-            {
-                Console.Write("INPUT: ");
-                var input = Console.ReadLine();
-                value = Convert.ToInt32(input);
-            }
-            SetValue(position + 1, ParamaterMode.Position, value);
+            if (Input == null)
+                throw new NotImplementedException("The Input event has not been bound to.");
+
+            var args = new InputEventArgs();
+            Input.Invoke(this, args);
+
+            SetValue(position + 1, ParamaterMode.Position, args.InputValue);
             position += 2;
         }
         [OpCode(4)]
         void OpOutput()
         {
             var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            OutputValues.Add(value);
-            if (showMessages)
-                Console.WriteLine($"OUTPUT: {value}");
+            Output?.Invoke(this, new OutputEventArgs(value));
             position += 2;
         }
         [OpCode(5)]
