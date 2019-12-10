@@ -15,15 +15,18 @@ namespace Advent_of_Code
         /// <returns></returns>
         public static int GetDigitRight(int value, int position)
         {
-            if (value == 0)
-                return 0;
-            var numDigits = Convert.ToInt32(Math.Floor(Math.Log10(value) + 1));
-            if (position < 1)
-                position = 1;
-            var offset = numDigits - position + 1;
-            var result = Math.Truncate(value / Math.Pow(10, numDigits - offset))
-                      - (Math.Truncate(value / Math.Pow(10, numDigits - offset + 1)) * 10);
-            return Convert.ToInt32(result);
+            var modifier = Convert.ToInt32(Math.Pow(10, position - 1));
+            var result = (value / modifier) % 10;
+            return result;
+            //if (value == 0)
+            //    return 0;
+            //var numDigits = Convert.ToInt32(Math.Floor(Math.Log10(value) + 1));
+            //if (position < 1)
+            //    position = 1;
+            //var offset = numDigits - position + 1;
+            //var result = Math.Truncate(value / Math.Pow(10, numDigits - offset))
+            //          - (Math.Truncate(value / Math.Pow(10, numDigits - offset + 1)) * 10);
+            //return Convert.ToInt32(result);
         }
 
         /// <summary>
