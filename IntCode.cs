@@ -169,10 +169,10 @@ namespace Advent_of_Code
             int value;
             if (inputValues.Count > 0)
             {
-                if (showMessages)
+                //if (showMessages)
                     Console.Write("INPUT: ");
                 value = inputValues.Dequeue();
-                if (showMessages)
+                //if (showMessages)
                     Console.WriteLine(value);
             }
             else
@@ -189,7 +189,7 @@ namespace Advent_of_Code
         {
             var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
             OutputValues.Add(value);
-            if (showMessages)
+            //if (showMessages)
                 Console.WriteLine($"OUTPUT: {value}");
             position += 2;
         }
