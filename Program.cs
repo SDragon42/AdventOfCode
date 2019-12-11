@@ -18,7 +18,7 @@ namespace Advent_of_Code
                 .ToList();
 
             var typeList = allPuzzleTypes
-                .Where(t => t.Name.StartsWith("Day10Puzzle1"))
+                .Where(t => t.Name.StartsWith("Day07Puzzle2"))
                 //.Where(t => t.Equals(allPuzzleTypes.LastOrDefault())) // Run last puzzle
                 ;
 
