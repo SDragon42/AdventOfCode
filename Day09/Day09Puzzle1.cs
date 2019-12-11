@@ -45,14 +45,18 @@ namespace Advent_of_Code.Day09
     {
         public Day09Puzzle1()
         {
+            // Live data
+            IntCodeMemory = new long[] { };
         }
+
+        readonly IReadOnlyList<long> IntCodeMemory = new long[] { };
 
 
         public void Run()
         {
             Console.WriteLine("--- Day 9: Sensor Boost ---");
 
-            
+
             Console.WriteLine();
         }
 

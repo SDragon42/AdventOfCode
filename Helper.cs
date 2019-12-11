@@ -29,6 +29,18 @@ namespace Advent_of_Code
             //          - (Math.Truncate(value / Math.Pow(10, numDigits - offset + 1)) * 10);
             //return Convert.ToInt32(result);
         }
+        /// <summary>
+        /// Gets a single digit from the specified number (right to left).
+        /// </summary>
+        /// <param name="value">The number value.</param>
+        /// <param name="position">The digit position, from right to left.</param>
+        /// <returns></returns>
+        public static long GetDigitRight(long value, int position)
+        {
+            var modifier = Convert.ToInt32(Math.Pow(10, position - 1));
+            var result = (value / modifier) % 10;
+            return result;
+        }
 
         /// <summary>
         /// Gets a single digit from the specified number (left to right).
