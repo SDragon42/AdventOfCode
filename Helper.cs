@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -67,6 +68,20 @@ namespace Advent_of_Code
                 foreach (var result in GetPermutations(nextItems))
                     yield return new T[] { item }.Concat(result);
             }
+        }
+
+        public static string GetFileContent(string filename)
+        {
+            var fullPath = Path.Combine(@"..\..\..\Data", filename);
+            var content = File.ReadAllText(fullPath);
+            return content;
+        }
+
+        public static string[] GetFileContentAsLines(string filename)
+        {
+            var fullPath = Path.Combine(@"..\..\..\Data", filename);
+            var lines = File.ReadAllLines(fullPath);
+            return lines;
         }
 
     }
