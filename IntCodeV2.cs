@@ -1,42 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
+using System.Text;
 
 namespace Advent_of_Code
 {
     interface IIntCodeV2
     {
-        event EventHandler<InputEventArgs> Input;
-        event EventHandler<OutputEventArgs> Output;
-        event EventHandler<EventArgs> AfterStep;
-
         IReadOnlyList<int> Code { get; }
+        int Output { get; }
+        IntCodeState State { get; }
 
         void Init(int[] code);
         void Run();
-
         int Peek(int address);
         void Poke(int address, int value);
+        void AddInput(int value);
     }
 
-    class InputEventArgs : EventArgs
+    enum IntCodeState
     {
-        public InputEventArgs() : base() { }
-
-        public int InputValue { get; set; }
+        Running,
+        Finished,
+        NeedsInput,
+        Error,
     }
-
-    class OutputEventArgs : EventArgs
-    {
-        public OutputEventArgs(int value) : base()
-        {
-            OutputValue = value;
-        }
-        public int OutputValue { get; private set; }
-    }
-
 
     class IntCodeV2 : IIntCodeV2
     {
@@ -65,34 +54,33 @@ namespace Advent_of_Code
 
 
 
-        bool continueExecution = true;
         int[] memory;
-        int position;
+        int currentMemIdx;
         int opCode = 0;
         int paramValue = 0;
 
-
-
-        public event EventHandler<InputEventArgs> Input;
-        public event EventHandler<OutputEventArgs> Output;
-        public event EventHandler<EventArgs> AfterStep;
+        readonly Queue<int> inputValues = new Queue<int>();
 
 
         public IReadOnlyList<int> Code => memory;
+        public int Output { get; private set; }
+        public IntCodeState State { get; private set; }
 
 
         public void Init(int[] code)
         {
             memory = code;
-            position = 0;
+            currentMemIdx = 0;
             opCode = 99;
             paramValue = 0;
+            inputValues.Clear();
+            Output = 0;
         }
 
         public void Run()
         {
-            continueExecution = true;
-            while (continueExecution)
+            State = IntCodeState.Running;
+            while (State == IntCodeState.Running)
                 RunStep();
         }
         void RunStep()
@@ -102,13 +90,11 @@ namespace Advent_of_Code
             if (!OpCodes.ContainsKey(opCode))
             {
                 Console.WriteLine("Something went Wrong!");
-                continueExecution = true;
+                State = IntCodeState.Error;
                 return;
             }
 
             OpCodes[opCode].Invoke(this, null);
-
-            AfterStep?.Invoke(this, EventArgs.Empty);
         }
 
         public int Peek(int address)
@@ -120,14 +106,18 @@ namespace Advent_of_Code
             memory[address] = value;
         }
 
-
+        public void AddInput(int value)
+        {
+            inputValues.Enqueue(value);
+        }
 
 
 
 
         void ReadCommand()
         {
-            var value = memory[position].ToString();
+            //TODO: Made this not require the int->string->int conversion process.
+            var value = memory[currentMemIdx].ToString();
             opCode = (value.Length >= NumOpCodeDigits)
                 ? Convert.ToInt32(value.Substring(value.Length - NumOpCodeDigits))
                 : Convert.ToInt32(value);
@@ -167,89 +157,89 @@ namespace Advent_of_Code
         [OpCode(1)]
         void OpAdd()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             var value = param1 + param2;
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            currentMemIdx += 4;
         }
         [OpCode(2)]
         void OpMultiply()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             var value = param1 * param2;
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            currentMemIdx += 4;
         }
         [OpCode(3)]
         void OpInput()
         {
-            if (Input == null)
-                throw new NotImplementedException("The Input event has not been bound to.");
+            if (inputValues.Count == 0)
+            {
+                State = IntCodeState.NeedsInput;
+                return;
+            }
 
-            var args = new InputEventArgs();
-            Input.Invoke(this, args);
-
-            SetValue(position + 1, ParamaterMode.Position, args.InputValue);
-            position += 2;
+            var value = inputValues.Dequeue();
+            SetValue(currentMemIdx + 1, ParamaterMode.Position, value);
+            currentMemIdx += 2;
         }
         [OpCode(4)]
         void OpOutput()
         {
-            var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            Output?.Invoke(this, new OutputEventArgs(value));
-            position += 2;
+            Output = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            currentMemIdx += 2;
         }
         [OpCode(5)]
         void OpJumpIfTrue()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             if (param1 != 0)
-                position = param2;
+                currentMemIdx = param2;
             else
-                position += 3;
+                currentMemIdx += 3;
         }
         [OpCode(6)]
         void OpJumpIfFalse()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             if (param1 == 0)
-                position = param2;
+                currentMemIdx = param2;
             else
-                position += 3;
+                currentMemIdx += 3;
         }
         [OpCode(7)]
         void OpLessThan()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
-            var param3 = GetValue(position + 3, GetParamaterMode(paramValue, 3));
+            var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
+            var param3 = GetValue(currentMemIdx + 3, GetParamaterMode(paramValue, 3));
 
             var value = (param1 < param2) ? 1 : 0;
 
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            currentMemIdx += 4;
         }
         [OpCode(8)]
         void OpEquals()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
-            var param3 = GetValue(position + 3, GetParamaterMode(paramValue, 3));
+            var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
+            var param3 = GetValue(currentMemIdx + 3, GetParamaterMode(paramValue, 3));
 
             var value = (param1 == param2) ? 1 : 0;
 
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            currentMemIdx += 4;
         }
 
         [OpCode(99)]
         void OpQuitExecution()
         {
-            continueExecution = false;
+            State = IntCodeState.Finished;
         }
 
     }
