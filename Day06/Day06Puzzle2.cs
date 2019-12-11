@@ -80,10 +80,9 @@ namespace Advent_of_Code.Day06
             Console.WriteLine();
         }
 
-        
+
 
         readonly Dictionary<string, OrbitPair> uniqueBodies = new Dictionary<string, OrbitPair>();
-        //OrbitPair universalCOM = null;
 
         void BuildOrbitTree(IEnumerable<string> orbitMapData)
         {
@@ -104,37 +103,10 @@ namespace Advent_of_Code.Day06
             {
                 var comObj = uniqueBodies[orbit.com];
                 var orbitObj = uniqueBodies[orbit.satalite];
-
-                if (!comObj.OrbitedBy.Contains(orbitObj))
-                    comObj.OrbitedBy.Add(orbitObj);
-                if (orbitObj.Orbits != null)
-                    throw new InvalidOperationException();
-
                 orbitObj.Orbits = comObj;
             }
 
-            //universalCOM = uniqueBodies
-            //    .Where(kp => kp.Value.Orbits == null)
-            //    .FirstOrDefault()
-            //    .Value;
         }
-
-        //private int CountAllOrbits()
-        //{
-        //    var orbitCount = 0;
-
-        //    foreach (var key in uniqueBodies.Keys)
-        //        orbitCount += CountChain(uniqueBodies[key]);
-
-        //    return orbitCount;
-        //}
-
-        //private int CountChain(OrbitPair item)
-        //{
-        //    if (item.Orbits == null)
-        //        return 0;
-        //    return 1 + CountChain(item.Orbits);
-        //}
 
         List<OrbitPair> GetPathToUniversalCOM(OrbitPair obj)
         {
@@ -173,12 +145,6 @@ namespace Advent_of_Code.Day06
             public string COM { get; private set; }
 
             public OrbitPair Orbits { get; set; }
-            public List<OrbitPair> OrbitedBy { get; } = new List<OrbitPair>();
-
-            public override string ToString()
-            {
-                return COM;
-            }
         }
     }
 }

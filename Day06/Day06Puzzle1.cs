@@ -94,12 +94,6 @@ namespace Advent_of_Code.Day06
             {
                 var comObj = uniqueBodies[orbit.com];
                 var orbitObj = uniqueBodies[orbit.satalite];
-
-                if (!comObj.OrbitedBy.Contains(orbitObj))
-                    comObj.OrbitedBy.Add(orbitObj);
-                if (orbitObj.Orbits != null)
-                    throw new InvalidOperationException();
-
                 orbitObj.Orbits = comObj;
             }
         }
@@ -132,7 +126,6 @@ namespace Advent_of_Code.Day06
             public string COM { get; private set; }
 
             public OrbitPair Orbits { get; set; }
-            public List<OrbitPair> OrbitedBy { get; } = new List<OrbitPair>();
         }
     }
 }
