@@ -139,14 +139,14 @@ namespace Advent_of_Code.Day09
             string[] rawMapData = null;
             rawMapData = Helper.GetFileContentAsLines("D10P1-Test1.txt");
             // ------
-            var xMax = rawMapData[0].Length;
-            var yMax = rawMapData.Length;
+            Width = rawMapData[0].Length;
+            Height = rawMapData.Length;
             var zoneList = new List<MapZone>();
-            for (var x = 0; x < xMax; x++)
+            for (var y = 0; y < Height; y++)
             {
-                for (var y = 0; y < yMax; y++)
+                for (var x = 0; x < Width; x++)
                 {
-                    var zone = new MapZone(x,y,rawMapData[y][x] == '#');
+                    var zone = new MapZone(x, y, rawMapData[y][x] == '#');
                     zoneList.Add(zone);
                 }
             }
@@ -154,6 +154,8 @@ namespace Advent_of_Code.Day09
         }
 
         readonly IReadOnlyList<MapZone> Map;
+        readonly int Width;
+        readonly int Height;
 
 
         public void Run()
@@ -163,13 +165,24 @@ namespace Advent_of_Code.Day09
             var allAsteroidZones = Map.Where(z => z.HasAsteroid).ToList();
 
             foreach (var zone in allAsteroidZones)
+            {
+                //Console.WriteLine(zone);
                 ScanFrom(zone, allAsteroidZones);
+                //ShowDetectionCounts();
+                //Console.WriteLine();
+                //Console.ReadKey();
+            }
 
             var best = allAsteroidZones
                 .OrderByDescending(z => z.Detects)
                 .First();
 
             Console.WriteLine($"Best: ({best.X},{best.Y})   Sees: {best.Detects}");
+
+            Console.WriteLine();
+            ShowAsteroids();
+            Console.WriteLine();
+            ShowDetectionCounts();
 
             Console.WriteLine();
         }
@@ -209,6 +222,21 @@ namespace Advent_of_Code.Day09
                     Console.WriteLine($"\t({zone.X},{zone.Y})");
                     yield return zone;
                 }
+            }
+        }
+
+        void ShowAsteroids() => ShowMap(z => z.HasAsteroid ? "#" : ".");
+        void ShowDetectionCounts() => ShowMap(z => z.HasAsteroid ? z.Detects.ToString() : "+");
+        void ShowMap(Func<MapZone, string> WriteAction)
+        {
+            int i = 0;
+            while (i < Map.Count)
+            {
+                if (WriteAction != null)
+                    Console.Write(WriteAction(Map[i]));
+                i++;
+                if (i % Width == 0)
+                    Console.WriteLine();
             }
         }
 
