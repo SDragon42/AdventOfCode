@@ -8,14 +8,17 @@ namespace Advent_of_Code.Day09
 {
     interface IIntCodeV3
     {
+        event EventHandler<OutputEventArgs> OnOutput;
+
         IReadOnlyList<long> Code { get; }
         long Output { get; }
         IntCodeState State { get; }
+        Action<string> Log { get; set; }
 
-        void Init(long[] code);
+        void Init(IEnumerable<long> code);
         void Run();
-        long Peek(long address);
-        void Poke(long address, long value);
+        long Peek(int address);
+        void Poke(int address, long value);
         void AddInput(long value);
     }
 
@@ -25,6 +28,15 @@ namespace Advent_of_Code.Day09
         Finished,
         NeedsInput,
         Error,
+    }
+
+    class OutputEventArgs : EventArgs
+    {
+        public OutputEventArgs(long value) : base()
+        {
+            OutputValue = value;
+        }
+        public long OutputValue { get; private set; }
     }
 
     class IntCodeV3 : IIntCodeV3
@@ -48,16 +60,16 @@ namespace Advent_of_Code.Day09
                 .Where(m => m.OpCodeAttribute != null)
                 .ForEach(m => OpCodes.Add(m.OpCodeAttribute.OpCode, m.methodInfo));
         }
-        public IntCodeV3(long[] code) : this()
+        public IntCodeV3(IEnumerable<long> code) : this()
         {
             Init(code);
         }
 
 
 
-        long[] memory;
-        long currentMemIdx;
-        long relativeBaseMemIndex;
+        readonly List<long> memory = new List<long>();
+        int currentMemIdx;
+        int relativeBaseMemIndex;
 
         long opCode = 0;
         long paramValue = 0;
@@ -65,14 +77,23 @@ namespace Advent_of_Code.Day09
         readonly Queue<long> inputValues = new Queue<long>();
 
 
+
         public IReadOnlyList<long> Code => memory;
         public long Output { get; private set; }
         public IntCodeState State { get; private set; }
+        public Action<string> Log { get; set; } = null;
 
 
-        public void Init(long[] code)
+
+        public event EventHandler<OutputEventArgs> OnOutput;
+
+
+
+        public void Init(IEnumerable<long> code)
         {
-            memory = code;
+            memory.Clear();
+            memory.AddRange(code);
+
             currentMemIdx = 0;
             relativeBaseMemIndex = 0;
 
@@ -102,13 +123,13 @@ namespace Advent_of_Code.Day09
             OpCodes[opCode].Invoke(this, null);
         }
 
-        public long Peek(long address)
+        public long Peek(int address)
         {
-            return memory[address];
+            return GetValue(address, ParamaterMode.Immediate);
         }
-        public void Poke(long address, long value)
+        public void Poke(int address, long value)
         {
-            memory[address] = value;
+            SetValue(address, ParamaterMode.Immediate, value);
         }
 
         public void AddInput(long value)
@@ -121,8 +142,9 @@ namespace Advent_of_Code.Day09
 
         void ReadCommand()
         {
-            //TODO: Made this not require the long->string->long conversion process.
-            var value = memory[currentMemIdx].ToString();
+            //TODO: Maybe make this not require the long->string->long conversion process??
+            var value = GetValue(currentMemIdx, ParamaterMode.Immediate).ToString();
+            Log?.Invoke($"[{currentMemIdx,-5}] CMD: {value}");
             opCode = (value.Length >= NumOpCodeDigits)
                 ? Convert.ToInt32(value.Substring(value.Length - NumOpCodeDigits))
                 : Convert.ToInt32(value);
@@ -131,35 +153,67 @@ namespace Advent_of_Code.Day09
                 : 0;
         }
 
-        ParamaterMode GetParamaterMode(long value, int paramNumber)
+        ParamaterMode GetParamaterMode(long value, int paramNumber, bool forOutput = false)
         {
             var result = Helper.GetDigitRight(value, paramNumber);
             if (!Enum.IsDefined(typeof(ParamaterMode), result))
                 throw new InvalidOperationException();
-            return (ParamaterMode)result;
+            var mode = (ParamaterMode)result;
+            if (mode == ParamaterMode.Immediate && forOutput)
+                mode = ParamaterMode.Position;
+            return mode;
         }
 
 
-        long GetValue(long pos, ParamaterMode mode)
+        long GetValue(int address, ParamaterMode mode)
         {
+            ValidateAddress(address);
             switch (mode)
             {
-                case ParamaterMode.Position: return memory[memory[pos]];
-                case ParamaterMode.Immediate: return memory[pos];
-                case ParamaterMode.Relative: return memory[memory[pos] + relativeBaseMemIndex];
+                case ParamaterMode.Position: return GetValue((int)memory[address], ParamaterMode.Immediate);
+                case ParamaterMode.Relative: return GetValue((int)memory[address] + relativeBaseMemIndex, ParamaterMode.Immediate);
+                case ParamaterMode.Immediate: return memory[address];
                 default: throw new InvalidOperationException();
             }
         }
-        void SetValue(long pos, ParamaterMode mode, long value)
+        void SetValue(int address, ParamaterMode mode, long value)
         {
+            ValidateAddress(address);
             switch (mode)
             {
-                case ParamaterMode.Position: memory[memory[pos]] = value; break;
-                case ParamaterMode.Immediate: memory[pos] = value; break;
-                case ParamaterMode.Relative: memory[memory[pos + relativeBaseMemIndex]] = value; break;
+                case ParamaterMode.Position: SetValue((int)memory[address], ParamaterMode.Immediate, value); break;
+                case ParamaterMode.Relative: SetValue((int)memory[address] + relativeBaseMemIndex, ParamaterMode.Immediate, value); break;
+                case ParamaterMode.Immediate: memory[address] = value; break;
                 default: throw new InvalidOperationException();
             }
         }
+        void ValidateAddress(int address)
+        {
+            if (address < memory.Count())
+                return;
+            var toAdd = address - (memory.Count() - 1);
+            memory.AddRange(Enumerable.Repeat(0L, toAdd));
+        }
+
+        //void LogParam(int address, int paramNum, ParamaterMode? paramOverride = null)
+        //{
+        //    var value = GetValue(address, ParamaterMode.Immediate);
+        //    var realValue = (paramOverride.HasValue)
+        //        ? GetValue(address, paramOverride.Value)
+        //        : GetValue(address, GetParamaterMode(paramValue, paramNum));
+        //    switch (GetParamaterMode(paramValue, 1))
+        //    {
+        //        case ParamaterMode.Position:
+        //            Log.Invoke($"\t{paramNum}: [{address}]={value}  =>  [{value}]={realValue}");
+        //            break;
+        //        case ParamaterMode.Relative:
+        //            Log.Invoke($"\t{paramNum}: [{address}]={value}  =>  [{relativeBaseMemIndex} + {value} | {relativeBaseMemIndex + value}]={realValue}");
+        //            break;
+        //        case ParamaterMode.Immediate:
+        //            Log.Invoke($"\t{paramNum}: [{address}]={value}");
+        //            break;
+        //    }
+        //}
 
         [OpCode(1)]
         void OpAdd()
@@ -167,7 +221,7 @@ namespace Advent_of_Code.Day09
             var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             var value = param1 + param2;
-            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            SetValue(currentMemIdx + 3, GetParamaterMode(paramValue, 3, forOutput: true), value);
             currentMemIdx += 4;
         }
         [OpCode(2)]
@@ -176,7 +230,7 @@ namespace Advent_of_Code.Day09
             var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             var value = param1 * param2;
-            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            SetValue(currentMemIdx + 3, GetParamaterMode(paramValue, 3, forOutput: true), value);
             currentMemIdx += 4;
         }
         [OpCode(3)]
@@ -189,13 +243,14 @@ namespace Advent_of_Code.Day09
             }
 
             var value = inputValues.Dequeue();
-            SetValue(currentMemIdx + 1, ParamaterMode.Position, value);
+            SetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1, forOutput: true), value);
             currentMemIdx += 2;
         }
         [OpCode(4)]
         void OpOutput()
         {
             Output = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
+            OnOutput?.Invoke(this, new OutputEventArgs(Output));
             currentMemIdx += 2;
         }
         [OpCode(5)]
@@ -204,7 +259,7 @@ namespace Advent_of_Code.Day09
             var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             if (param1 != 0)
-                currentMemIdx = param2;
+                currentMemIdx = (int)param2;
             else
                 currentMemIdx += 3;
         }
@@ -214,7 +269,7 @@ namespace Advent_of_Code.Day09
             var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
             var param2 = GetValue(currentMemIdx + 2, GetParamaterMode(paramValue, 2));
             if (param1 == 0)
-                currentMemIdx = param2;
+                currentMemIdx = (int)param2;
             else
                 currentMemIdx += 3;
         }
@@ -227,7 +282,7 @@ namespace Advent_of_Code.Day09
 
             var value = (param1 < param2) ? 1 : 0;
 
-            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            SetValue(currentMemIdx + 3, GetParamaterMode(paramValue, 3, forOutput: true), value);
             currentMemIdx += 4;
         }
         [OpCode(8)]
@@ -239,7 +294,7 @@ namespace Advent_of_Code.Day09
 
             var value = (param1 == param2) ? 1 : 0;
 
-            SetValue(currentMemIdx + 3, ParamaterMode.Position, value);
+            SetValue(currentMemIdx + 3, GetParamaterMode(paramValue, 3, forOutput: true), value);
             currentMemIdx += 4;
         }
 
@@ -251,7 +306,7 @@ namespace Advent_of_Code.Day09
         void OpAdjustRelativeBase()
         {
             var param1 = GetValue(currentMemIdx + 1, GetParamaterMode(paramValue, 1));
-            relativeBaseMemIndex += param1;
+            relativeBaseMemIndex += (int)param1;
             currentMemIdx += 2;
         }
 
