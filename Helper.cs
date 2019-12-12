@@ -35,11 +35,11 @@ namespace Advent_of_Code
         /// <param name="value">The number value.</param>
         /// <param name="position">The digit position, from right to left.</param>
         /// <returns></returns>
-        public static long GetDigitRight(long value, int position)
+        public static int GetDigitRight(long value, int position)
         {
             var modifier = Convert.ToInt32(Math.Pow(10, position - 1));
             var result = (value / modifier) % 10;
-            return result;
+            return (int)result;
         }
 
         /// <summary>
