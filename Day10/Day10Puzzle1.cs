@@ -113,6 +113,138 @@ namespace Advent_of_Code.Day09
      */
     class Day10Puzzle1 : IPuzzle
     {
+
+
+        public Day10Puzzle1()
+        {
+            string[] rawMapData = null;
+
+            //rawMapData = Helper.GetFileContentAsLines("D10P1-Test1.txt");
+            //CorrectAnswer = new MapZone(3, 4, true) { Detects = 8 };
+
+            //rawMapData = Helper.GetFileContentAsLines("D10P1-Test2.txt");
+            //CorrectAnswer = new MapZone(5, 8, true) { Detects = 33 };
+
+            //rawMapData = Helper.GetFileContentAsLines("D10P1-Test3.txt");
+            //CorrectAnswer = new MapZone(1, 2, true) { Detects = 35 };
+
+            //rawMapData = Helper.GetFileContentAsLines("D10P1-Test4.txt");
+            //CorrectAnswer = new MapZone(6, 3, true) { Detects = 41 };
+
+            //rawMapData = Helper.GetFileContentAsLines("D10P1-Test5.txt");
+            //CorrectAnswer = new MapZone(11, 13, true) { Detects = 210 };
+
+            rawMapData = Helper.GetFileContentAsLines("D10-Data.txt");
+            CorrectAnswer = new MapZone(26, 29, true) { Detects = 299 };
+
+            Width = rawMapData[0].Length;
+            Height = rawMapData.Length;
+            var zoneList = new List<MapZone>();
+            for (var y = 0; y < Height; y++)
+            {
+                for (var x = 0; x < Width; x++)
+                {
+                    var zone = new MapZone(x, y, rawMapData[y][x] == '#');
+                    zoneList.Add(zone);
+                }
+            }
+
+            Map = zoneList;
+            
+        }
+
+        readonly IReadOnlyList<MapZone> Map;
+        readonly MapZone CorrectAnswer;
+
+        readonly int Width;
+        readonly int Height;
+
+
+        public void Run()
+        {
+            Console.WriteLine("--- Day 10: Monitoring Station ---");
+
+            var allAsteroidZones = Map.Where(z => z.HasAsteroid).ToList();
+            Console.WriteLine($"# Asteroids: {allAsteroidZones.Count}");
+
+            foreach (var home in allAsteroidZones)
+                ScanFrom(home, allAsteroidZones);
+
+            var best = allAsteroidZones
+                .OrderByDescending(z => z.Detects)
+                .First();
+
+            Console.WriteLine();
+            ShowDetectionCounts();
+            Console.WriteLine();
+
+            Console.WriteLine($"Best: ({best.X},{best.Y})   Sees: {best.Detects}");
+
+            if (best.EqualsLocation(CorrectAnswer))
+            {
+                Console.WriteLine("\tCorrect location");
+                if (best.Detects == CorrectAnswer.Detects)
+                    Console.WriteLine("\tCorrect detection");
+            }
+
+            Console.WriteLine();
+        }
+
+        void ScanFrom(MapZone home, IEnumerable<MapZone> allAlteroids)
+        {
+            var allButHome = allAlteroids.Where(z => z != home);
+            foreach (var target in allButHome)
+            {
+                var canSee = Map
+                    .Where(z => z != home)
+                    .Where(z => z != target)
+                    .Where(z => CalcIfOnLine(home, target, z))
+                    .All(z => !z.HasAsteroid);
+                if (canSee)
+                    home.Detects++;
+            }
+        }
+
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        /// <remarks>https://stackoverflow.com/a/17590923/6136</remarks>
+        bool CalcIfOnLine(MapZone a, MapZone b, MapZone p)
+        {
+            Func<MapZone, MapZone, double> calc = (q, w) => Math.Sqrt(Math.Pow(w.X - q.X, 2) + Math.Pow(w.Y - q.Y, 2));
+
+            var ab = calc(a, b);
+            var ap = calc(a, p);
+            var pb = calc(p, b);
+
+            var apb = ap + pb;
+            ab = Math.Round(ab, 5);
+            apb = Math.Round(apb, 5);
+            var result = ab == apb;
+            return result;
+        }
+
+        void ShowAsteroids() => ShowMap(z => z.HasAsteroid ? " # " : " . ");
+        void ShowDetectionCounts() => ShowMap(z => z.HasAsteroid ? z.Detects.ToString().PadLeft(3, ' ').PadRight(3, ' ') : " . ");
+        void ShowMap(Func<MapZone, string> WriteAction)
+        {
+            int i = 0;
+            while (i < Map.Count)
+            {
+                if (WriteAction != null)
+                    Console.Write(WriteAction(Map[i]));
+                i++;
+                if (i % Width == 0)
+                    Console.WriteLine();
+            }
+        }
+
+
         class MapZone
         {
             public MapZone(int x, int y, bool hasAsteroid)
@@ -132,143 +264,13 @@ namespace Advent_of_Code.Day09
             {
                 return $"({X},{Y}) - {(HasAsteroid ? "#" : ".")}   Sees:{Detects}";
             }
-        }
 
-        public Day10Puzzle1()
-        {
-            string[] rawMapData = null;
-            rawMapData = Helper.GetFileContentAsLines("D10P1-Test1.txt");
-            // ------
-            Width = rawMapData[0].Length;
-            Height = rawMapData.Length;
-            var zoneList = new List<MapZone>();
-            for (var y = 0; y < Height; y++)
+            public bool EqualsLocation(MapZone other)
             {
-                for (var x = 0; x < Width; x++)
-                {
-                    var zone = new MapZone(x, y, rawMapData[y][x] == '#');
-                    zoneList.Add(zone);
-                }
-            }
-            Map = zoneList;
-        }
-
-        readonly IReadOnlyList<MapZone> Map;
-        readonly int Width;
-        readonly int Height;
-
-
-        public void Run()
-        {
-            Console.WriteLine("--- Day 10: Monitoring Station ---");
-
-            var allAsteroidZones = Map.Where(z => z.HasAsteroid).ToList();
-
-            foreach (var zone in allAsteroidZones)
-            {
-                //Console.WriteLine(zone);
-                ScanFrom(zone, allAsteroidZones);
-                //ShowDetectionCounts();
-                //Console.WriteLine();
-                //Console.ReadKey();
-            }
-
-            var best = allAsteroidZones
-                .OrderByDescending(z => z.Detects)
-                .First();
-
-            Console.WriteLine($"Best: ({best.X},{best.Y})   Sees: {best.Detects}");
-
-            Console.WriteLine();
-            ShowAsteroids();
-            Console.WriteLine();
-            ShowDetectionCounts();
-
-            Console.WriteLine();
-        }
-
-        void ScanFrom(MapZone home, IEnumerable<MapZone> allAlteroids)
-        {
-            var allButHome = allAlteroids.Where(z => z != home);
-
-            Console.WriteLine($"({home.X},{home.Y})");
-            foreach (var target in allButHome)
-            {
-                if (CanSee(home, target))
-                    home.Detects++;
-            }
-            Console.WriteLine($"\t\tSees: {home.Detects}");
-            Console.WriteLine();
-        }
-
-        private bool CanSee(MapZone home, MapZone target)
-        {
-            var allToCheck = AllInLineOfSite(home, target);
-            var allClear = allToCheck.All(z => !z.HasAsteroid);
-            return allClear;
-        }
-
-        private IEnumerable<MapZone> AllInLineOfSite(MapZone home, MapZone target)
-        {
-            var pp = new PointPair(home, target);
-
-            var searchArea = Map
-                .Where(z => z != home)
-                .Where(z => z != target);
-            foreach (var zone in searchArea)
-            {
-                if (pp.IsOnLine(zone))
-                {
-                    Console.WriteLine($"\t({zone.X},{zone.Y})");
-                    yield return zone;
-                }
+                if (other == null)
+                    return false;
+                return (X == other.X) && (Y == other.Y);
             }
         }
-
-        void ShowAsteroids() => ShowMap(z => z.HasAsteroid ? "#" : ".");
-        void ShowDetectionCounts() => ShowMap(z => z.HasAsteroid ? z.Detects.ToString() : "+");
-        void ShowMap(Func<MapZone, string> WriteAction)
-        {
-            int i = 0;
-            while (i < Map.Count)
-            {
-                if (WriteAction != null)
-                    Console.Write(WriteAction(Map[i]));
-                i++;
-                if (i % Width == 0)
-                    Console.WriteLine();
-            }
-        }
-
-        #region borrowed code
-        class PointPair
-        {
-            public PointPair(MapZone home, MapZone target) : this(new Point(home.X, home.Y), new Point(target.X, target.Y)) { }
-            public PointPair(Point p1, Point p2)
-            {
-                P1 = p1;
-                P2 = p2;
-
-                A = P2.Y - P1.Y;
-                B = P2.X - P1.X;
-                C = (A * P1.X) + (B * P1.Y);
-            }
-
-            public Point P1 { get; private set; }
-            public Point P2 { get; private set; }
-
-            public float A { get; private set; }
-            public float B { get; private set; }
-            public float C { get; private set; }
-
-            public bool IsOnLine(MapZone t)
-            {
-                var y = ((-1 * C) - (A * t.X)) / B;
-                var diff = y - t.Y;
-                var match = (diff == 0.0);
-                return match;
-            }
-        }
-        #endregion
     }
 }
