@@ -145,8 +145,8 @@ namespace Advent_of_Code.Day09
                     .Where(z => z != target)
                     .Where(z => CalcIfOnLine(home, target, z))
                     .All(z => !z.HasAsteroid);
-                if (canSee)
-                    home.Detects++;
+                //if (canSee)
+                //    home.Detects++;
             }
         }
 
@@ -175,7 +175,7 @@ namespace Advent_of_Code.Day09
         }
 
         void ShowAsteroids() => ShowMap(z => z.HasAsteroid ? " # " : " . ");
-        void ShowDetectionCounts() => ShowMap(z => z.HasAsteroid ? z.Detects.ToString().PadLeft(3, ' ').PadRight(3, ' ') : " . ");
+        //void ShowDetectionCounts() => ShowMap(z => z.HasAsteroid ? z.Detects.ToString().PadLeft(3, ' ').PadRight(3, ' ') : " . ");
         void ShowMap(Func<MapZone, string> WriteAction)
         {
             int i = 0;
@@ -199,17 +199,24 @@ namespace Advent_of_Code.Day09
                 X = x;
                 Y = y;
                 HasAsteroid = hasAsteroid;
-                Detects = 0;
+                //Detects = 0;
             }
 
             public int X { get; private set; }
             public int Y { get; private set; }
             public bool HasAsteroid { get; private set; }
-            public int Detects { get; set; }
+            //public int Detects { get; set; }
+            //public bool Vaporized { get; private set; }
+
+            public void Vaporize()
+            {
+                //Vaporized = true;
+                HasAsteroid = false;
+            }
 
             public override string ToString()
             {
-                return $"({X},{Y}) - {(HasAsteroid ? "#" : ".")}   Sees:{Detects}";
+                return $"({X},{Y}) - {(HasAsteroid ? "#" : ".")}";
             }
 
             public bool EqualsLocation(MapZone other)
