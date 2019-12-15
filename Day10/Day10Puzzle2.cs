@@ -72,52 +72,40 @@ namespace Advent_of_Code.Day09
 
         public Day10Puzzle2()
         {
-            string[] rawMapData = null;
+            string[] rawMapData;
+            var zoneList = new List<MapZone>();
 
-            rawMapData = Helper.GetFileContentAsLines("D10P2-Test1.txt");
-            WinningBet = CalcBet(8, 2); // 200th asteroid
+            //rawMapData = Helper.GetFileContentAsLines("D10P2-Test1.txt");
+            //Width = rawMapData[0].Length;
+            //Height = rawMapData.Length;
+            //BuildData(rawMapData, zoneList, ref Origin);
+            //WinningBet = CalcBet(8, 2); // 200th asteroid
 
-            //rawMapData = Helper.GetFileContentAsLines("D10-Data.txt");
-            //Origin = new MapZone(26, 29, true);
-            //WinningBet = null;
+            //rawMapData = Helper.GetFileContentAsLines("D10P1-Test5.txt");
+            //Width = rawMapData[0].Length;
+            //Height = rawMapData.Length;
+            //BuildData(rawMapData, zoneList, ref Origin);
+            //if (Origin == null)
+            //    Origin = zoneList.Where(z => z.Location.X == 11 && z.Location.Y == 13).FirstOrDefault();
+            //WinningBet = CalcBet(8, 2); // 200th asteroid
 
+
+            rawMapData = Helper.GetFileContentAsLines("D10-Data.txt");
             Width = rawMapData[0].Length;
             Height = rawMapData.Length;
-            var zoneList = new List<MapZone>();
-            NewMethod(rawMapData, zoneList, ref Origin);
+            BuildData(rawMapData, zoneList, ref Origin);
+            if (Origin == null)
+                Origin = zoneList.Where(z => z.Location.X == 26 && z.Location.Y == 29).FirstOrDefault();
+            WinningBet = 1419;
 
-            //var x = 8;
-            //var y = 3;
 
-            //zoneList.Clear();
-            //Origin = new MapZone(x, y);
-            //zoneList.Add(Origin);
-            ////zoneList.Add(new MapZone(8, 1));
-            ////zoneList.Add(new MapZone(9, 0));
-
-            //zoneList.Add(new MapZone(x + 0, y + -4)); // 0°
-            //zoneList.Add(new MapZone(x + 2, y + -4)); // 45° --
-            //zoneList.Add(new MapZone(x + 4, y + -4)); // 45°
-            ////zoneList.Add(new MapZone(x + 4, y + -2)); // 45° --
-            //zoneList.Add(new MapZone(x + 4, y + 0)); // 90°
-            ////zoneList.Add(new MapZone(x + 4, y + 2)); // 135° --
-            //zoneList.Add(new MapZone(x + 4, y + 4)); // 135°
-            ////zoneList.Add(new MapZone(x + 2, y + 4)); // 135° --
-            //zoneList.Add(new MapZone(x + 0, y + 4)); // 180°
-            ////zoneList.Add(new MapZone(x + -2, y + 4)); // 225° --
-            //zoneList.Add(new MapZone(x + -4, y + 4)); // 225°
-            ////zoneList.Add(new MapZone(x + -4, y + 2)); // 225° --
-            //zoneList.Add(new MapZone(x + -4, y + 0)); // 270°
-            ////zoneList.Add(new MapZone(x + -4, y + -2)); // 315° --
-            //zoneList.Add(new MapZone(x + -4, y + -4)); // 315°
-            ////zoneList.Add(new MapZone(x + -2, y + -4)); // 315° --
-
+            //BuildDebugData(zoneList, ref Origin);
 
             Map = zoneList;
 
         }
 
-        private void NewMethod(string[] rawMapData, List<MapZone> zoneList, ref MapZone origin)
+        private void BuildData(string[] rawMapData, List<MapZone> zoneList, ref MapZone origin)
         {
             for (var y = 0; y < Height; y++)
             {
@@ -134,6 +122,32 @@ namespace Advent_of_Code.Day09
                         origin = zone;
                 }
             }
+        }
+        private void BuildDebugData(List<MapZone> zoneList, ref MapZone origin)
+        {
+            var x = 0;
+            var y = 0;
+
+            zoneList.Clear();
+            origin = new MapZone(x, y);
+            zoneList.Add(Origin);
+            
+            zoneList.Add(new MapZone(x + 0, y + -2));
+            zoneList.Add(new MapZone(x + 1, y + -2));
+            zoneList.Add(new MapZone(x + 2, y + -2));
+            zoneList.Add(new MapZone(x + 2, y + -1));
+            zoneList.Add(new MapZone(x + 2, y + 0));
+            zoneList.Add(new MapZone(x + 2, y + 1));
+            zoneList.Add(new MapZone(x + 2, y + 2));
+            zoneList.Add(new MapZone(x + 1, y + 2));
+            zoneList.Add(new MapZone(x + 0, y + 2));
+            zoneList.Add(new MapZone(x + -1, y + 2));
+            zoneList.Add(new MapZone(x + -2, y + 2));
+            zoneList.Add(new MapZone(x + -2, y + 1));
+            zoneList.Add(new MapZone(x + -2, y + 0));
+            zoneList.Add(new MapZone(x + -2, y + -1));
+            zoneList.Add(new MapZone(x + -2, y + -2));
+            zoneList.Add(new MapZone(x + -1, y + -2));
         }
 
         readonly IReadOnlyList<MapZone> Map;
@@ -158,25 +172,31 @@ namespace Advent_of_Code.Day09
                 z.Angle = Math.Round(CalcAngle(Origin.Location, z.Location), 5);
             
             Console.WriteLine(Origin);
-            double lastAngle = -1.0;
+            
             var numOrder = 0;
-            var foundBet = 0;
+            var foundBet = -1;
+            var toVaporize = allAsteroidZones
+                .OrderBy(z => z.Angle)
+                .ThenBy(z => z.Distance(Origin));
 
-            foreach (var z in allAsteroidZones.OrderBy(z => z.Angle))
+            while (toVaporize.Count() > 0)
             {
-                if (lastAngle != z.Angle)
+                double lastAngle = -1.0;
+                foreach (var z in toVaporize)
                 {
-                    numOrder++;
-                    z.Vaporize();
-                    Console.WriteLine($"[{numOrder,3}]: {z}");
-                    if (numOrder == 200)
-                        Console.WriteLine("#############################");
+                    if (lastAngle != z.Angle)
+                    {
+                        numOrder++;
+                        z.Vaporize();
+                        Console.WriteLine($"[{numOrder,3}]: {z}");
+                        if (numOrder == 200)
+                            foundBet = CalcBet(z.Location.X, z.Location.Y);
+                    }
+                    lastAngle = z.Angle;
                 }
-                lastAngle = z.Angle;
             }
 
-            //Console.WriteLine($"Best: ({best.X},{best.Y})   Sees: {best.Detects}");
-
+            Console.WriteLine($"Winning Bet: {foundBet}");
             if (foundBet.Equals(WinningBet))
             {
                 Console.WriteLine("\tCorrect");
@@ -185,6 +205,15 @@ namespace Advent_of_Code.Day09
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// https://math.stackexchange.com/a/714423
+        /// </remarks>
         double CalcAngle(Point p1, Point p2)
         {
             var y1 = (p1.Y > p2.Y) ? p1.Y : p2.Y;
@@ -193,24 +222,19 @@ namespace Advent_of_Code.Day09
             var numerator = y1 - y2;
             var denominator = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(y1 - y2, 2));
             
-            var angle = Math.Acos(numerator / denominator) * (180 / Math.PI);
+            var angle = Math.Abs(Math.Acos(numerator / denominator) * (180 / Math.PI));
 
             var deltaX = p2.X - p1.X;
             var deltaY = p1.Y - p2.Y;
-            var angleOffsetMultiplier = (deltaX >= 0 && deltaY >= 0) ? 0
-                : (deltaX >= 0 && deltaY <= 0) ? 1
-                : (deltaX <= 0 && deltaY >= 0) ? 2
-                : 3;
 
-            angle = angle + (90.0 * angleOffsetMultiplier);
+            angle =
+                  (deltaX >= 0 && deltaY >= 0) ? angle
+                : (deltaX >= 0 && deltaY <= 0) ? (180 - angle)
+                : (deltaX <= 0 && deltaY <= 0) ? (180 + angle)
+                : (360 - angle);
 
-            //Console.WriteLine($"{p1,13}  {p2,13}  Delta: ({deltaX,2},{deltaY,2})   angle: {angle,9:N5}");
             return angle;
         }
-
-        
-
-
 
         /// <summary>
         /// </summary>
@@ -218,7 +242,9 @@ namespace Advent_of_Code.Day09
         /// <param name="b"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        /// <remarks>https://stackoverflow.com/a/17590923/6136</remarks>
+        /// <remarks>
+        /// https://stackoverflow.com/a/17590923/6136
+        /// </remarks>
         bool CalcIfOnLine(Point a, Point b, Point p)
         {
             Func<Point, Point, double> calc = (q, w) => Math.Sqrt(Math.Pow(w.X - q.X, 2) + Math.Pow(w.Y - q.Y, 2));
@@ -234,26 +260,12 @@ namespace Advent_of_Code.Day09
             return result;
         }
 
-        void ShowAsteroids() => ShowMap(z => z == Origin ? "X" : z.HasAsteroid ? "*" : " ");
-        void ShowMap(Func<MapZone, string> WriteAction)
-        {
-            int i = 0;
-            while (i < Map.Count)
-            {
-                if (WriteAction != null)
-                    Console.Write(WriteAction(Map[i]));
-                i++;
-                if (i % Width == 0)
-                    Console.WriteLine();
-            }
-        }
-
 
         static int CalcBet(int x, int y) => (x * 100) + y;
 
         class MapZone
         {
-            public MapZone(int x, int y)//, bool hasAsteroid)
+            public MapZone(int x, int y)
             {
                 Location = new Point(x, y);
                 HasAsteroid = true;
@@ -273,12 +285,20 @@ namespace Advent_of_Code.Day09
                 return $"({Location.X,2},{Location.Y,2}) - {(HasAsteroid ? "#" : ".")}   {Angle}°";
             }
 
-            public bool EqualsLocation(MapZone other)
+            public override bool Equals(object obj)
             {
+                var other = obj as MapZone;
                 if (other == null)
                     return false;
                 return Location.Equals(other.Location);
             }
+            public override int GetHashCode()
+            {
+                return Location.GetHashCode();
+            }
+
+            public int Distance(MapZone other) => Distance(other.Location);
+            public int Distance(Point other) => Math.Abs(other.X - Location.X) + Math.Abs(other.Y - Location.Y);
         }
     }
 }
