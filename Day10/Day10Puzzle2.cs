@@ -75,7 +75,6 @@ namespace Advent_of_Code.Day09
             string[] rawMapData = null;
 
             rawMapData = Helper.GetFileContentAsLines("D10P2-Test1.txt");
-            Origin = new MapZone(3, 9, true);
             WinningBet = CalcBet(8, 2); // 200th asteroid
 
             //rawMapData = Helper.GetFileContentAsLines("D10-Data.txt");
@@ -85,17 +84,56 @@ namespace Advent_of_Code.Day09
             Width = rawMapData[0].Length;
             Height = rawMapData.Length;
             var zoneList = new List<MapZone>();
+            NewMethod(rawMapData, zoneList, ref Origin);
+
+            //var x = 8;
+            //var y = 3;
+
+            //zoneList.Clear();
+            //Origin = new MapZone(x, y);
+            //zoneList.Add(Origin);
+            ////zoneList.Add(new MapZone(8, 1));
+            ////zoneList.Add(new MapZone(9, 0));
+
+            //zoneList.Add(new MapZone(x + 0, y + -4)); // 0°
+            //zoneList.Add(new MapZone(x + 2, y + -4)); // 45° --
+            //zoneList.Add(new MapZone(x + 4, y + -4)); // 45°
+            ////zoneList.Add(new MapZone(x + 4, y + -2)); // 45° --
+            //zoneList.Add(new MapZone(x + 4, y + 0)); // 90°
+            ////zoneList.Add(new MapZone(x + 4, y + 2)); // 135° --
+            //zoneList.Add(new MapZone(x + 4, y + 4)); // 135°
+            ////zoneList.Add(new MapZone(x + 2, y + 4)); // 135° --
+            //zoneList.Add(new MapZone(x + 0, y + 4)); // 180°
+            ////zoneList.Add(new MapZone(x + -2, y + 4)); // 225° --
+            //zoneList.Add(new MapZone(x + -4, y + 4)); // 225°
+            ////zoneList.Add(new MapZone(x + -4, y + 2)); // 225° --
+            //zoneList.Add(new MapZone(x + -4, y + 0)); // 270°
+            ////zoneList.Add(new MapZone(x + -4, y + -2)); // 315° --
+            //zoneList.Add(new MapZone(x + -4, y + -4)); // 315°
+            ////zoneList.Add(new MapZone(x + -2, y + -4)); // 315° --
+
+
+            Map = zoneList;
+
+        }
+
+        private void NewMethod(string[] rawMapData, List<MapZone> zoneList, ref MapZone origin)
+        {
             for (var y = 0; y < Height; y++)
             {
                 for (var x = 0; x < Width; x++)
                 {
-                    var zone = new MapZone(x, y, rawMapData[y][x] == '#');
+                    var hasBase = (rawMapData[y][x] == 'X');
+                    var hasRoid = (rawMapData[y][x] == '#') || hasBase;
+                    if (!hasRoid)
+                        continue;
+                    var zone = new MapZone(x, y);
                     zoneList.Add(zone);
+
+                    if (hasBase)
+                        origin = zone;
                 }
             }
-
-            Map = zoneList;
-
         }
 
         readonly IReadOnlyList<MapZone> Map;
@@ -110,20 +148,32 @@ namespace Advent_of_Code.Day09
         {
             Console.WriteLine("--- Day 10: Monitoring Station (part 2) ---");
 
-            //var allAsteroidZones = Map.Where(z => z.HasAsteroid).ToList();
-            //Console.WriteLine($"# Asteroids: {allAsteroidZones.Count}");
+            var allAsteroidZones = Map
+                .Where(z => z.HasAsteroid)
+                .Where(z => z != Origin)
+                ;
+            Console.WriteLine($"# Asteroids: {allAsteroidZones.Count()}");
 
-            //foreach (var home in allAsteroidZones)
-            //    ScanFrom(home, allAsteroidZones);
-
-            //var best = allAsteroidZones
-            //    .OrderByDescending(z => z.Detects)
-            //    .First();
-
-            //Console.WriteLine();
-            //ShowDetectionCounts();
-            //Console.WriteLine();
+            foreach (var z in allAsteroidZones)
+                z.Angle = Math.Round(CalcAngle(Origin.Location, z.Location), 5);
+            
+            Console.WriteLine(Origin);
+            double lastAngle = -1.0;
+            var numOrder = 0;
             var foundBet = 0;
+
+            foreach (var z in allAsteroidZones.OrderBy(z => z.Angle))
+            {
+                if (lastAngle != z.Angle)
+                {
+                    numOrder++;
+                    z.Vaporize();
+                    Console.WriteLine($"[{numOrder,3}]: {z}");
+                    if (numOrder == 200)
+                        Console.WriteLine("#############################");
+                }
+                lastAngle = z.Angle;
+            }
 
             //Console.WriteLine($"Best: ({best.X},{best.Y})   Sees: {best.Detects}");
 
@@ -135,20 +185,30 @@ namespace Advent_of_Code.Day09
             Console.WriteLine();
         }
 
-        void ScanFrom(MapZone home, IEnumerable<MapZone> allAlteroids)
+        double CalcAngle(Point p1, Point p2)
         {
-            var allButHome = allAlteroids.Where(z => z != home);
-            foreach (var target in allButHome)
-            {
-                var canSee = Map
-                    .Where(z => z != home)
-                    .Where(z => z != target)
-                    .Where(z => CalcIfOnLine(home, target, z))
-                    .All(z => !z.HasAsteroid);
-                //if (canSee)
-                //    home.Detects++;
-            }
+            var y1 = (p1.Y > p2.Y) ? p1.Y : p2.Y;
+            var y2 = (p1.Y > p2.Y) ? p2.Y : p1.Y;
+
+            var numerator = y1 - y2;
+            var denominator = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(y1 - y2, 2));
+            
+            var angle = Math.Acos(numerator / denominator) * (180 / Math.PI);
+
+            var deltaX = p2.X - p1.X;
+            var deltaY = p1.Y - p2.Y;
+            var angleOffsetMultiplier = (deltaX >= 0 && deltaY >= 0) ? 0
+                : (deltaX >= 0 && deltaY <= 0) ? 1
+                : (deltaX <= 0 && deltaY >= 0) ? 2
+                : 3;
+
+            angle = angle + (90.0 * angleOffsetMultiplier);
+
+            //Console.WriteLine($"{p1,13}  {p2,13}  Delta: ({deltaX,2},{deltaY,2})   angle: {angle,9:N5}");
+            return angle;
         }
+
+        
 
 
 
@@ -159,9 +219,9 @@ namespace Advent_of_Code.Day09
         /// <param name="p"></param>
         /// <returns></returns>
         /// <remarks>https://stackoverflow.com/a/17590923/6136</remarks>
-        bool CalcIfOnLine(MapZone a, MapZone b, MapZone p)
+        bool CalcIfOnLine(Point a, Point b, Point p)
         {
-            Func<MapZone, MapZone, double> calc = (q, w) => Math.Sqrt(Math.Pow(w.X - q.X, 2) + Math.Pow(w.Y - q.Y, 2));
+            Func<Point, Point, double> calc = (q, w) => Math.Sqrt(Math.Pow(w.X - q.X, 2) + Math.Pow(w.Y - q.Y, 2));
 
             var ab = calc(a, b);
             var ap = calc(a, p);
@@ -174,8 +234,7 @@ namespace Advent_of_Code.Day09
             return result;
         }
 
-        void ShowAsteroids() => ShowMap(z => z.HasAsteroid ? " # " : " . ");
-        //void ShowDetectionCounts() => ShowMap(z => z.HasAsteroid ? z.Detects.ToString().PadLeft(3, ' ').PadRight(3, ' ') : " . ");
+        void ShowAsteroids() => ShowMap(z => z == Origin ? "X" : z.HasAsteroid ? "*" : " ");
         void ShowMap(Func<MapZone, string> WriteAction)
         {
             int i = 0;
@@ -194,36 +253,31 @@ namespace Advent_of_Code.Day09
 
         class MapZone
         {
-            public MapZone(int x, int y, bool hasAsteroid)
+            public MapZone(int x, int y)//, bool hasAsteroid)
             {
-                X = x;
-                Y = y;
-                HasAsteroid = hasAsteroid;
-                //Detects = 0;
+                Location = new Point(x, y);
+                HasAsteroid = true;
             }
 
-            public int X { get; private set; }
-            public int Y { get; private set; }
+            public Point Location { get; private set; }
             public bool HasAsteroid { get; private set; }
-            //public int Detects { get; set; }
-            //public bool Vaporized { get; private set; }
+            public double Angle { get; set; }
 
             public void Vaporize()
             {
-                //Vaporized = true;
                 HasAsteroid = false;
             }
 
             public override string ToString()
             {
-                return $"({X},{Y}) - {(HasAsteroid ? "#" : ".")}";
+                return $"({Location.X,2},{Location.Y,2}) - {(HasAsteroid ? "#" : ".")}   {Angle}°";
             }
 
             public bool EqualsLocation(MapZone other)
             {
                 if (other == null)
                     return false;
-                return (X == other.X) && (Y == other.Y);
+                return Location.Equals(other.Location);
             }
         }
     }
