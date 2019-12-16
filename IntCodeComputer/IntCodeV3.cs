@@ -21,23 +21,7 @@ namespace Advent_of_Code.IntCodeComputer
         void Poke(int address, long value);
         void AddInput(long value);
     }
-
-    //enum IntCodeState
-    //{
-    //    Running,
-    //    Finished,
-    //    NeedsInput,
-    //    Error,
-    //}
-
-    class OutputEventArgs : EventArgs
-    {
-        public OutputEventArgs(long value) : base()
-        {
-            OutputValue = value;
-        }
-        public long OutputValue { get; private set; }
-    }
+    
 
     class IntCodeV3 : IIntCodeV3
     {
