@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace Advent_of_Code.Day09
+namespace Advent_of_Code.Day10
 {
     /*
     --- Day 10: Monitoring Station ---

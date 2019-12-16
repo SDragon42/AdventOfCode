@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Advent_of_Code.Day09
+namespace Advent_of_Code.IntCodeComputer
 {
     interface IIntCodeV3
     {
@@ -22,13 +22,13 @@ namespace Advent_of_Code.Day09
         void AddInput(long value);
     }
 
-    enum IntCodeState
-    {
-        Running,
-        Finished,
-        NeedsInput,
-        Error,
-    }
+    //enum IntCodeState
+    //{
+    //    Running,
+    //    Finished,
+    //    NeedsInput,
+    //    Error,
+    //}
 
     class OutputEventArgs : EventArgs
     {

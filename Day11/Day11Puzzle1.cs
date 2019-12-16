@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Advent_of_Code.IntCodeComputer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Advent_of_Code.Day09
+namespace Advent_of_Code.Day11
 {
     /*
     --- Day 11: Space Police ---
@@ -74,6 +75,9 @@ namespace Advent_of_Code.Day09
         public Day11Puzzle1()
         {
         }
+
+
+        readonly IIntCodeV3 robot = new IntCodeV3();
 
 
         public void Run()
