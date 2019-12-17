@@ -80,7 +80,7 @@ namespace Advent_of_Code.Day11
         }
 
 
-        readonly EHPRobot robot = new EHPRobot();
+        //readonly EHPRobot robot = new EHPRobot();
         readonly Dictionary<Point, HullPanel> hull = new Dictionary<Point, HullPanel>();
 
 
@@ -88,36 +88,73 @@ namespace Advent_of_Code.Day11
         {
             Console.WriteLine("--- Day 11: Space Police ---");
 
-            
+            var robot = new EHPRobot();
+            robot.ScanHull += Robot_ScanHull;
+            robot.PaintHull += Robot_PaintHull;
+
             robot.Init(puzzleInput);
 
+            robot.Start();
+
+            //var minX = hull.Values.Select(h => h.Location.X).Min();
+            //var maxX = hull.Values.Select(h => h.Location.X).Max();
+            //var minY = hull.Values.Select(h => h.Location.Y).Min();
+            //var maxY = hull.Values.Select(h => h.Location.Y).Max();
+
+            //var hullPaint = new StringBuilder();
+            //for (int x = minX; x <= maxX; x++)
+            //{
+            //    for (int y = minY; y <= maxY; y++)
+            //    {
+            //        var panel = GetHullPanel(new Point(x, y));
+            //        switch (panel.Color)
+            //        {
+            //            case HullColor.Black: hullPaint.Append(' '); break;
+            //            case HullColor.White: hullPaint.Append('#'); break;
+            //            default: goto case HullColor.Black;
+            //        }
+            //    }
+            //    hullPaint.AppendLine();
+            //}
+
+            Console.WriteLine($"Number of Panels painted: {hull.Count}");
+            if (hull.Count == 1681)
+                Console.WriteLine("\tCorrect");
+
+            //Console.WriteLine(hullPaint.ToString());
 
             Console.WriteLine();
         }
 
-    }
-
-    class EHPRobot
-    {
-        readonly IIntCodeV3 brain = new IntCodeV3();
-
-        public void Init(IEnumerable<long> brainCode)
+        private void Robot_PaintHull(object sender, PaintHullColorEventArgs e)
         {
-            brain.Init(brainCode);
-        }
-    }
-
-    enum HullColor { Black = 0, White = 1 }
-
-    class HullPanel
-    {
-        public HullPanel(Point location)
-        {
-            Location = location;
-            Color = HullColor.Black;
+            SetHullPanel(e.Location, e.HullColor);
         }
 
-        public Point Location { get; private set; }
-        public HullColor Color { get; set; }
+        private void Robot_ScanHull(object sender, ScanHullColorEventArgs e)
+        {
+            var panel = GetHullPanel(e.Location);
+            e.HullColor = panel.Color;
+        }
+
+        HullPanel GetHullPanel(Point location)
+        {
+            if (hull.ContainsKey(location))
+                return hull[location];
+            return new HullPanel(location);
+        }
+
+        void SetHullPanel(Point location, HullColor color)
+        {
+            if (!hull.ContainsKey(location))
+                hull.Add(location, new HullPanel(location));
+            var panel = hull[location];
+            panel.Color = color;
+        }
+
     }
+
+
+
+
 }
