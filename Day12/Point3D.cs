@@ -36,5 +36,10 @@ namespace Advent_of_Code.Day12
             return $"<x={X,5}, y={Y,5}, z={Z,5}>";
         }
 
+        public Point3D GetCopy()
+        {
+            var item = new Point3D(X, Y, Z);
+            return item;
+        }
     }
 }
