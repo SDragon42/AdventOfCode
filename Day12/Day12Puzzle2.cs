@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Advent_of_Code.Day12
@@ -51,7 +52,7 @@ namespace Advent_of_Code.Day12
     {
         public Day12Puzzle2()
         {
-            //// Live Data
+            #region Live Data
             //bodies = new Body[] {
             //    new Body(14, 2, 8),
             //    new Body(7, 4, 10),
@@ -59,29 +60,33 @@ namespace Advent_of_Code.Day12
             //    new Body(-4, -1, 1),
             //};
             //numStepsToOriginalState = 0;
+            #endregion
 
-            //// Example 1
-            //bodies = new Body[] {
-            //    new Body(-1, 0, 2),
-            //    new Body(2, -10, -7),
-            //    new Body(4, -8, 8),
-            //    new Body(3, 5, -1),
-            //};
-            //numStepsToOriginalState = 2772L;
-
-            // Example 2
+            #region Example 1
             bodies = new Body[] {
-                new Body(-8, -10, 0),
-                new Body(5, 5, 10),
-                new Body(2, -7, 3),
-                new Body(9, -8, -3),
+                new Body(-1, 0, 2),
+                new Body(2, -10, -7),
+                new Body(4, -8, 8),
+                new Body(3, 5, -1),
             };
-            numStepsToOriginalState = 4686774924L;
+            numStepsToOriginalState = 2772L;
+            #endregion
+
+            #region Example 2
+            //bodies = new Body[] {
+            //    new Body(-8, -10, 0),
+            //    new Body(5, 5, 10),
+            //    new Body(2, -7, 3),
+            //    new Body(9, -8, -3),
+            //};
+            //numStepsToOriginalState = 4686774924L;
+            #endregion
         }
 
         readonly IReadOnlyList<Body> bodies;
         readonly long numStepsToOriginalState;
 
+        readonly List<Body> originalState = new List<Body>();
 
         public void Run()
         {
@@ -92,7 +97,7 @@ namespace Advent_of_Code.Day12
             var i = 0L;
             var match = false;
 
-            var originalState = new List<Body>();
+            originalState.Clear();
             originalState.Add(bodies[0].GetCopy());
             originalState.Add(bodies[1].GetCopy());
             originalState.Add(bodies[2].GetCopy());
@@ -100,18 +105,23 @@ namespace Advent_of_Code.Day12
 
             var sw = new Stopwatch();
             sw.Start();
-            do
-            {
-                i++;
-                bodies.ForEach(ApplyGravitiy);
-                bodies.ForEach(ApplyVelocity);
-                totalEnergy = bodies.Sum(b => b.TotalEnergy);
 
-                match = true;
-                for (int k = 0; k < bodies.Count; k++)
-                    match &= originalState[k].Equals(bodies[k]);
+            var xCount = 0L;
+            var yCount = 0L;
+            var zCount = 0L;
+            CountSteps(ref xCount, ref yCount, ref zCount);
+            //do
+            //{
+            //    i++;
+            //    bodies.ForEach(ApplyGravitiy);
+            //    bodies.ForEach(ApplyVelocity);
+            //    //totalEnergy = bodies.Sum(b => b.TotalEnergy);
 
-            } while (!match);
+            //    match = true;
+            //    for (int k = 0; k < bodies.Count; k++)
+            //        match &= originalState[k].Equals(bodies[k]);
+
+            //} while (!match);
             sw.Stop();
 
             Console.WriteLine($"Number of steps to return to original state: {i}");
@@ -122,6 +132,56 @@ namespace Advent_of_Code.Day12
             Console.WriteLine($"Runtime: {sw.Elapsed:c}");
             Console.WriteLine();
         }
+
+        private void CountSteps(ref long xCount, ref long yCount, ref long zCount)
+        {
+            var piX = typeof(Point3D).GetProperties().Where(pi => pi.Name == "X").First();
+            var piY = typeof(Point3D).GetProperties().Where(pi => pi.Name == "Y").First();
+            var piZ = typeof(Point3D).GetProperties().Where(pi => pi.Name == "Z").First();
+
+            var i = 0L;
+            var matchX = false;
+            var matchY = false;
+            var matchZ = false;
+            do
+            {
+                i++;
+
+                bodies.ForEach(ApplyGravitiy);
+                bodies.ForEach(ApplyVelocity);
+
+                for (int k = 0; k < bodies.Count; k++)
+                {
+                    NewMethod(k, i, piX, ref xCount, ref matchX);
+                }
+                //match &= originalState[k].Equals(bodies[k]);
+
+            } while (!matchX && !matchY && !matchZ);
+        }
+
+        private void NewMethod(int bodyIdx, long i, PropertyInfo piX, ref long xCount, ref bool matchX)
+        {
+            if (!matchX)
+            {
+                if (IsMatch(piX, originalState[bodyIdx], bodies[bodyIdx]))
+                {
+                    xCount = i;
+                    matchX = true;
+                }
+            }
+        }
+
+        bool IsMatch(PropertyInfo pi, Body original, Body current)
+        {
+            var p0 = (int)pi.GetValue(original.Position);
+            var pN = (int)pi.GetValue(current.Position);
+
+            var v0 = (int)pi.GetValue(original.Velocity);
+            var vN = (int)pi.GetValue(current.Velocity);
+
+            return (p0 == pN) && (v0 == vN);
+        }
+
 
         int calcVelocityComponent(int me, int other)
         {
