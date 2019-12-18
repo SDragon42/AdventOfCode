@@ -254,7 +254,6 @@ namespace Advent_of_Code.Day12
         void ApplyGravitiy(Body body)
         {
             var otherBodies = bodies.Where(b => b != body);
-            var shift = new Point3D();
             foreach (var other in otherBodies)
             {
                 body.Velocity.X += calcVelocityComponent(body.Position.X, other.Position.X);
