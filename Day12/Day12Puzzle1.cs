@@ -188,24 +188,40 @@ namespace Advent_of_Code.Day12
     {
         public Day12Puzzle1()
         {
-            /*
-             * <x=-1, y=0, z=2>
-                <x=2, y=-10, z=-7>
-                <x=4, y=-8, z=8>
-                <x=3, y=5, z=-1>
-             */
-            var list = new Body[] {
-                new Body(-1, 0, 2),
-                new Body(2, -10, -7),
-                new Body(4, -8, 8),
-                new Body(3, 5, -1),
+            // Live Data
+            bodies = new Body[] {
+                new Body(14, 2, 8),
+                new Body(7, 4, 10),
+                new Body(1, 17, 16),
+                new Body(-4, -1, 1),
             };
+            totalNumberSteps = 1000;
+            finalTotalEnergy = 9139;
 
+            //// Example 1
+            //bodies = new Body[] {
+            //    new Body(-1, 0, 2),
+            //    new Body(2, -10, -7),
+            //    new Body(4, -8, 8),
+            //    new Body(3, 5, -1),
+            //};
+            //totalNumberSteps = 10;
+            //finalTotalEnergy = 179;
 
-            bodies = list;
+            //// Example 2
+            //bodies = new Body[] {
+            //    new Body(-8, -10, 0),
+            //    new Body(5, 5, 10),
+            //    new Body(2, -7, 3),
+            //    new Body(9, -8, -3),
+            //};
+            //totalNumberSteps = 100;
+            //finalTotalEnergy = 1940;
         }
 
-        IReadOnlyList<Body> bodies;
+        readonly IReadOnlyList<Body> bodies;
+        readonly int totalNumberSteps;
+        readonly int finalTotalEnergy;
 
 
         public void Run()
@@ -213,12 +229,19 @@ namespace Advent_of_Code.Day12
             Console.WriteLine("--- Day 12: The N-Body Problem ---");
 
             Display(0);
-            for (int i = 1; i <= 10; i++)
+            var totalEnergy = 0;
+            for (int i = 1; i <= totalNumberSteps; i++)
             {
                 bodies.ForEach(ApplyGravitiy);
                 bodies.ForEach(ApplyVelocity);
+                totalEnergy = bodies.Sum(b => b.TotalEnergy);
                 Display(i);
             }
+
+            Console.WriteLine($"The final total energy of the system: {totalEnergy}");
+            if (totalEnergy == finalTotalEnergy)
+                Console.WriteLine("\tCorrect!");
+            Console.WriteLine();
         }
 
         int calcVelocityComponent(int me, int other)
@@ -250,6 +273,7 @@ namespace Advent_of_Code.Day12
         {
             Console.WriteLine($"After {i} step{(i != 1 ? "s" : "")}:");
             bodies.ForEach(b => Console.WriteLine(b));
+            Console.WriteLine();
         }
 
     }
@@ -264,9 +288,12 @@ namespace Advent_of_Code.Day12
             Y = y;
             Z = z;
         }
+
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
+
+        public int Energy => Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
 
         public override bool Equals(object obj)
         {
@@ -283,6 +310,7 @@ namespace Advent_of_Code.Day12
         {
             return $"<x={X,5}, y={Y,5}, z={Z,5}>";
         }
+
     }
 
     class Body
@@ -292,8 +320,13 @@ namespace Advent_of_Code.Day12
             Position = new Point3D(x, y, z);
             Velocity = new Point3D();
         }
+
         public Point3D Position { get; private set; }
         public Point3D Velocity { get; private set; }
+
+        public int KineticEnergy => Velocity.Energy;
+        public int PotentialEnergy => Position.Energy;
+        public int TotalEnergy => PotentialEnergy * KineticEnergy;
 
         public override bool Equals(object obj)
         {
