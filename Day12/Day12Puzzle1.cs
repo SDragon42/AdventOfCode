@@ -212,17 +212,20 @@ namespace Advent_of_Code.Day12
         {
             Console.WriteLine("--- Day 12: The N-Body Problem ---");
 
+            Display(0);
             for (int i = 1; i <= 10; i++)
             {
-                //foreach (var body in bodies)
-                //{
-                //    var otherBodies = bodies.Where(b => b != body);
-                //    ApplyGravitiy(body, otherBodies);
-                //}
-
                 bodies.ForEach(ApplyGravitiy);
                 bodies.ForEach(ApplyVelocity);
+                Display(i);
             }
+        }
+
+        int calcVelocityComponent(int me, int other)
+        {
+            if (me < other) return 1;
+            if (me > other) return -1;
+            return 0;
         }
 
         void ApplyGravitiy(Body body)
@@ -231,12 +234,22 @@ namespace Advent_of_Code.Day12
             var shift = new Point3D();
             foreach (var other in otherBodies)
             {
-                //body.Velocity.X += 
+                body.Velocity.X += calcVelocityComponent(body.Position.X, other.Position.X);
+                body.Velocity.Y += calcVelocityComponent(body.Position.Y, other.Position.Y);
+                body.Velocity.Z += calcVelocityComponent(body.Position.Z, other.Position.Z);
             }
         }
         void ApplyVelocity(Body body)
         {
+            body.Position.X += body.Velocity.X;
+            body.Position.Y += body.Velocity.Y;
+            body.Position.Z += body.Velocity.Z;
+        }
 
+        void Display(int i)
+        {
+            Console.WriteLine($"After {i} step{(i != 1 ? "s" : "")}:");
+            bodies.ForEach(b => Console.WriteLine(b));
         }
 
     }
@@ -268,7 +281,7 @@ namespace Advent_of_Code.Day12
 
         public override string ToString()
         {
-            return $"<x={X}, y={Y}, z={Z}>";
+            return $"<x={X,5}, y={Y,5}, z={Z,5}>";
         }
     }
 
@@ -297,6 +310,6 @@ namespace Advent_of_Code.Day12
         {
             return $"pos={Position}, vel={Velocity}";
         }
-        
+
     }
 }
