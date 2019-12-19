@@ -47,7 +47,7 @@ namespace Advent_of_Code.Day13
                 arcadeGame.Run();
                 if (arcadeGame.State == IntCodeState.NeedsInput)
                 {
-                    sdafvar key = Console.ReadKey();
+                    var key = Console.ReadKey();
                     switch (key.KeyChar)
                     {
                         case 'a': arcadeGame.AddInput(-1); break;
