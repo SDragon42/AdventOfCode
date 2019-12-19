@@ -53,23 +53,23 @@ namespace Advent_of_Code.Day12
         public Day12Puzzle2()
         {
             #region Live Data
-            //bodies = new Body[] {
-            //    new Body(14, 2, 8),
-            //    new Body(7, 4, 10),
-            //    new Body(1, 17, 16),
-            //    new Body(-4, -1, 1),
-            //};
-            //numStepsToOriginalState = 0;
+            bodies = new Body[] {
+                new Body(14, 2, 8),
+                new Body(7, 4, 10),
+                new Body(1, 17, 16),
+                new Body(-4, -1, 1),
+            };
+            numStepsToOriginalState = 0;
             #endregion
 
             #region Example 1
-            bodies = new Body[] {
-                new Body(-1, 0, 2),
-                new Body(2, -10, -7),
-                new Body(4, -8, 8),
-                new Body(3, 5, -1),
-            };
-            numStepsToOriginalState = 2772L;
+            //bodies = new Body[] {
+            //    new Body(-1, 0, 2),
+            //    new Body(2, -10, -7),
+            //    new Body(4, -8, 8),
+            //    new Body(3, 5, -1),
+            //};
+            //numStepsToOriginalState = 2772L;
             #endregion
 
             #region Example 2
@@ -93,9 +93,6 @@ namespace Advent_of_Code.Day12
             Console.WriteLine("--- Day 12: The N-Body Problem (part two) ---");
 
             Display(0);
-            var totalEnergy = 0;
-            var i = 0L;
-            var match = false;
 
             originalState.Clear();
             originalState.Add(bodies[0].GetCopy());
@@ -110,19 +107,26 @@ namespace Advent_of_Code.Day12
             var yCount = 0L;
             var zCount = 0L;
             CountSteps(ref xCount, ref yCount, ref zCount);
+
+            var i = FindLCM(xCount, yCount, zCount);
+            Console.WriteLine($"i:{i}  x:{xCount}  y:{yCount}  z:{zCount}");
+
+
+            //var i = 0L;
+            //var match = false;
+
             //do
             //{
             //    i++;
             //    bodies.ForEach(ApplyGravitiy);
             //    bodies.ForEach(ApplyVelocity);
-            //    //totalEnergy = bodies.Sum(b => b.TotalEnergy);
 
             //    match = true;
             //    for (int k = 0; k < bodies.Count; k++)
             //        match &= originalState[k].Equals(bodies[k]);
 
             //} while (!match);
-            sw.Stop();
+            //sw.Stop();
 
             Console.WriteLine($"Number of steps to return to original state: {i}");
             if (i == numStepsToOriginalState)
@@ -133,6 +137,11 @@ namespace Advent_of_Code.Day12
             Console.WriteLine();
         }
 
+        private long FindLCM(long xCount, long yCount, long zCount)
+        {
+            return Helper.FindLCM(xCount, Helper.FindLCM(yCount, zCount));
+        }
+
         private void CountSteps(ref long xCount, ref long yCount, ref long zCount)
         {
             var piX = typeof(Point3D).GetProperties().Where(pi => pi.Name == "X").First();
@@ -140,9 +149,6 @@ namespace Advent_of_Code.Day12
             var piZ = typeof(Point3D).GetProperties().Where(pi => pi.Name == "Z").First();
 
             var i = 0L;
-            var matchX = false;
-            var matchY = false;
-            var matchZ = false;
             do
             {
                 i++;
@@ -150,25 +156,24 @@ namespace Advent_of_Code.Day12
                 bodies.ForEach(ApplyGravitiy);
                 bodies.ForEach(ApplyVelocity);
 
+                var matches = new List<Tuple<bool, bool, bool>>();
                 for (int k = 0; k < bodies.Count; k++)
                 {
-                    NewMethod(k, i, piX, ref xCount, ref matchX);
+                    matches.Add(new Tuple<bool, bool, bool>(
+                        IsMatch(piX, originalState[k], bodies[k]),
+                        IsMatch(piY, originalState[k], bodies[k]),
+                        IsMatch(piZ, originalState[k], bodies[k])
+                        ));
                 }
-                //match &= originalState[k].Equals(bodies[k]);
 
-            } while (!matchX && !matchY && !matchZ);
-        }
-
-        private void NewMethod(int bodyIdx, long i, PropertyInfo piX, ref long xCount, ref bool matchX)
-        {
-            if (!matchX)
-            {
-                if (IsMatch(piX, originalState[bodyIdx], bodies[bodyIdx]))
-                {
+                if (xCount == 0 && matches.All(m => m.Item1 == true))
                     xCount = i;
-                    matchX = true;
-                }
-            }
+                if (yCount == 0 && matches.All(m => m.Item2 == true))
+                    yCount = i;
+                if (zCount == 0 && matches.All(m => m.Item3 == true))
+                    zCount = i;
+
+            } while (xCount == 0 || yCount == 0 || zCount == 0);
         }
 
         bool IsMatch(PropertyInfo pi, Body original, Body current)

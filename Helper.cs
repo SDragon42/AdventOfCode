@@ -96,5 +96,39 @@ namespace Advent_of_Code
             return lines;
         }
 
+
+        /// <summary>
+        /// Finds the Greatest Common Factor between two numbers.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// https://stackoverflow.com/a/20824923/6136
+        /// </remarks>
+        public static long FindGCF(long a, long b)
+        {
+            while (b != 0)
+            {
+                var temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        /// <summary>
+        /// Find the Least Common Multiple of two numbers.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// https://stackoverflow.com/a/20824923/6136
+        /// </remarks>
+        public static long FindLCM(long a, long b)
+        {
+            return (a / FindGCF(a, b)) * b;
+        }
     }
 }
