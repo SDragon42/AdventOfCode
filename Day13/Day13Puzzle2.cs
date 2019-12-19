@@ -1,22 +1,29 @@
-﻿using Advent_of_Code.IntCodeComputer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Advent_of_Code.IntCodeComputer;
 
 namespace Advent_of_Code.Day13
 {
     /*
     --- Part Two ---
-    The game didn't run because you didn't put in any quarters. Unfortunately, you did not bring any quarters. Memory address 0 represents the number of quarters that have been inserted; set it to 2 to play for free.
+    The game didn't run because you didn't put in any quarters. Unfortunately, you did not bring 
+    any quarters. Memory address 0 represents the number of quarters that have been inserted; set 
+    it to 2 to play for free.
 
-    The arcade cabinet has a joystick that can move left and right. The software reads the position of the joystick with input instructions:
+    The arcade cabinet has a joystick that can move left and right. The software reads the position 
+    of the joystick with input instructions:
 
     If the joystick is in the neutral position, provide 0.
     If the joystick is tilted to the left, provide -1.
     If the joystick is tilted to the right, provide 1.
-    The arcade cabinet also has a segment display capable of showing a single number that represents the player's current score. When three output instructions specify X=-1, Y=0, the third output instruction is not a tile; the value instead specifies the new score to show in the segment display. For example, a sequence of output values like -1,0,12345 would show 12345 as the player's current score.
+    The arcade cabinet also has a segment display capable of showing a single number that represents 
+    the player's current score. When three output instructions specify X=-1, Y=0, the third output 
+    instruction is not a tile; the value instead specifies the new score to show in the segment 
+    display. For example, a sequence of output values like -1,0,12345 would show 12345 as the 
+    player's current score.
 
     Beat the game by breaking all the blocks. What is your score after the last block is broken?
     */
@@ -28,9 +35,15 @@ namespace Advent_of_Code.Day13
         }
 
         readonly IReadOnlyList<long> puzzleInput;
-        readonly Dictionary<Point, int> TileGrid = new Dictionary<Point, int>();
+        readonly Dictionary<Point, Tile> TileGrid = new Dictionary<Point, Tile>();
         long score = 0L;
 
+        enum TileType { Blank = 0, Wall = 1, Brick = 2, Paddle = 3, Ball = 4 }
+        class Tile
+        {
+            public Point Loc { get; set; }
+            public TileType TileT { get; set; }
+        }
 
         public void Run()
         {
@@ -42,26 +55,36 @@ namespace Advent_of_Code.Day13
             arcadeGame.Init(puzzleInput);
             arcadeGame.Poke(0, 2); // Put in two quarters
 
+            var ballPos = TileGrid.Values.Where(v => v.TileT == TileType.Ball).Select(v => v.Loc.X);
+            var PaddlePos = TileGrid.Values.Where(v => v.TileT == TileType.Paddle).Select(v => v.Loc.X);
+
             while (arcadeGame.State == IntCodeState.Running || arcadeGame.State == IntCodeState.NeedsInput)
             {
                 arcadeGame.Run();
                 if (arcadeGame.State == IntCodeState.NeedsInput)
                 {
-                    var key = Console.ReadKey();
-                    switch (key.KeyChar)
-                    {
-                        case 'a': arcadeGame.AddInput(-1); break;
-                        case 'd': arcadeGame.AddInput(1); break;
-                        default: arcadeGame.AddInput(0); break;
-                    }
+                    var currBall = ballPos.First();
+                    var currPaddle = PaddlePos.First();
+                    var diff = currBall - currPaddle;
+
+                    if (diff < 0)
+                        arcadeGame.AddInput(-1);
+                    else if (diff > 0)
+                        arcadeGame.AddInput(1);
+                    else
+                        arcadeGame.AddInput(0);
+                    //DrawGameBoard();
+                    //System.Threading.Thread.Sleep(100);
                 }
             }
 
             DrawGameBoard();
 
-            //Console.WriteLine($"The number of BLOCK tiles is: {blockCount}");
-            //if (blockCount == 233)
-            //    Console.WriteLine("\tCorrect!");
+            Console.WriteLine("G A M E   O V E R");
+            Console.WriteLine();
+            Console.WriteLine($"Final Score: {score}");
+            if (score == 11991)
+                Console.WriteLine("\tCorrect!");
             Console.WriteLine();
         }
 
@@ -74,22 +97,22 @@ namespace Advent_of_Code.Day13
 
             var gameBoard = new StringBuilder();
             gameBoard.AppendLine($"\t\tSCORE: {score}");
-            for (int x = minX; x <= maxX; x++)
+            for (int y = minY; y <= maxY; y++)
             {
-                for (int y = minY; y <= maxY; y++)
+                for (int x = minX; x <= maxX; x++)
                 {
-                    var tile = 0;
+                    var tile = default(Tile);
                     var key = new Point(x, y);
                     if (TileGrid.ContainsKey(key))
                         tile = TileGrid[key];
-                    switch (tile)
+                    switch (tile.TileT)
                     {
-                        case 0: gameBoard.Append(' '); break;
-                        case 1: gameBoard.Append('#'); break;
-                        case 2: gameBoard.Append('B'); break;
-                        case 3: gameBoard.Append('-'); break;
-                        case 4: gameBoard.Append('*'); break;
-                        default: goto case 0;
+                        case TileType.Blank: gameBoard.Append(' '); break;
+                        case TileType.Wall: gameBoard.Append('#'); break;
+                        case TileType.Brick: gameBoard.Append('B'); break;
+                        case TileType.Paddle: gameBoard.Append('-'); break;
+                        case TileType.Ball: gameBoard.Append('*'); break;
+                        default: goto case TileType.Blank;
                     }
                 }
                 gameBoard.AppendLine();
@@ -113,7 +136,12 @@ namespace Advent_of_Code.Day13
                     var loc = new Point(outputCache[0], outputCache[1]);
                     if (TileGrid.ContainsKey(loc))
                         TileGrid.Remove(loc);
-                    TileGrid.Add(loc, outputCache[2]);
+                    var tile = new Tile()
+                    {
+                        Loc = loc,
+                        TileT = (TileType)outputCache[2]
+                    };
+                    TileGrid.Add(loc, tile);
                 }
                 outputCache.Clear();
             }
