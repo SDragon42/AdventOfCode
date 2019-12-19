@@ -117,13 +117,17 @@ namespace Advent_of_Code.Day14
     {
         public Day14Puzzle1()
         {
-            rawData = Helper.GetFileContentAsLines(@"Day14\Example1.txt");
+            //rawData = Helper.GetFileContentAsLines(@"Day14\Example1.txt");
+            //CorrectAnswer = 31;
+
+            rawData = Helper.GetFileContentAsLines(@"Day14\Example2.txt");
+            CorrectAnswer = 165;
         }
 
-        //string[] rawData;
         readonly IReadOnlyList<string> rawData;
         readonly IDictionary<string, ChemReaction> ReactionChains = new Dictionary<string, ChemReaction>();
         readonly IDictionary<string, Chemical> ExcessChems = new Dictionary<string, Chemical>();
+        readonly int CorrectAnswer;
 
         public void Run()
         {
@@ -139,10 +143,8 @@ namespace Advent_of_Code.Day14
                 var oreNeeded = CalcOreNeeded("FUEL", 1);
 
                 Console.WriteLine($"ORE needed: {oreNeeded}");
-                if (oreNeeded == 31)
+                if (oreNeeded == CorrectAnswer)
                     Console.WriteLine("\tCorrect");
-
-                Console.WriteLine();
                 Console.WriteLine();
             }
             catch (Exception ex)
@@ -163,26 +165,28 @@ namespace Advent_of_Code.Day14
             {
                 foreach (var neededChem in chain.Needs)
                 {
-                    var neededChemAmount = neededChem.Chemical.Amount;
-                    if (ExcessChems.ContainsKey(neededChem.Chemical.Element))
-                    {
-                        var foundChem = ExcessChems[neededChem.Chemical.Element];
-                        //if (neededChemAmount ) //TODO : work here
-                        foundChem.Amount
-                    }
-                    var result = CalcOreNeeded(neededChem.Chemical.Element, neededChemAmount);
-                    oreNeeded += result;
+                    var t = GetExcessChemical(neededChem.Chemical.Element);
+                    if (t.Amount >= neededChem.Chemical.Amount)
+                        t.Amount -= neededChem.Chemical.Amount;
+                    else
+                        oreNeeded += CalcOreNeeded(neededChem.Chemical.Element, neededChem.Chemical.Amount);
                 }
                 gotten += chem.Amount;
             }
             var excess = gotten - needed;
             if (excess > 0)
             {
-                if (!ExcessChems.ContainsKey(chemical))
-                    ExcessChems.Add(chemical, new Chemical(chemical, 0));
-                ExcessChems[chemical].Amount += excess;
+                var t = GetExcessChemical(chemical);
+                t.Amount += excess;
             }
             return oreNeeded;
+        }
+
+        public Chemical GetExcessChemical(string chemicalName)
+        {
+            if (!ExcessChems.ContainsKey(chemicalName))
+                ExcessChems.Add(chemicalName, new Chemical(chemicalName, 0));
+            return ExcessChems[chemicalName];
         }
 
 
