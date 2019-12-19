@@ -120,8 +120,14 @@ namespace Advent_of_Code.Day14
             //rawData = Helper.GetFileContentAsLines(@"Day14\Example1.txt");
             //CorrectAnswer = 31;
 
-            rawData = Helper.GetFileContentAsLines(@"Day14\Example2.txt");
-            CorrectAnswer = 165;
+            //rawData = Helper.GetFileContentAsLines(@"Day14\Example2.txt");
+            //CorrectAnswer = 165;
+
+            rawData = Helper.GetFileContentAsLines(@"Day14\Example3.txt");
+            CorrectAnswer = 13312;
+
+            //rawData = Helper.GetFileContentAsLines(@"Day14\Example4.txt");
+            //CorrectAnswer = 180697;
         }
 
         readonly IReadOnlyList<string> rawData;
