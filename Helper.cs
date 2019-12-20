@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -129,6 +130,58 @@ namespace Advent_of_Code
         public static long FindLCM(long a, long b)
         {
             return (a / FindGCF(a, b)) * b;
+        }
+
+
+
+        public static void DrawPointGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod)
+        {
+            var minX = gridData.Keys.Select(h => h.X).Min();
+            var maxX = gridData.Keys.Select(h => h.X).Max();
+            var minY = gridData.Keys.Select(h => h.Y).Min();
+            var maxY = gridData.Keys.Select(h => h.Y).Max();
+
+            var text = new StringBuilder();
+            for (int y = maxY; y >= minY; y--)
+            {
+                for (int x = minX; x <= maxX; x++)
+                {
+                    var key = new Point(x, y);
+                    var value = default(TValue);
+                    if (gridData.ContainsKey(key))
+                        value = gridData[key];
+
+                    text.Append(DrawElementMethod(value));
+                }
+                text.AppendLine();
+            }
+
+            Console.WriteLine(text.ToString());
+        }
+
+        public static void DrawScreenGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod)
+        {
+            var minX = gridData.Keys.Select(h => h.X).Min();
+            var maxX = gridData.Keys.Select(h => h.X).Max();
+            var minY = gridData.Keys.Select(h => h.Y).Min();
+            var maxY = gridData.Keys.Select(h => h.Y).Max();
+
+            var text = new StringBuilder();
+            for (int y = minY; y <= maxY; y++)
+            {
+                for (int x = minX; x <= maxX; x++)
+                {
+                    var key = new Point(x, y);
+                    var value = default(TValue);
+                    if (gridData.ContainsKey(key))
+                        value = gridData[key];
+
+                    text.Append(DrawElementMethod(value));
+                }
+                text.AppendLine();
+            }
+
+            Console.WriteLine(text.ToString());
         }
     }
 }

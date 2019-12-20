@@ -24,7 +24,7 @@ namespace Advent_of_Code.Day11
         }
 
 
-        //readonly EHPRobot robot = new EHPRobot();
+
         readonly Dictionary<Point, HullPanel> hull = new Dictionary<Point, HullPanel>();
 
 
@@ -40,46 +40,23 @@ namespace Advent_of_Code.Day11
 
             robot.Start();
 
-            var minX = hull.Values.Select(h => h.Location.X).Min();
-            var maxX = hull.Values.Select(h => h.Location.X).Max();
-            var minY = hull.Values.Select(h => h.Location.Y).Min();
-            var maxY = hull.Values.Select(h => h.Location.Y).Max();
-
-            var hullPaint = new StringBuilder();
-            for (int x = minX; x <= maxX; x++)
-            {
-                for (int y = minY; y <= maxY; y++)
-                {
-                    var panel = GetHullPanel(new Point(x, y));
-                    switch (panel.Color)
-                    {
-                        case HullColor.Black: hullPaint.Append(' '); break;
-                        case HullColor.White: hullPaint.Append('#'); break;
-                        default: goto case HullColor.Black;
-                    }
-                }
-                hullPaint.AppendLine();
-            }
-
-            //Console.WriteLine($"Number of Panels painted: {hull.Count}");
-            //if (hull.Count == 1681)
-            //    Console.WriteLine("\tCorrect");
-
-            Console.WriteLine(hullPaint.ToString());
+            Helper.DrawPointGrid2D(hull, DrawPanel);
 
             Console.WriteLine();
         }
 
-        private void Robot_PaintHull(object sender, PaintHullColorEventArgs e)
+
+        void Robot_PaintHull(object sender, PaintHullColorEventArgs e)
         {
             SetHullPanel(e.Location, e.HullColor);
         }
 
-        private void Robot_ScanHull(object sender, ScanHullColorEventArgs e)
+        void Robot_ScanHull(object sender, ScanHullColorEventArgs e)
         {
             var panel = GetHullPanel(e.Location);
             e.HullColor = panel.Color;
         }
+
 
         HullPanel GetHullPanel(Point location)
         {
@@ -89,7 +66,7 @@ namespace Advent_of_Code.Day11
             if (hull.ContainsKey(location))
                 return hull[location];
             return new HullPanel(location);
-            
+
         }
 
         void SetHullPanel(Point location, HullColor color)
@@ -100,9 +77,18 @@ namespace Advent_of_Code.Day11
             panel.Color = color;
         }
 
+        string DrawPanel(HullPanel panel)
+        {
+            var color = panel?.Color ?? HullColor.Black;
+
+            switch (color)
+            {
+                case HullColor.Black: return " ";
+                case HullColor.White: return "#";
+                default: goto case HullColor.Black;
+            }
+        }
+
     }
-
-
-
 
 }
