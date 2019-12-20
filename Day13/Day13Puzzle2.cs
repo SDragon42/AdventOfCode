@@ -88,41 +88,30 @@ namespace Advent_of_Code.Day13
             Console.WriteLine();
         }
 
-        private void DrawGameBoard()
+        
+
+        void DrawGameBoard()
         {
-            var minX = TileGrid.Keys.Select(h => h.X).Min();
-            var maxX = TileGrid.Keys.Select(h => h.X).Max();
-            var minY = TileGrid.Keys.Select(h => h.Y).Min();
-            var maxY = TileGrid.Keys.Select(h => h.Y).Max();
+            Console.WriteLine($"\t\tSCORE: {score}");
+            Helper.DrawScreenGrid2D(TileGrid, DrawTile);
+        }
+        string DrawTile(Tile tile)
+        {
+            var tileT = tile?.TileT ?? TileType.Blank;
 
-            var gameBoard = new StringBuilder();
-            gameBoard.AppendLine($"\t\tSCORE: {score}");
-            for (int y = minY; y <= maxY; y++)
+            switch (tileT)
             {
-                for (int x = minX; x <= maxX; x++)
-                {
-                    var tile = default(Tile);
-                    var key = new Point(x, y);
-                    if (TileGrid.ContainsKey(key))
-                        tile = TileGrid[key];
-                    switch (tile.TileT)
-                    {
-                        case TileType.Blank: gameBoard.Append(' '); break;
-                        case TileType.Wall: gameBoard.Append('#'); break;
-                        case TileType.Brick: gameBoard.Append('B'); break;
-                        case TileType.Paddle: gameBoard.Append('-'); break;
-                        case TileType.Ball: gameBoard.Append('*'); break;
-                        default: goto case TileType.Blank;
-                    }
-                }
-                gameBoard.AppendLine();
+                case TileType.Blank: return " ";
+                case TileType.Wall: return "#";
+                case TileType.Brick: return "B";
+                case TileType.Paddle: return "-";
+                case TileType.Ball: return "*";
+                default: goto case TileType.Blank;
             }
-
-            Console.WriteLine(gameBoard.ToString());
         }
 
         readonly List<int> outputCache = new List<int>();
-        private void ArcadeGame_OnOutput(object sender, OutputEventArgs e)
+        void ArcadeGame_OnOutput(object sender, OutputEventArgs e)
         {
             outputCache.Add((int)e.OutputValue);
             if (outputCache.Count == 3)
