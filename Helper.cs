@@ -134,12 +134,32 @@ namespace Advent_of_Code
 
 
 
-        public static void DrawPointGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod)
+        public static void DrawPointGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod = null, Rectangle? minArea = null)
         {
             var minX = gridData.Keys.Select(h => h.X).Min();
             var maxX = gridData.Keys.Select(h => h.X).Max();
             var minY = gridData.Keys.Select(h => h.Y).Min();
             var maxY = gridData.Keys.Select(h => h.Y).Max();
+
+            if (minArea.HasValue)
+            {
+                var xDiff = minArea.Value.Width - Math.Abs(maxX - minX);
+                var yDiff = minArea.Value.Height - Math.Abs(maxY - minY);
+
+                if (xDiff > 0)
+                {
+                    var xPart = xDiff / 2;
+                    minX -= xPart;
+                    maxX += xDiff = xPart;
+                }
+
+                if (yDiff > 0)
+                {
+                    var yPart = yDiff / 2;
+                    minY -= yPart;
+                    maxY += yDiff = yPart;
+                }
+            }
 
             var text = new StringBuilder();
             for (int y = maxY; y >= minY; y--)
@@ -151,7 +171,9 @@ namespace Advent_of_Code
                     if (gridData.ContainsKey(key))
                         value = gridData[key];
 
-                    text.Append(DrawElementMethod(value));
+                    var element = DrawElementMethod?.Invoke(value) ?? value?.ToString() ?? " ";
+                    text.Append(element);
+                    //text.Append(DrawElementMethod(value));
                 }
                 text.AppendLine();
             }
@@ -159,7 +181,7 @@ namespace Advent_of_Code
             Console.WriteLine(text.ToString());
         }
 
-        public static void DrawScreenGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod)
+        public static void DrawScreenGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod = null)
         {
             var minX = gridData.Keys.Select(h => h.X).Min();
             var maxX = gridData.Keys.Select(h => h.X).Max();
@@ -176,7 +198,9 @@ namespace Advent_of_Code
                     if (gridData.ContainsKey(key))
                         value = gridData[key];
 
-                    text.Append(DrawElementMethod(value));
+                    var element = DrawElementMethod?.Invoke(value) ?? value.ToString();
+                    text.Append(element);
+                    //text.Append(DrawElementMethod(value));
                 }
                 text.AppendLine();
             }
