@@ -152,7 +152,7 @@ namespace Advent_of_Code.Day10
             //rawMapData = Helper.GetFileContentAsLines("D10P1-Test5.txt");
             //CorrectAnswer = new MapZone(11, 13, true) { Detects = 210 };
 
-            rawMapData = Helper.GetFileContentAsLines("D10-Data.txt");
+            rawMapData = Helper.GetFileContentAsLines(@"Day10\Data.txt");
             CorrectAnswer = new MapZone(26, 29, true) { Detects = 299 };
 
             Width = rawMapData[0].Length;
