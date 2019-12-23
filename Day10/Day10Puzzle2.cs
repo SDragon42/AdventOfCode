@@ -109,7 +109,7 @@ namespace Advent_of_Code.Day10
             //WinningBet = CalcBet(8, 2); // 200th asteroid
 
 
-            rawMapData = Helper.GetFileContentAsLines("D10-Data.txt");
+            rawMapData = Helper.GetFileContentAsLines(@"Day10\Data.txt");
             Width = rawMapData[0].Length;
             Height = rawMapData.Length;
             BuildData(rawMapData, zoneList, ref Origin);
