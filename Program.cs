@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 namespace Advent_of_Code
 {
@@ -9,6 +10,8 @@ namespace Advent_of_Code
     {
         static void Main(string[] args)
         {
+            var firstArg = args.FirstOrDefault();
+
             var asm = Assembly.GetExecutingAssembly();
             var allPuzzleTypes = asm.GetTypes()
                 .Where(t => typeof(IPuzzle).IsAssignableFrom(t))
@@ -17,10 +20,12 @@ namespace Advent_of_Code
                 .OrderBy(t => t.Name)
                 .ToList();
 
-            var typeList = allPuzzleTypes
-                //.Where(t => t.Name.StartsWith("Day11Puzzle2"))
-                .Where(t => t.Equals(allPuzzleTypes.LastOrDefault())) // Run last puzzle
-                ;
+            IEnumerable<Type> typeList = null;
+            if (firstArg != null)
+                typeList = allPuzzleTypes.Where(t => t.Name.StartsWith(firstArg));
+
+            if (typeList == null)
+                typeList = allPuzzleTypes.Where(t => t.Equals(allPuzzleTypes.LastOrDefault())); // Run last puzzle
 
             // Run all puzzles
             typeList.ForEach(RunPuzzle);
