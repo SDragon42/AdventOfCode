@@ -179,7 +179,7 @@ namespace Advent_of_Code.Day14
 
             var oreNeeded = 0;
             var chain = ReactionChains[chemical];
-            var chem = chain.Chemical;
+            var chem = chain.Product;
             var gotten = 0;
 
             //var t2 = GetExcessChemical(chemical);
@@ -193,11 +193,11 @@ namespace Advent_of_Code.Day14
             {
                 foreach (var neededChem in chain.Reactants)
                 {
-                    var t = GetExcessChemical(neededChem.Chemical.Name);
-                    if (t.Quantity >= neededChem.Chemical.Quantity)
-                        t.Quantity -= neededChem.Chemical.Quantity;
+                    var t = GetExcessChemical(neededChem.Product.Name);
+                    if (t.Quantity >= neededChem.Product.Quantity)
+                        t.Quantity -= neededChem.Product.Quantity;
                     else
-                        oreNeeded += CalcOreNeeded(neededChem.Chemical.Name, neededChem.Chemical.Quantity);
+                        oreNeeded += CalcOreNeeded(neededChem.Product.Name, neededChem.Product.Quantity);
                 }
                 gotten += chem.Quantity;
             }
@@ -230,7 +230,7 @@ namespace Advent_of_Code.Day14
                 foreach (var rec in neededParts)
                     endNode.Reactants.Add(MakeChemReaction(rec.Trim()));
 
-                ReactionChains.Add(endNode.Chemical.Name, endNode);
+                ReactionChains.Add(endNode.Product.Name, endNode);
             }
         }
         void DisplayReachionChains()
@@ -252,38 +252,5 @@ namespace Advent_of_Code.Day14
             return item;
         }
     }
-
-    class ChemReaction
-    {
-        public ChemReaction(Chemical chem)
-        {
-            Chemical = chem;
-            Reactants = new List<ChemReaction>();
-        }
-
-        public Chemical Chemical { get; private set; }
-        public List<ChemReaction> Reactants { get; private set; }
-
-        public override string ToString()
-        {
-            return Chemical.ToString();
-        }
-    }
-
-    class Chemical
-    {
-        public Chemical(string element, int amount)
-        {
-            Name = element;
-            Quantity = amount;
-        }
-
-        public string Name { get; private set; }
-        public int Quantity { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Quantity} {Name}";
-        }
-    }
+    
 }
