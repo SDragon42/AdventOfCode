@@ -148,7 +148,12 @@ namespace Advent_of_Code.Day14
                 Console.WriteLine("--- Day 14: Space Stoichiometry ---");
 
                 BuildReactionChains();
-                //DisplayReachionChains();
+
+                Console.WriteLine();
+                Console.WriteLine("REACTION CHAINS");
+                DisplayReachionChains();
+                Console.WriteLine();
+                Console.WriteLine();
 
                 //Console.WriteLine("--- Raw Data ---".PadRight(50, '-'));
                 //rawData.ForEach(d => Console.WriteLine(d));
@@ -157,6 +162,8 @@ namespace Advent_of_Code.Day14
                 Console.WriteLine($"ORE needed: {oreNeeded}");
                 if (oreNeeded == CorrectAnswer)
                     Console.WriteLine("\tCorrect");
+                else
+                    Console.WriteLine($"  Expected: {CorrectAnswer}");
                 Console.WriteLine();
             }
             catch (Exception ex)
@@ -165,31 +172,41 @@ namespace Advent_of_Code.Day14
             }
         }
 
-        private int CalcOreNeeded(string chemical, int needed)
+        private int CalcOreNeeded(string chemical, int amountNeeded)
         {
             if (chemical == "ORE")
-                return needed;
+                return amountNeeded;
+
             var oreNeeded = 0;
             var chain = ReactionChains[chemical];
             var chem = chain.Chemical;
             var gotten = 0;
-            for (int l = 1; l <= needed; l += chem.Amount)
+
+            //var t2 = GetExcessChemical(chemical);
+            //if (t2.Quantity >= amountNeeded)
+            //{
+            //    t2.Quantity -= amountNeeded;
+            //    return 0;
+            //}
+
+            for (int l = 1; l <= amountNeeded; l += chem.Quantity)
             {
-                foreach (var neededChem in chain.Needs)
+                foreach (var neededChem in chain.Reactants)
                 {
-                    var t = GetExcessChemical(neededChem.Chemical.Element);
-                    if (t.Amount >= neededChem.Chemical.Amount)
-                        t.Amount -= neededChem.Chemical.Amount;
+                    var t = GetExcessChemical(neededChem.Chemical.Name);
+                    if (t.Quantity >= neededChem.Chemical.Quantity)
+                        t.Quantity -= neededChem.Chemical.Quantity;
                     else
-                        oreNeeded += CalcOreNeeded(neededChem.Chemical.Element, neededChem.Chemical.Amount);
+                        oreNeeded += CalcOreNeeded(neededChem.Chemical.Name, neededChem.Chemical.Quantity);
                 }
-                gotten += chem.Amount;
+                gotten += chem.Quantity;
             }
-            var excess = gotten - needed;
+
+            var excess = gotten - amountNeeded;
             if (excess > 0)
             {
                 var t = GetExcessChemical(chemical);
-                t.Amount += excess;
+                t.Quantity += excess;
             }
             return oreNeeded;
         }
@@ -211,9 +228,9 @@ namespace Advent_of_Code.Day14
 
                 var neededParts = parts[0].Trim().Split(',');
                 foreach (var rec in neededParts)
-                    endNode.Needs.Add(MakeChemReaction(rec.Trim()));
+                    endNode.Reactants.Add(MakeChemReaction(rec.Trim()));
 
-                ReactionChains.Add(endNode.Chemical.Element, endNode);
+                ReactionChains.Add(endNode.Chemical.Name, endNode);
             }
         }
         void DisplayReachionChains()
@@ -222,7 +239,7 @@ namespace Advent_of_Code.Day14
             {
                 var rec = ReactionChains[key];
 
-                var rneeds = rec.Needs.Select(r => r.ToString());
+                var rneeds = rec.Reactants.Select(r => r.ToString());
                 Console.WriteLine($"{string.Join(", ", rneeds)} => {rec.ToString()}");
             }
         }
@@ -241,11 +258,11 @@ namespace Advent_of_Code.Day14
         public ChemReaction(Chemical chem)
         {
             Chemical = chem;
-            Needs = new List<ChemReaction>();
+            Reactants = new List<ChemReaction>();
         }
 
         public Chemical Chemical { get; private set; }
-        public List<ChemReaction> Needs { get; private set; }
+        public List<ChemReaction> Reactants { get; private set; }
 
         public override string ToString()
         {
@@ -257,16 +274,16 @@ namespace Advent_of_Code.Day14
     {
         public Chemical(string element, int amount)
         {
-            Element = element;
-            Amount = amount;
+            Name = element;
+            Quantity = amount;
         }
 
-        public string Element { get; private set; }
-        public int Amount { get; set; }
+        public string Name { get; private set; }
+        public int Quantity { get; set; }
 
         public override string ToString()
         {
-            return $"{Amount} {Element}";
+            return $"{Quantity} {Name}";
         }
     }
 }
