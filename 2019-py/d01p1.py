@@ -7,7 +7,7 @@ def calc_fuel(mass):
     return fuel
 
 
-def Run():
+if __name__ == "__main__":
     print("Day 1 Puzzle 1")
     print("------------------------------------------------------------")
     print()
@@ -18,8 +18,3 @@ def Run():
         totalFuel = totalFuel + calc_fuel(x)
 
     print(f"Total Fuel needed: {totalFuel}")
-
-
-if __name__ == "__main__":
-    # execute only if run as a script
-    Run()
