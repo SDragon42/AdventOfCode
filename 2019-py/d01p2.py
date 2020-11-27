@@ -4,22 +4,22 @@ from inputData import get_input_d1
 
 def calc_fuel(mass):
     fuel = math.floor(mass / 3) - 2
-    return fuel
+    if (fuel < 0):
+        return 0
+    return fuel + calc_fuel(fuel)
 
 
 if __name__ == "__main__":
-    print("Day 1 Puzzle 1")
+    print("Day 1 Puzzle 2")
     print("------------------------------------------------------------")
     print()
 
-    totalFuel = 0
+    # input = [14] # test 1: required fule = 2
+    # input = [1969] # test 2: required fule = 966
+    # input = [100756] # test 3: required fule = 50346
+    input = get_input_d1() # correct answer = 5057481
 
-    # input = [12] # test 1: required fule = 2
-    # input = [14] # test 2: required fule = 2
-    # input = [1969] # test 3: required fule = 654
-    # input = [100756] # test 4: required fule = 33583
-    input = get_input_d1() # correct answer = 3373568
-    
+    totalFuel = 0
     for x in input:
         totalFuel = totalFuel + calc_fuel(x)
 
