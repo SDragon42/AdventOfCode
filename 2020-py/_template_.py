@@ -1,7 +1,14 @@
-# import math
-# from inputData import get_input_d02, get_answer_d02p1
+import utils
 
 
+def run(title, input, correctResult):
+    result = 0
+    print(f"{title}  --  Result: {result}")
+    if correctResult == result:
+        print("   CORRECT")
+    else:
+        print("   WRONG")
+    print()
 
 
 if __name__ == "__main__":
@@ -9,3 +16,6 @@ if __name__ == "__main__":
     print("------------------------------------------------------------")
     print()
 
+    run("Test Case #",
+        utils.read_input_as_int_list(0),
+        0)

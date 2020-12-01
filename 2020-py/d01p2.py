@@ -1,5 +1,4 @@
-# import math
-from inputData import get_input_d01, get_answer_d01p2
+import utils
 
 
 def get_value(input):
@@ -30,16 +29,25 @@ def get_value(input):
         continue
 
 
+def run(title, input, correctResult):
+    result = get_value(input)
+    print(f"{title}  --  Result: {result}")
+    if correctResult == result:
+        print("   CORRECT")
+    else:
+        print("   WRONG")
+    print()
+
+
 if __name__ == "__main__":
     print("Day 1 Puzzle 2")
     print("------------------------------------------------------------")
     print()
 
-    # input = [1721,979,366,299,675,1456] # result = 241861950
-    input = get_input_d01()
+    run("Test case 1",
+        [1721,979,366,299,675,1456],
+        241861950)
 
-    result = get_value(input)
-    print(f"Result: {result}")
-    if get_answer_d01p2() == result:
-        print("   CORRECT")
-
+    run("problem",
+        utils.read_input_as_int_list(1),
+        230057040)
