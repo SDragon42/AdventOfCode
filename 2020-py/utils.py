@@ -17,3 +17,17 @@ def read_input_as_int_list(day: int) -> list[int]:
             value = int(line)
             data.append(value)
     return data
+
+
+def show_title(day: int, puzzle: int):
+    """ Shows the Day/Puzzle header """
+    print(f"Day {day} Puzzle {puzzle}")
+    print("------------------------------------------------------------")
+    print()
+
+
+def show_title_extended(day: int, puzzle: int, title: str):
+    """ Shows the Day/Puzzle/title header """
+    print(f"Day {day} Puzzle {puzzle} - {title}")
+    print("------------------------------------------------------------")
+    print()
