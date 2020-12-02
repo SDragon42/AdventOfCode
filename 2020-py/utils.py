@@ -1,10 +1,10 @@
-def get_filename(day):
+def get_filename(day: int) -> str:
     """ Gets the input file for a specified day """
     filename = f'.\\data\\day{day:02}.txt'
     return filename
 
 
-def read_input_as_int_list(day):
+def read_input_as_int_list(day: int) -> list[int]:
     """ Reads the input file as a list of ints """
     filename = get_filename(day)
     data = []

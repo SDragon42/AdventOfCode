@@ -1,11 +1,11 @@
 import utils
 
 
-def get_value(input):
+def get_value(input: list[int]) -> int:
     pos = 0
     idx = pos + 1
 
-    while(pos + 1 < len(input)):
+    while pos + 1 < len(input):
 
         if (input[pos] + input[idx] == 2020):
             return input[pos] * input[idx]
@@ -21,7 +21,7 @@ def get_value(input):
         continue
 
 
-def run(title, input, correctResult):
+def run(title: str, input: list[int], correctResult: int):
     result = get_value(input)
     print(f"{title}  --  Result: {result}")
     if correctResult == result:
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # run("Test case 1",
     #     [1721,979,366,299,675,1456],
     #     514579)
-
+    
     run("problem",
         utils.read_input_as_int_list(1),
         969024)
