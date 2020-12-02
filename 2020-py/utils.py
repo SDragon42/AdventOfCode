@@ -19,6 +19,19 @@ def read_input_as_int_list(day: int) -> list[int]:
     return data
 
 
+def read_input_as_list(day: int):
+    """ Reads the input file as a list of ints """
+    filename = get_filename(day)
+    data = []
+    with open(filename) as dataFile:
+        while True:
+            line = dataFile.readline()
+            if not line:
+                break
+            data.append(line.strip())
+    return data
+
+
 def show_title(day: int, puzzle: int):
     """ Shows the Day/Puzzle header """
     print(f"Day {day} Puzzle {puzzle}")
