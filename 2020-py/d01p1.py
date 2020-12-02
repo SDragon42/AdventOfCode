@@ -32,9 +32,7 @@ def run(title: str, input: list[int], correctResult: int):
 
 
 if __name__ == "__main__":
-    print("Day 1 Puzzle 1")
-    print("------------------------------------------------------------")
-    print()
+    utils.show_title(1, 1)
 
     # run("Test case 1",
     #     [1721,979,366,299,675,1456],

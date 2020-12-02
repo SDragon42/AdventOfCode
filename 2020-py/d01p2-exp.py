@@ -36,13 +36,11 @@ def run(title: str, input: list[int], correctResult: int):
 
 
 if __name__ == "__main__":
-    print("Day 1 Puzzle 2 - experiment")
-    print("------------------------------------------------------------")
-    print()
+    utils.show_title_extended(1, 2, "experiment")
 
-    run("Test case 1",
-        [1721,979,366,299,675,1456],
-        241861950)
+    # run("Test case 1",
+    #     [1721,979,366,299,675,1456],
+    #     241861950)
 
     run("problem",
         utils.read_input_as_int_list(1),
