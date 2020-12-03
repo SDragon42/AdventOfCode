@@ -27,16 +27,12 @@ def get_value(num_splits: int, testInput: list[int], testValues: list[int]) -> i
 
 def run(title: str, input: list[int], correctResult: int):
     result = get_value(2, input, [])
-    print(f"{title}  --  Result: {result}")
-    if correctResult == result:
-        print("   CORRECT")
-    else:
-        print("   WRONG")
+    utils.validate_result(title, result, correctResult)
     print()
 
 
 if __name__ == "__main__":
-    utils.show_title_extended(1, 2, "experiment")
+    utils.show_title(1, 2, "Report Repair (refactored)")
 
     # run("Test case 1",
     #     [1721,979,366,299,675,1456],

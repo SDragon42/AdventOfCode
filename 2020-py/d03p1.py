@@ -29,7 +29,7 @@ def run(title: str, input: list[str], correctResult: int):
 
 
 if __name__ == "__main__":
-    utils.show_title_extended(3, 1, "Toboggan Trajectory")
+    utils.show_title(3, 1, "Toboggan Trajectory")
 
 
     run("Test Case 1", [

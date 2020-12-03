@@ -1,19 +1,14 @@
 import utils
 
 
-def run(title, input, correctResult):
+def run(title: str, input: list[str], correctResult: int):
     result = 0
-    print(f"{title}  --  Result: {result}")
-    if correctResult == result:
-        print("   CORRECT")
-    else:
-        print("   WRONG")
+    utils.validate_result(title, result, correctResult)
     print()
 
 
 if __name__ == "__main__":
-    utils.show_title(0, 0)
-    # utils.show_title_extended(0, 0, "template")
+    utils.show_title_extended(0, 0, "template")
 
     run("Test Case #",
         utils.read_input_as_int_list(0),

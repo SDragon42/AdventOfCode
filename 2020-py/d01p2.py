@@ -31,16 +31,12 @@ def get_value(input: list[int]) -> int:
 
 def run(title: str, input: list[int], correctResult: int):
     result = get_value(input)
-    print(f"{title}  --  Result: {result}")
-    if correctResult == result:
-        print("   CORRECT")
-    else:
-        print("   WRONG")
+    utils.validate_result(title, result, correctResult)
     print()
 
 
 if __name__ == "__main__":
-    utils.show_title(1, 2)
+    utils.show_title(1, 2, "Report Repair")
 
     # run("Test case 1",
     #     [1721,979,366,299,675,1456],
