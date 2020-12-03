@@ -34,6 +34,7 @@ def read_input_as_list(day: int):
 
 def show_title(day: int, puzzle: int):
     """ Shows the Day/Puzzle header """
+    print("------------------------------------------------------------")
     print(f"Day {day} Puzzle {puzzle}")
     print("------------------------------------------------------------")
     print()
@@ -41,6 +42,15 @@ def show_title(day: int, puzzle: int):
 
 def show_title_extended(day: int, puzzle: int, title: str):
     """ Shows the Day/Puzzle/title header """
+    print("------------------------------------------------------------")
     print(f"Day {day} Puzzle {puzzle} - {title}")
     print("------------------------------------------------------------")
     print()
+
+
+def validate_result(title: str, value, correct_value):
+    print(f"{title}  --  Result: {value}")
+    if correct_value == value:
+        print("   CORRECT")
+    else:
+        print("   WRONG")
