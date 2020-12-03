@@ -7,7 +7,6 @@ def count_trees(input: list[str], slopeX: int, slopeY: int) -> int:
     numTrees = 0
     inputWidth = len(input[0])
 
-
     while y < len(input) - 1:
         x += slopeX
         y += slopeY
