@@ -28,16 +28,12 @@ def run(title: str, input: [], correctResult: int):
     for entry in input:
         result += check_password(entry)
 
-    print(f"{title}  --  Result: {result}")
-    if correctResult == result:
-        print("   CORRECT")
-    else:
-        print("   WRONG")
+    utils.validate_result(title, result, correctResult)
     print()
 
 
 if __name__ == "__main__":
-    utils.show_title(2, 1)
+    utils.show_title(2, 1, "Password Philosophy")
 
     # run("Test Case #", [
     #     "1-3 a: abcde",
