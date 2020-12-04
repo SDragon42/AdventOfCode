@@ -30,10 +30,10 @@ def run(title: str, input: list[int], correctResult: int):
 if __name__ == "__main__":
     utils.show_title(1, 1, "Report Repair")
 
-    # run("Test case 1",
-    #     [1721,979,366,299,675,1456],
-    #     514579)
+    run("Test case 1",
+        utils.read_input_as_int_list("day01-example1"),
+        514579)
     
     run("problem",
-        utils.read_input_as_int_list(1),
+        utils.read_input_as_int_list("day01"),
         969024)
