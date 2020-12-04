@@ -32,12 +32,10 @@ def run(title: str, input: [], correctResult: int):
 if __name__ == "__main__":
     utils.show_title(2, 2, "Password Philosophy")
 
-    # run("Test Case 1", [
-    #     "1-3 a: abcde",
-    #     "1-3 b: cdefg",
-    #     "2-9 c: ccccccccc"],
-    #     1)
+    run("Test Case 1",
+        utils.read_input_as_list("day02-example1"),
+        1)
 
     run("problem",
-        utils.read_input_as_list(2),
+        utils.read_input_as_list("day02"),
         502)

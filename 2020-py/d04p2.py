@@ -136,13 +136,13 @@ if __name__ == "__main__":
     utils.show_title(4, 2, "Passport Processing")
 
     run("invalid passports",
-        utils.read_input_as_list2("day04-invalid-passports"),
+        utils.read_input_as_list("day04-invalid-passports"),
         0)
     
     run("valid passports",
-        utils.read_input_as_list2("day04-valid-passports"),
+        utils.read_input_as_list("day04-valid-passports"),
         4)
 
     run("problem",
-        utils.read_input_as_list2("day04"),
+        utils.read_input_as_list("day04"),
         137)

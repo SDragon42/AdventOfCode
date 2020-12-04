@@ -34,22 +34,12 @@ if __name__ == "__main__":
 
     slopes = ["11","31","51","71","12"]
 
-    run("Test Case 1", [
-        "..##.......",
-        "#...#...#..",
-        ".#....#..#.",
-        "..#.#...#.#",
-        ".#...##..#.",
-        "..#.##.....",
-        ".#.#.#....#",
-        ".#........#",
-        "#.##...#...",
-        "#...##....#",
-        ".#..#...#.#"],
+    run("Test Case 1", 
+        utils.read_input_as_list("day03-example1"),
         slopes,
         336)
 
     run("problem",
-        utils.read_input_as_list(3),
+        utils.read_input_as_list("day03"),
         slopes,
         2224913600)

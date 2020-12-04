@@ -73,9 +73,9 @@ if __name__ == "__main__":
     utils.show_title(4, 1, "Passport Processing")
 
     run("Test Case 1",
-        utils.read_input_as_list2("day04-example1"),
+        utils.read_input_as_list("day04-example1"),
         2)
 
     run("problem",
-        utils.read_input_as_list2("day04"),
+        utils.read_input_as_list("day04"),
         202)

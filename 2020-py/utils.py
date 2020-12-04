@@ -1,12 +1,6 @@
-def get_filename(day: int) -> str:
-    """ Gets the input file for a specified day """
-    filename = f'.\\data\\day{day:02}.txt'
-    return filename
-
-
-def read_input_as_int_list(day: int) -> list[int]:
+def read_input_as_int_list(filename: str) -> list[int]:
     """ Reads the input file as a list of ints """
-    filename = get_filename(day)
+    filename = f'.\\data\\{filename}.txt'
     data = []
     with open(filename) as dataFile:
         while True:
@@ -19,20 +13,7 @@ def read_input_as_int_list(day: int) -> list[int]:
     return data
 
 
-def read_input_as_list(day: int):
-    """ Reads the input file as a list of ints """
-    filename = get_filename(day)
-    data = []
-    with open(filename) as dataFile:
-        while True:
-            line = dataFile.readline()
-            if not line:
-                break
-            data.append(line.strip())
-    return data
-
-
-def read_input_as_list2(filename: str):
+def read_input_as_list(filename: str):
     """ Reads the input file as a list of ints """
     filename = f'.\\data\\{filename}.txt'
     data = []

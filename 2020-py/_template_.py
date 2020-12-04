@@ -8,8 +8,8 @@ def run(title: str, input: list[str], correctResult: int):
 
 
 if __name__ == "__main__":
-    utils.show_title_extended(0, 0, "template")
+    utils.show_title(0, 0, "template")
 
     run("Test Case #",
-        utils.read_input_as_int_list(0),
+        utils.read_input_as_list("day00-example0"),
         0)
