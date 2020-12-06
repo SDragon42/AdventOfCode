@@ -7,9 +7,6 @@ def count_unique_answers(lines: list[str]) -> int:
     for line in lines:
         for c in line:
             if answers.count(c) == 0:
-            # try:
-            #     answers.index(c)
-            # except ValueError:
                 answers.append(c)
     
     return len(answers)

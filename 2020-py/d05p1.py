@@ -20,8 +20,6 @@ def get_seat_id(boardingPass: str) -> int:
     col = get_row("R", "L", 1, 8, colCode)
     seatId = (row * 8) + col
     
-    # print(f"{boardingPass}: row {row}, column {col}, seat ID {seatId}")
-    
     return seatId
 
 
@@ -38,7 +36,7 @@ def run(title: str, input: list[str], correctResult: int):
 if __name__ == "__main__":
     utils.show_title(5, 1, "Binary Boarding")
 
-    run("Test Case #",
+    run("Test Case 1",
         utils.read_input_as_list("day05-example1"),
         820)
 

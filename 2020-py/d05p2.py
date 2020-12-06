@@ -20,8 +20,6 @@ def get_seat_id(boardingPass: str) -> int:
     col = get_row("R", "L", 1, 8, colCode)
     seatId = (row * 8) + col
     
-    # print(f"{boardingPass}: row {row}, column {col}, seat ID {seatId}")
-    
     return seatId
 
 
