@@ -139,3 +139,5 @@ cython_debug/
 
 # bash.exe.stackdump
 *.stackdump
+
+test.py
