@@ -96,7 +96,6 @@ def validate_passort(keyValues: list[KeyValuePair]) -> bool:
                     return False
                 id = int(kv.value)
 
-        #  "byr","iyr","eyr","hgt","hcl","ecl","pid"
         return True
     except:
         return False
