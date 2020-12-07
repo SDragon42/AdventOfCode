@@ -25,19 +25,26 @@ def get_value(num_splits: int, testInput: list[int], testValues: list[int]) -> i
     return -1
 
 
-def run(title: str, input: list[int], correctResult: int):
-    result = get_value(2, input, [])
+def run(title: str, num_splits: int, input: list[int], correctResult: int):
+    result = get_value(num_splits, input, [])
     utils.validate_result(title, result, correctResult)
-    print()
 
 
 if __name__ == "__main__":
-    utils.show_title(1, 2, "Report Repair (refactored)")
+    print("---- Day 1: Report Repair ----")
 
-    run("Test case 1",
-        utils.read_input_as_int_list("day01-example1"),
-        241861950)
+    # run("Test case 1", 1,
+    #     utils.read_input_as_int_list("day01-example1"),
+    #     514579)
+    run("problem", 1,
+        utils.read_input_as_int_list("day01"),
+        969024)
 
-    run("problem",
+    print("---- part 2 ----")
+
+    # run("Test case 1", 2,
+    #     utils.read_input_as_int_list("day01-example1"),
+    #     241861950)
+    run("problem", 2,
         utils.read_input_as_int_list("day01"),
         230057040)
