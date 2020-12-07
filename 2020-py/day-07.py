@@ -11,13 +11,8 @@ class BagInfo:
         self.count = count
 
 
-class BagDetails:
-    bag: str
-    contents: list[BagInfo]
-
-    def __init__(self, bag):
-        self.bag = bag
-        self.contents = []
+BagList = list[BagInfo]
+BagDict = dict[str, BagList]
 
 #-------------------------------------------------------------------------------
 
@@ -28,13 +23,13 @@ def clean_bag_name(name: str) -> str:
     return name
 
 
-def parse_rules(input: list[str]) -> dict[str, BagDetails]:
-    rules: dict[str, BagDetails] = {}
+def parse_rules(input: list[str]) -> BagDict:
+    rules: BagDict = {}
 
     for line in input:
         lineParts = line.split(" contain ")
         bag = clean_bag_name(lineParts[0])
-        details = BagDetails(bag)
+        contents: BagList = []
 
         subBags = lineParts[1].split(",")
         for subBag in subBags:
@@ -46,28 +41,28 @@ def parse_rules(input: list[str]) -> dict[str, BagDetails]:
             subBagName = subBagParts[1]
             subBagCount = int(subBagParts[0])
             info = BagInfo(subBagName, subBagCount)
-            details.contents.append(info)
+            contents.append(info)
 
-        rules[details.bag] = details
+        rules[bag] = contents
 
     return rules
 
 
-def count_bags_containing(rules: dict[str, BagDetails], bag: str, foundBags: list[str]):
+def count_bags_containing(rules: BagDict, bag: str, foundBags: list[str]):
     for ruleKey in rules:
-        for contentBag in rules[ruleKey].contents:
+        for contentBag in rules[ruleKey]:
             if contentBag.bag == bag:
-                found = rules[ruleKey].bag
+                found = ruleKey
                 if found not in foundBags:
                     foundBags.append(found)
                     count_bags_containing(rules, found, foundBags)
 
 
-def count_bags_in(rules: dict[str, BagDetails], bag: str) -> int:
+def count_bags_in(rules: BagDict, bag: str) -> int:
     result = 0
     if bag in rules:
-        detailBag = rules[bag]
-        for contentBag in detailBag.contents:
+        contents = rules[bag]
+        for contentBag in contents:
             result += contentBag.count + (contentBag.count * count_bags_in(rules, contentBag.bag))
 
     return result
