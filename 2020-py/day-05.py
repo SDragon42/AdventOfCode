@@ -5,10 +5,11 @@ def get_row(lowCode: str, highCode: str, lowStart: int, highStart: int, input: s
     low = lowStart
     high = highStart
     for x in input:
+        byHalf = (high - low + 1) / 2
         if x == highCode:
-            high -= (high - low + 1) / 2
+            high -= byHalf
         elif x == lowCode:
-            low += (high - low + 1) / 2
+            low += byHalf
     return int(low - 1)
 
 
@@ -23,7 +24,16 @@ def get_seat_id(boardingPass: str) -> int:
     return seatId
 
 
-def run(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: list[str], correctResult: int):
+    result = 0
+    for bPass in input:
+        seatId = get_seat_id(bPass)
+        if seatId > result:
+            result = seatId
+    utils.validate_result(title, result, correctResult)
+
+
+def run_part2(title: str, input: list[str], correctResult: int):
     seats = []
     for x in range(1024):
         seats.append(x)
@@ -40,12 +50,20 @@ def run(title: str, input: list[str], correctResult: int):
             break
 
     utils.validate_result(title, result, correctResult)
-    print()
 
 
 if __name__ == "__main__":
-    utils.show_title(5, 2, "Binary Boarding")
+    print("---- Day 5: Binary Boarding ----")
 
-    run("Problem",
+    # run_part1("Test Case 1",
+    #     utils.read_input_as_list("day05-example1"),
+    #     820)
+    run_part1("Problem",
+        utils.read_input_as_list("day05"),
+        970)
+
+    print("---- part 2 ----")
+
+    run_part2("Problem",
         utils.read_input_as_list("day05"),
         587)
