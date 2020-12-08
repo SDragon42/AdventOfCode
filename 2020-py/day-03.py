@@ -26,19 +26,28 @@ def run(title: str, input: list[str], slopes: list[str], correctResult: int):
     for sl in slopes:
         result *= count_trees(input, int(sl[0]), int(sl[1]))
     utils.validate_result(title, result, correctResult)
-    print()
 
 
 if __name__ == "__main__":
-    utils.show_title(3, 2, "Toboggan Trajectory")
+    print("---- Day 3: Toboggan Trajectory ----")
+
+    slopes = ["31"]
+    # run("Test Case 1", 
+    #     utils.read_input_as_list("day03-example1"),
+    #     slopes,
+    #     7)
+    run("problem",
+        utils.read_input_as_list("day03"),
+        slopes,
+        259)
+
+    print("---- part 2 ----")
 
     slopes = ["11","31","51","71","12"]
-
-    run("Test Case 1", 
-        utils.read_input_as_list("day03-example1"),
-        slopes,
-        336)
-
+    # run("Test Case 1", 
+    #     utils.read_input_as_list("day03-example1"),
+    #     slopes,
+    #     336)
     run("problem",
         utils.read_input_as_list("day03"),
         slopes,
