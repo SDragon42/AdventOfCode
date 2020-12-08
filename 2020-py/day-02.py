@@ -57,17 +57,17 @@ if __name__ == "__main__":
     print("---- Day 2: Password Philosophy ----")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list("day02-example1"),
+    #     utils.read_input_as_list(2, "example1"),
     #     2)
     run_part1("problem",
-        utils.read_input_as_list("day02"),
+        utils.read_input_as_list(2, "input"),
         548)
 
     print("---- part 2 ----")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list("day02-example1"),
+    #     utils.read_input_as_list(2, "example1"),
     #     1)
     run_part2("problem",
-        utils.read_input_as_list("day02"),
+        utils.read_input_as_list(2, "input"),
         502)

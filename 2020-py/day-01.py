@@ -34,17 +34,17 @@ if __name__ == "__main__":
     print("---- Day 1: Report Repair ----")
 
     # run("Test case 1", 1,
-    #     utils.read_input_as_int_list("day01-example1"),
+    #     utils.read_input_as_int_list(1,"example1"),
     #     514579)
     run("problem", 1,
-        utils.read_input_as_int_list("day01"),
+        utils.read_input_as_int_list(1, "input"),
         969024)
 
     print("---- part 2 ----")
 
     # run("Test case 1", 2,
-    #     utils.read_input_as_int_list("day01-example1"),
+    #     utils.read_input_as_int_list(1, "example1"),
     #     241861950)
     run("problem", 2,
-        utils.read_input_as_int_list("day01"),
+        utils.read_input_as_int_list(1, "input"),
         230057040)

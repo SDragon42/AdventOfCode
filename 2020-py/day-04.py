@@ -137,20 +137,20 @@ if __name__ == "__main__":
     print("---- Day 4: Passport Processing ----")
 
     # run("Test Case 1", False,
-    #     utils.read_input_as_list("day04-example1"),
+    #     utils.read_input_as_list(4, "example1"),
     #     2)
     run("problem", False,
-        utils.read_input_as_list("day04"),
+        utils.read_input_as_list(4, "input"),
         202)
 
     print("---- part 2 ----")
 
     # run("invalid passports", True,
-    #     utils.read_input_as_list("day04-invalid-passports"),
+    #     utils.read_input_as_list(4, "example-invalid-passports"),
     #     0)
     # run("valid passports", True,
-    #     utils.read_input_as_list("day04-valid-passports"),
+    #     utils.read_input_as_list(4, "example-valid-passports"),
     #     4)
     run("problem", True,
-        utils.read_input_as_list("day04"),
+        utils.read_input_as_list(4, "input"),
         137)

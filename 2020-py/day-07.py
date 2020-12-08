@@ -86,20 +86,20 @@ if __name__ == "__main__":
     print("---- Day 7: Handy Haversacks ----")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list("day07-example1"),
+    #     utils.read_input_as_list(7, "example1"),
     #     4)
     run_part1("problem",
-        utils.read_input_as_list("day07"),
+        utils.read_input_as_list(7, "input"),
         205)
 
     print("---- part 2 ----")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list("day07-example1"),
+    #     utils.read_input_as_list(7, "example1"),
     #     32)
     # run_part2("Test Case 2",
-    #     utils.read_input_as_list("day07-example2"),
+    #     utils.read_input_as_list(7, "example2"),
     #     126)
     run_part2("problem",
-        utils.read_input_as_list("day07"),
+        utils.read_input_as_list(7, "input"),
         80902)
