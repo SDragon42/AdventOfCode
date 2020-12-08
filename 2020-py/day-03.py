@@ -33,11 +33,11 @@ if __name__ == "__main__":
 
     slopes = ["31"]
     # run("Test Case 1", 
-    #     utils.read_input_as_list("day03-example1"),
+    #     utils.read_input_as_list(3, "example1"),
     #     slopes,
     #     7)
     run("problem",
-        utils.read_input_as_list("day03"),
+        utils.read_input_as_list(3, "input"),
         slopes,
         259)
 
@@ -45,10 +45,10 @@ if __name__ == "__main__":
 
     slopes = ["11","31","51","71","12"]
     # run("Test Case 1", 
-    #     utils.read_input_as_list("day03-example1"),
+    #     utils.read_input_as_list(3, "example1"),
     #     slopes,
     #     336)
     run("problem",
-        utils.read_input_as_list("day03"),
+        utils.read_input_as_list(3, "input"),
         slopes,
         2224913600)

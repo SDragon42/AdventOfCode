@@ -57,21 +57,21 @@ if __name__ == "__main__":
     print("---- Day 6: Custom Customs ----")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list("day06-example1"),
+    #     utils.read_input_as_list(6, "example1"),
     #     count_unique_answers,
     #     11)
     run("Problem",
-        utils.read_input_as_list("day06"),
+        utils.read_input_as_list(6, "input"),
         count_unique_answers,
         6726)
 
     print("---- part 2 ----")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list("day06-example1"),
+    #     utils.read_input_as_list(6, "example1"),
     #     count_unique_unanimous_answers,
     #     6)
     run("Problem",
-        utils.read_input_as_list("day06"),
+        utils.read_input_as_list(6, "input"),
         count_unique_unanimous_answers,
         3316)
