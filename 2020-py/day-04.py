@@ -6,8 +6,6 @@ class KeyValuePair:
     key = ""
     value = ""
 
-eyeColors = ["amb","blu","brn","gry","grn","hzl","oth"]
-
 
 def validate_birth_year(value):
     return 1920 <= int(value) <= 2002
@@ -48,17 +46,6 @@ def validate_passport_id(value):
     return isMatch is not None
 
 
-passportFieldDict = {
-    "byr": validate_birth_year,
-    "iyr": validate_issue_year,
-    "eyr": validate_expiration_year,
-    "hgt": validate_height,
-    "hcl": validate_hair_color,
-    "ecl": validate_eye_color,
-    "pid": validate_passport_id,
-}
-
-
 def get_passort_key_values(lines: list[str]) -> list[KeyValuePair]:
     keyValues = list[KeyValuePair]()
 
@@ -91,10 +78,7 @@ def has_required_fields(keyValues: list[KeyValuePair]) -> bool:
     return True
 
 
-def validate_passort(keyValues: list[KeyValuePair]) -> bool:
-    if has_required_fields(keyValues) == False:
-        return False
-
+def validate_passort_fields(keyValues: list[KeyValuePair]) -> bool:
     try:
         result = True
         for kv in keyValues:
@@ -105,7 +89,7 @@ def validate_passort(keyValues: list[KeyValuePair]) -> bool:
         return False
 
 
-def count_valid_passorts(input: list[str]) -> int:
+def count_valid_passorts(input: list[str], checkValues: bool) -> int:
     passportCount = 0
 
     ppStart = 0
@@ -121,7 +105,11 @@ def count_valid_passorts(input: list[str]) -> int:
 
         keyValues = get_passort_key_values(lines)
 
-        if validate_passort(keyValues):
+        isValid = has_required_fields(keyValues)
+        if checkValues:
+            isValid &= validate_passort_fields(keyValues)
+
+        if isValid:        
             passportCount += 1
 
         ppStart = ppEnd + 1
@@ -129,23 +117,40 @@ def count_valid_passorts(input: list[str]) -> int:
     return passportCount
 
 
-def run(title: str, input: list[str], correctResult: int):
-    result = count_valid_passorts(input)
+def run(title: str, checkValues: bool, input: list[str], correctResult: int):
+    result = count_valid_passorts(input, checkValues)
     utils.validate_result(title, result, correctResult)
-    print()
 
+
+eyeColors = ["amb","blu","brn","gry","grn","hzl","oth"]
+passportFieldDict = {
+    "byr": validate_birth_year,
+    "iyr": validate_issue_year,
+    "eyr": validate_expiration_year,
+    "hgt": validate_height,
+    "hcl": validate_hair_color,
+    "ecl": validate_eye_color,
+    "pid": validate_passport_id,
+}
 
 if __name__ == "__main__":
-    utils.show_title(4, 2, "Passport Processing")
+    print("---- Day 4: Passport Processing ----")
 
-    run("invalid passports",
-        utils.read_input_as_list("day04-invalid-passports"),
-        0)
-    
-    run("valid passports",
-        utils.read_input_as_list("day04-valid-passports"),
-        4)
+    # run("Test Case 1", False,
+    #     utils.read_input_as_list("day04-example1"),
+    #     2)
+    run("problem", False,
+        utils.read_input_as_list("day04"),
+        202)
 
-    run("problem",
+    print("---- part 2 ----")
+
+    # run("invalid passports", True,
+    #     utils.read_input_as_list("day04-invalid-passports"),
+    #     0)
+    # run("valid passports", True,
+    #     utils.read_input_as_list("day04-valid-passports"),
+    #     4)
+    run("problem", True,
         utils.read_input_as_list("day04"),
         137)
