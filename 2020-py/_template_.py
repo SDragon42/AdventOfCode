@@ -4,7 +4,6 @@ import utils
 def run(title: str, input: list[str], correctResult: int):
     result = 0
     utils.validate_result(title, result, correctResult)
-    print()
 
 
 if __name__ == "__main__":
