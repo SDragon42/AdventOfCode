@@ -1,45 +1,61 @@
 import utils
 
+#---------------------------------------------------------------------
+class AccumulatorProcessor:
 
-idx: int = 0
-accValue: int = 0
-
-
-def no_operation(value: int):
-    global idx
-    idx += 1
-
-
-def accumulator(value: int):
-    global idx
-    global accValue
-    accValue += value
-    idx += 1
+    idx: int
+    accValue: int
+    code: list[str]
+    instructionDict: dict[str, str]
+    callStack: list[int]
 
 
-def jump(value: int):
-    global idx
-    idx += value
+    def __init__(self, code: list[str]):
+        self.code = code
+        self.idx = 0
+        self.accValue = 0
+
+        self.instructionDict = {
+            "nop": self.no_operation,
+            "acc": self.accumulator,
+            "jmp": self.jump,
+        }
+
+        self.callStack = []
 
 
-def run_till_loop(input: list[str], callStack: list[int]):
-    global idx
-    global accValue
-    idx = 0
-    accValue = 0
+    def no_operation(self, value: int):
+        self.idx += 1
 
-    callStack.clear()
+    def accumulator(self, value: int):
+        self.accValue += value
+        self.idx += 1
 
-    while idx < len(input):
-        if idx in callStack:
-            break
-        callStack.append(idx)
-        parts = input[idx].split(" ", 1)
-        inst = parts[0]
-        val = int(parts[1])
-        action = instructionDict[inst]
-        action(val)
-    callStack.append(idx)
+    def jump(self, value: int):
+        self.idx += value
+
+
+    def run(self) -> bool:
+        self.idx = 0
+        self.accValue = 0
+
+        self.callStack.clear()
+
+        while self.idx < len(self.code):
+            if self.idx in self.callStack:
+                break
+            self.callStack.append(self.idx)
+            parts = self.code[self.idx].split(" ", 1)
+            inst = parts[0]
+            val = int(parts[1])
+            action = self.instructionDict[inst]
+            action(val)
+        self.callStack.append(self.idx)
+
+        finished = (self.idx >= len(self.code))
+        return finished
+        
+#---------------------------------------------------------------------
 
 
 def flip_instruction(instructionIdx: int, input: list[str]) -> list[str]:
@@ -51,41 +67,29 @@ def flip_instruction(instructionIdx: int, input: list[str]) -> list[str]:
 
 
 def run_part1(title: str, input: list[str], correctResult: int):
-    global idx
-    global accValue
-    
-    callStack: list[int] = []
-    run_till_loop(input, callStack)
-    utils.validate_result(title, accValue, correctResult)
+    comp = AccumulatorProcessor(input)
+    comp.run()
+    utils.validate_result(title, comp.accValue, correctResult)
 
 
 def run_part2(title: str, input: list[str], correctResult: int):
-    global idx
-    global accValue
-    
-    callStack: list[int] = []
-    run_till_loop(input, callStack)
-    
-    while len(callStack) > 0:
-        lastIdx = callStack.pop()
+    comp = AccumulatorProcessor(input)
+    comp.run()
+
+    firstCallStack = comp.callStack.copy()
+    while len(firstCallStack) > 0:
+        lastIdx = firstCallStack.pop()
         if input[lastIdx].startswith("acc"):
             continue
 
         newInput = flip_instruction(lastIdx, input.copy())
-        newCallStack: list[int] = []
-        run_till_loop(newInput, newCallStack)
-        lastIdx2 = newCallStack.pop()
-        if lastIdx2 >= len(input):
+
+        comp = AccumulatorProcessor(newInput)
+        reachedEnd = comp.run()
+        if reachedEnd:
             break
 
-    utils.validate_result(title, accValue, correctResult)
-    
-
-instructionDict = {
-    "nop": no_operation,
-    "acc": accumulator,
-    "jmp": jump,
-}
+    utils.validate_result(title, comp.accValue, correctResult)
 
 
 if __name__ == "__main__":
