@@ -63,7 +63,7 @@ def run_part2(title: str, input: list[int], windowSize: int, correctResult: int)
 
 
 if __name__ == "__main__":
-    print("---- Day 9: Encoding Erro ----")
+    print("---- Day 9: Encoding Error ----")
 
     # run_part1("Test Case 1",
     #     utils.read_input_as_int_list(9, "example1"),
