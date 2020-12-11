@@ -49,7 +49,7 @@ def input_list_to_table(input: list[str]) -> table:
 def show_seat_map(seats: table, title: str):
     print(title)
     for y in seats:
-        print(y)
+        print("".join(y))
     print("")
 
 
@@ -62,19 +62,31 @@ def count_occupied_seats(seats: table) -> int:
     return total
 
 
-def get_first_seat_in_path(x: int, y: int, seats: table, offset: Offsets) -> str:
+def is_inbounds(x: int, y: int, seats: table) -> bool:
+    if x < 0 or y < 0:
+        return False
+    if y >= len(seats):
+        return False
+    if x >= len(seats[y]):
+        return False
+    return True
+
+def get_seat_in_path(x: int, y: int, seats: table, offset: Offsets) -> str:
     x += offset.x
     y += offset.y
-    if x < 0 or y < 0:
-        return "."
-    if y >= len(seats):
-        return "."
-    if x >= len(seats[y]):
-        return "."
-    if seats[y][x] != ".":
-        return seats[y][x]
-    return get_first_seat_in_path(x, y, seats, offset)
+    if not is_inbounds(x, y, seats):
+        return ""
+    return seats[y][x]
     
+
+def get_first_seat_in_path(x: int, y: int, seats: table, offset: Offsets) -> str:
+    found = get_seat_in_path(x, y, seats, offset)
+    if found == "":
+        return "."
+    if found == ".":
+        return get_first_seat_in_path(x + offset.x, y + offset.y, seats, offset)
+    return found
+
 
 # common rules
 #--------------------------------------------------------------------------------
@@ -85,46 +97,19 @@ def rule_floor(x: int, y: int, seats: table) -> str:
 # rules for Part 1
 #--------------------------------------------------------------------------------
 def rule_empty_seat_part1(x: int, y: int, seats: table) -> str:
-    y1 = y - 1
-    while y1 <= y + 1 and y1 < len(seats):
-        if y1 < 0:
-            y1 = 0
-
-        x1 = x - 1
-        while x1 <= x + 1 and x1 < len(seats[y]):
-            if x1 < 0:
-                x1 = 0
-
-            if x1 != x or y1 != y:
-                if seats[y1][x1] == "#":
-                    return seats[y][x]
-
-            x1 += 1
-        y1 += 1
+    for offset in directionOffsets:
+        if get_seat_in_path(x, y, seats, offset) == "#":
+            return seats[y][x]
     return "#"
 
 
 def rule_occupied_seat_part1(x: int, y: int, seats: table) -> str:
-    y1 = y - 1
     numOccupied = 0
-    while y1 <= y + 1 and y1 < len(seats):
-        if y1 < 0:
-            y1 = 0
-
-        x1 = x - 1
-        while x1 <= x + 1 and x1 < len(seats[y]):
-            if x1 < 0:
-                x1 = 0
-
-            if x1 != x or y1 != y:
-                if seats[y1][x1] == "#":
-                    numOccupied += 1
-
-            if numOccupied >= 4:
-                return "L"
-
-            x1 += 1
-        y1 += 1
+    for offset in directionOffsets:
+        if get_seat_in_path(x, y, seats, offset) == "#":
+            numOccupied += 1
+    if numOccupied >= 4:
+        return "L"
     return seats[y][x]
 
 
