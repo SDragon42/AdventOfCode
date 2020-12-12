@@ -3,7 +3,7 @@ import utils
 
 def get_jolt_differences(adapters: list[int]) -> dict[int, int]:
     diffDict: dict[int, int] = {}
-    adapters.append(max(adapters) + 3)
+    
     last = 0
     for a in adapters:
         diff = a - last
@@ -23,7 +23,7 @@ def get_next_possible_adapters(current: int, adapters: list[int]) -> list[int]:
     return result
 
 
-def count_adapterChains(current:int, adapters: list[int]) -> int:
+def count_adapterChains(current:int, adapters: list[int], chainsUnder: dict[int, int]) -> int:
     if current in chainsUnder:
         return chainsUnder[current]
 
@@ -33,26 +33,31 @@ def count_adapterChains(current:int, adapters: list[int]) -> int:
 
     result = 0
     for x in nextAdapters:
-        result += count_adapterChains(x, adapters)
+        result += count_adapterChains(x, adapters, chainsUnder)
     chainsUnder[current] = result
     return result
 
 
 def run_part1(title: str, adapters: list[str], correctResult: int):
     adapters = sorted(adapters)
+    adapters.append(max(adapters) + 3)
+
     diffCounts = get_jolt_differences(adapters)
     result = diffCounts[1] * diffCounts[3]
+
     utils.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, adapters: list[str], correctResult: int):
-    chainsUnder.clear()
+    chainsUnder: dict[int, int] = {}
     adapters = sorted(adapters)
-    result = count_adapterChains(0, adapters)
+    
+    result = count_adapterChains(0, adapters, chainsUnder)
+    
     utils.validate_result(title, result, correctResult)
 
 
-chainsUnder: dict[int, int] = {}
+
 if __name__ == "__main__":
     print("---- Day 10: Adapter Array ----")
 
