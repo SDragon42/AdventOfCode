@@ -1,23 +1,32 @@
 import utils
 
 
-def run(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: list[str], correctResult: int):
+    result = 0
+    utils.validate_result(title, result, correctResult)
+
+
+def run_part2(title: str, input: list[str], correctResult: int):
     result = 0
     utils.validate_result(title, result, correctResult)
 
 
 if __name__ == "__main__":
-    print("---- Day 0: Title ----")
+    day = 0
+    print(f"---- Day {day}: Title ----")
 
-    run("Test Case 1",
-        utils.read_input_as_list(0, "example1"),
+    run_part1("Test Case 1",
+        utils.read_input_as_list(day, "example1"),
         0)
-    run("problem",
-        utils.read_input_as_list(0, "input"),
-        0)
+    # run_part1("problem",
+    #     utils.read_input_as_list(day, "input"),
+    #     0)
 
-    print("---- part 2 ----")
+    # print("---- part 2 ----")
 
-    run("problem",
-        utils.read_input_as_list(0, "input"),
-        0)
+    # run_part2("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     0)
+    # run_part2("problem",
+    #     utils.read_input_as_list(day, "input"),
+    #     0)
