@@ -43,10 +43,10 @@ if __name__ == "__main__":
     day = 15
     print(f"---- Day {day}: Rambunctious Recitation ----")
 
-    run("Test Case 1",
-        utils.read_input_as_list(day, "example1"),
-        10,
-        0)
+    # run("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     10,
+    #     0)
     run("problem",
         utils.read_input_as_list(day, "input"),
         2020,
@@ -54,10 +54,10 @@ if __name__ == "__main__":
 
     print("---- part 2 ----")
 
-    run("Test Case 1",
-        utils.read_input_as_list(day, "example1"),
-        30000000,
-        175594)
+    # run("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     30000000,
+    #     175594)
     run("problem",
         utils.read_input_as_list(day, "input"),
         30000000,
