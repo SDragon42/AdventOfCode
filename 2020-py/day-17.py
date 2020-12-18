@@ -1,25 +1,23 @@
 import utils
 
-class Location3D:
-    x: int
-    y: int
-    z: int
+class SpatialAddress:
+    coordinates: list[int] = []
 
-    def __init__(self, x: int, y: int, z: int):
-        self.x = x
-        self.y = y
-        self.z = z
+    def __init__(self, coordinates: list[int]):
+        self.coordinates = coordinates
 
     def __str__(self) -> str:
-        return f"{self.x},{self.y},{self.z}"
+        s = [str(value) for value in self.coordinates]
+        return ",".join(s)
 
-    def shift(self, offset: 'Location3D'):
-        self.x += offset.x
-        self.y += offset.y
-        self.z += offset.z
+    def shift(self, offset: 'SpatialAddress'):
+        i = 0
+        while i < len(self.coordinates):
+            self.coordinates[i] += offset.coordinates[i]
+            i += 1
 
-    def create_shifted(self, offset: 'Location3D'):
-        newLocation = Location3D(self.x, self.y, self.z)
+    def create_shifted(self, offset: 'SpatialAddress'):
+        newLocation = SpatialAddress(self.coordinates.copy())
         newLocation.shift(offset)
         return newLocation
 
@@ -27,10 +25,16 @@ class Location3D:
 
 class ConwayCube:
 
-    cubeSpace: dict[str, str] = {}
+    ACTIVE = "#"
+    INACTIVE = "."
 
-    def __init__(self, inputList: list[str]):
-        z = 0
+    SHIFTS: list[SpatialAddress] = []
+
+    cubeSpace: dict[str, str] = {}
+    numDimensions: int = 0
+
+    def __init__(self, inputList: list[str], numDimensions: int):
+        self.numDimensions = numDimensions
         y = len(inputList) // 2
         xStart = (len(inputList[0])) // 2 * -1
 
@@ -38,33 +42,50 @@ class ConwayCube:
         for line in inputList:
             x = xStart
             for c in line:
-                addr = Location3D(x, y, z)
+                baseCoordinate = [x, y]
+                baseCoordinate.extend([0] * (numDimensions - 2))
+                addr = SpatialAddress(baseCoordinate)
                 self.cubeSpace[str(addr)] = c
                 x += 1
             y -= 1
 
-        # Build SHIFTS
+        self.build_address_offsets([0] * numDimensions)
+
+    def inc_index(self, i: int, arr: list[int], maxIdx: int) -> bool:
+        if arr[i] < maxIdx:
+            arr[i] += 1
+            return True
+
+        arr[i] = 0
+
+        if i == len(arr) - 1:
+            return False
+
+        return self.inc_index(i + 1, arr, maxIdx)
+
+    def build_address_offsets(self, indexList: list[int]):
         self.SHIFTS.clear()
-        for x in range(3):
-            for y in range(3):
-                for z in range(3):
-                    if x == 1 and y == 1 and z == 1:
-                        continue
-                    loc = Location3D(x - 1, y - 1, z - 1)
-                    self.SHIFTS.append(loc)
+        offsetRange = [i for i in range(3)]
+        maxIdx = len(offsetRange) - 1
 
+        while True:
+            addr = [(offsetRange[i] - 1) for i in indexList]
 
-    def create_location3d(self, xyz: str) -> Location3D:
-        p = xyz.split(",")
-        return Location3D(int(p[0]), int(p[1]), int(p[2]))
+            isOrigin = True
+            for i in addr:
+                if i != 0:
+                    isOrigin = False
+                    break
 
-    # def get_z_keys(self, z: int) -> list[Location3D]:
-    #     result: list[Location3D] = []
-    #     for key in self.cubeSpace:
-    #         loc = self.create_location3d(key)
-    #         if loc.z == z:
-    #             result.append(loc)
-    #     return result
+            if not isOrigin:
+                self.SHIFTS.append(SpatialAddress(addr))
+
+            if not self.inc_index(0, indexList, maxIdx):
+                break
+
+    def create_location3d(self, coordinate: str) -> SpatialAddress:
+        s = [int(value) for value in coordinate.split(",")]
+        return SpatialAddress(s)
 
     def make_int_list(self, low: int, high: int) -> list[int]:
         result: list[int] = []
@@ -83,53 +104,27 @@ class ConwayCube:
             return value1
         return value2
 
-    def get_z_range(self) -> list[int]:
+    def get_range(self, dimIdx: int) -> list[int]:
         low = 0
         high = 0
         for key in self.cubeSpace:
             addr = self.create_location3d(key)
-            low = self.get_lowest(low, addr.z)
-            high = self.get_highest(high, addr.z)
-        return self.make_int_list(low, high)
-
-    def get_y_range(self) -> list[int]:
-        low = 0
-        high = 0
-        for key in self.cubeSpace:
-            addr = self.create_location3d(key)
-            low = self.get_lowest(low, addr.y)
-            high = self.get_highest(high, addr.y)
-        return self.make_int_list(low, high)
-
-    def get_x_range(self) -> list[int]:
-        low = 0
-        high = 0
-        for key in self.cubeSpace:
-            addr = self.create_location3d(key)
-            low = self.get_lowest(low, addr.x)
-            high = self.get_highest(high, addr.x)
+            low = self.get_lowest(low, addr.coordinates[dimIdx])
+            high = self.get_highest(high, addr.coordinates[dimIdx])
         return self.make_int_list(low, high)
 
 
-    # def get_cube(self, addr: Location3D) -> str:
-    #     sAddr = str(addr)
-    #     if sAddr in self.cubeSpace:
-    #         return self.cubeSpace[sAddr]
-    #     return "."
-
-    def get_cube(self, addr: Location3D, cubes: dict[str, str]) -> str:
+    def get_cube(self, addr: SpatialAddress, cubes: dict[str, str]) -> str:
         sAddr = str(addr)
         if sAddr in cubes:
             return cubes[sAddr]
         return self.INACTIVE
 
-    def set_cube(self, addr: Location3D, newState: str):
+    def set_cube(self, addr: SpatialAddress, newState: str):
         sAddr = str(addr)
         if newState == self.ACTIVE:
             self.cubeSpace[sAddr] = newState
             return
-
-        # if sAddr in self.cubeSpace:
         self.cubeSpace.pop(sAddr, None)
 
 
@@ -138,32 +133,40 @@ class ConwayCube:
         indexes.append(indexes[len(indexes) - 1] + 1)
 
 
-    def show_cube_space(self, title: str): #, z: int):
-        print(title)
-        print()
-        zList = self.get_z_range()
-        yList = self.get_y_range()
-        xList = self.get_x_range()
+    # def show_cube_space(self, title: str):
+    #     print(title)
+    #     print()
+    #     # zList = self.get_z_range()
+    #     # yList = self.get_y_range()
+    #     # xList = self.get_x_range()
 
-        yList.reverse()
+    #     allRanges = []
+    #     i = 0
+    #     while i < self.numDimensions:
+    #         allRanges.append(self.get_range(i))
+    #         i += 1
 
-        for z in zList:
-            print(f"z={z}")
-            for y in yList:
-                line = ""
-                for x in xList:
-                    addr = Location3D(x, y, z)
-                    line += self.get_cube(addr, self.cubeSpace)
-                    # if addr in self.cubeSpace:
-                    #     line += self.cubeSpace[addr]
-                    # else:
-                    #     line += self.INACTIVE
-                print(line)
-            print()
-        print()
+    #     # yList.reverse()
+    #     allRanges[1].reverse
+
+    #     nonDisplayRanges = allRanges[2:]
+    #     displayRanges = allRanges[:2]
+
+    #     for
+
+    #     for z in zList:
+    #         print(f"z={z}")
+    #         for y in yList:
+    #             line = ""
+    #             for x in xList:
+    #                 addr = SpatialAddress([x, y, z])
+    #                 line += self.get_cube(addr, self.cubeSpace)
+    #             print(line)
+    #         print()
+    #     print()
 
 
-    def rule_active_cube(self, addr: Location3D, cubes: dict[str, str]):
+    def rule_active_cube(self, addr: SpatialAddress, cubes: dict[str, str]):
         """
         If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active.
         Otherwise, the cube becomes inactive.
@@ -181,7 +184,7 @@ class ConwayCube:
         self.set_cube(addr, newState)
 
 
-    def rule_inactive_cube(self, addr: Location3D, cubes: dict[str, str]):
+    def rule_inactive_cube(self, addr: SpatialAddress, cubes: dict[str, str]):
         """
         If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active.
         Otherwise, the cube remains inactive.
@@ -199,23 +202,33 @@ class ConwayCube:
         self.set_cube(addr, newState)
 
 
+    def apply_rule_at(self, address: list[int], rangeList: list[int], otherRanges: list[list[int]], cubes: dict[str, str]):
+        for i in rangeList:
+            newAddr = address + [i]
+            if len(otherRanges) > 0:
+                self.apply_rule_at(newAddr, otherRanges[0], otherRanges[1:], cubes)
+            else:
+                addr = SpatialAddress(newAddr)
+                state = self.get_cube(addr, cubes)
+
+                if state == self.ACTIVE:
+                    self.rule_active_cube(addr, cubes)
+                elif state == self.INACTIVE:
+                    self.rule_inactive_cube(addr, cubes)
+
+
+
     def apply_rules(self):
         oldCubeSpace = self.cubeSpace.copy()
+        allRanges: list[list[int]] = []
+        i = 0
+        while i < self.numDimensions:
+            temp = self.get_range(i)
+            self.inflate_range(temp)
+            allRanges.append(temp)
+            i += 1
 
-        zList = self.get_z_range()
-        yList = self.get_y_range()
-        xList = self.get_x_range()
-
-        self.inflate_range(zList)
-        self.inflate_range(yList)
-        self.inflate_range(xList)
-
-        for z in zList:
-            for y in yList:
-                for x in xList:
-                    addr = Location3D(x, y, z)
-                    state = self.get_cube(addr, oldCubeSpace)
-                    self.RULES[state](self, addr, oldCubeSpace)
+        self.apply_rule_at([], allRanges[0], allRanges[1:], oldCubeSpace)
 
 
     def get_num_active_cubes(self) -> int:
@@ -225,21 +238,11 @@ class ConwayCube:
                 result += 1
         return result
 
-    ACTIVE = "#"
-    INACTIVE = "."
-
-    RULES = {
-        INACTIVE: rule_inactive_cube,
-        ACTIVE: rule_active_cube,
-    }
-
-    SHIFTS: list[Location3D] = []
-
 #-------------------------------------------------------------------------------
 
 
-def run_part1(title: str, inputList: list[str], numCycles: int, correctResult: int):
-    cc = ConwayCube(inputList)
+def run(title: str, inputList: list[str], numDimensions: int, numCycles: int, correctResult: int):
+    cc = ConwayCube(inputList, numDimensions)
     # cc.show_cube_space("Before any cycles:")
 
     cycle = 1
@@ -252,29 +255,30 @@ def run_part1(title: str, inputList: list[str], numCycles: int, correctResult: i
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, inputList: list[str], correctResult: int):
-    result = 0
-    utils.validate_result(title, result, correctResult)
-
-
 if __name__ == "__main__":
     day = 17
     print(f"---- Day {day}: Conway Cubes ----")
 
-    run_part1("Test Case 1",
-        utils.read_input_as_list(day, "example1"),
-        6,
-        112)
-    run_part1("problem",
+    # run("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     3,
+    #     6,
+    #     112)
+    run("problem",
         utils.read_input_as_list(day, "input"),
+        3,
         6,
         362)
 
-    # print("---- part 2 ----")
+    print("---- part 2 ----")
 
-    # run_part2("Test Case 1",
+    # run("Test Case 1",
     #     utils.read_input_as_list(day, "example1"),
-    #     0)
-    # run_part2("problem",
-    #     utils.read_input_as_list(day, "input"),
-    #     0)
+    #     4,
+    #     6,
+    #     848)
+    run("problem",
+        utils.read_input_as_list(day, "input"),
+        4,
+        6,
+        1980)
