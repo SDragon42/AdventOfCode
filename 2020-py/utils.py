@@ -45,3 +45,10 @@ def validate_result(title: str, value, correct_value):
         print("   CORRECT")
     else:
         print("   WRONG")
+
+
+showDebug = False
+
+def dprint(x):
+    if showDebug:
+        print(x)
