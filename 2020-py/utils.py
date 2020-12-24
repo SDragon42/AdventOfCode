@@ -31,6 +31,14 @@ def read_input_as_list(day: int, name: str) -> list[str]:
     return data
 
 
+def read_input(day: int, name: str) -> str:
+    """ Reads the input file as a single string """
+    filename = generate_filename(day, name)
+    with open(filename) as dataFile:
+        result = dataFile.read()
+        return result
+
+
 def show_title(day: int, puzzle: int, title: str):
     """ Shows the Day/Puzzle/title header """
     print("------------------------------------------------------------")
