@@ -1,0 +1,135 @@
+import utils
+
+
+class CrabCups:
+
+    cupList: list[int] = []
+    current: int = -1
+    totalMoves: int = 0
+    move: int = 0
+
+    def __init__(self, cupText: str, numMoves: int, maxInput: int = 0) -> None:
+        self.cupList = [int(x) for x in cupText]
+
+        if maxInput > len(self.cupList):
+            next = max(self.cupList) + 1
+            tmp = range(next, maxInput + 1, 1)
+            self.cupList.extend(tmp)
+            # while next <= maxInput:
+            #     self.
+
+        self.current = self.cupList[0]
+        self.totalMoves = numMoves
+        self.move = 0
+
+    def perform_move(self) -> bool:
+        self.move += 1
+        if self.move > self.totalMoves:
+            return False
+
+        # The crab picks up the three cups that are immediately clockwise of the current cup.
+        # They are removed from the circle; cup spacing is adjusted as necessary to maintain the circle.
+        liftedCupList = self.take_cups(3)
+
+        # The crab selects a destination cup: the cup with a label equal to the current cup's label minus one.
+        # If this would select one of the cups that was just picked up, the crab will keep subtracting one
+        # until it finds a cup that wasn't just picked up. If at any point in this process the value goes
+        # below the lowest value on any cup's label, it wraps around to the highest value on any cup's label instead.
+        nextCup = self.current
+        while True:
+            nextCup -= 1
+            if nextCup < min(self.cupList):
+                nextCup = max(self.cupList)
+            if nextCup in self.cupList:
+                break
+
+        # The crab places the cups it just picked up so that they are immediately clockwise of the destination cup.
+        # They keep the same order as when they were picked up.
+        self.add_cups_at(liftedCupList, nextCup)
+
+        # The crab selects a new current cup: the cup which is immediately clockwise of the current cup.
+        self.set_next_current()
+
+        return True
+
+    def take_cups(self, numCups: int) -> list[int]:
+        liftedCupList: list[int] = []
+        startIdx = self.cupList.index(self.current) + 1
+        while numCups > 0 and startIdx < len(self.cupList):
+            liftedCupList.append(self.cupList.pop(startIdx))
+            numCups -= 1
+        while numCups > 0:
+            liftedCupList.append(self.cupList.pop(0))
+            numCups -= 1
+
+        return liftedCupList
+
+    def add_cups_at(self, toAdd: list[int], afterCup: int):
+        idx = self.cupList.index(afterCup) + 1
+        for x in toAdd:
+            self.cupList.insert(idx, x)
+            idx += 1
+
+    def set_next_current(self):
+        idx = self.cupList.index(self.current) + 1
+        if idx >= len(self.cupList):
+            idx = 0
+        self.current = self.cupList[idx]
+
+    def get_cups_after_1(self) -> str:
+        idx = self.cupList.index(1)
+        tmp = self.cupList[idx + 1:].copy()
+        tmp.extend(self.cupList[:idx])
+        result = "".join(str(x) for x in tmp)
+        # tmp = self.take_cups(len(self.cupList) - 2, "1")
+        return result
+
+    def get_cups_after_1b(self) -> list[int]:
+        idx = self.cupList.index(1)
+        tmp = self.cupList[idx + 1:2].copy()
+        return tmp
+
+#-------------------------------------------------------------------------------
+
+def run_part1(title: str, input: str, numMoves: int, correctResult: str):
+    game = CrabCups(input, numMoves)
+    while game.perform_move():
+        pass
+    result = game.get_cups_after_1()
+    utils.validate_result(title, result, correctResult)
+
+
+def run_part2(title: str, input: str, numMoves: int, correctResult: str):
+    game = CrabCups(input, numMoves, 1000000)
+    while game.perform_move():
+        pass
+    result = game.get_cups_after_1b()
+    utils.validate_result(title, result, correctResult)
+
+
+if __name__ == "__main__":
+    day = 23
+    print(f"---- Day {day}: Crab Cups ----")
+
+    # run_part1("Test Case 1 (10 moves)",
+    #     "389125467",
+    #     10,
+    #     "92658374")
+    run_part1("Test Case 1 (10 moves)",
+        "389125467",
+        100,
+        "67384529")
+    run_part1("problem",
+        "643719258",
+        100,
+        "54896723")
+
+    # print("---- part 2 ----")
+
+    # run_part2("Test Case 1 (10,000,000 moves)",
+    #     "389125467",
+    #     10000000,
+    #     "92658374")
+    # run_part2("problem",
+    #     utils.read_input_as_list(day, "input"),
+    #     0)
