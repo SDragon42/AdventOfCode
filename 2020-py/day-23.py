@@ -1,76 +1,82 @@
 import utils
 
+# Assistence from:
+# https://topaz.github.io/paste/#XQAAAQBmBwAAAAAAAAA0m0pnuFI8c/fBNApcL1pmU7gQJ13v1+YhguIn3pR0zOaQ4v8vj0T0GZD91/Qbo2hM5nCqaFlDw+OBPRSF3ewxIy5NZrOqQbD9Kh7oFNwchmD9695r4vyj+mz1c4oXVWCGYHHwJ2VwiL3QE7OrbNzmf2w9+mDd+zLHFeykh3A6dHonmdmCrpyWv9HWuYGtqYmaTmo0XPFtAbhipfsM5QpMgmJca3QZDAyJ2VutU4lqC1zCBnqJPh81yJaW7+5A12miU2B58CiK3YmwFi5dt6gYyutT/6sW6nPhSpIu+04o47ZoEuRvPF+Sbc7OptvVIJAgPtQRSU7Urjnb3GxLnj61pTk3oc7o5G97Qx85tpA0/TA9LYq6QCARuEKSUn/kJJMujuDHGGRdjEU85SY5afeqaKlIGStnDCp26i4n0iX2z65LF8QUVap9GUamNLeelfLlqcXCKselRZJeC5eiDfWHe30MG/DuZ35NSh3Ui7qK2R5SXVIcz5ofmhI11FLhgCGdVvJ2CyHl/TEmEzTdZWK90OVTZkzygCuQf608vj3GpQeocemQvGNT98YWNdVwG+49RlCSluol1A8lkBd/mYu416rsFVQK+9TtOiummhnxTLo2SGEbgSdL0x0cEGq9cuka6BF2Sp1kyHTWPoQ3H3StqUB5y6jAC8h7oXJZqcseoUvhZUsVUgj9FQRcSASOvoxqgP+4urD4d1QeiStRA3qHB/nJBUcDkP7c7LkrJvYVz0jOUJiTPHDLbwob4ZxBtEj+/yok0WRApn6Txw9m7NBcVS2q/AqiItbrLa/qi01kFFsPqi2CesKmBkK95zUXYulQ3t95nY/y+xWiu+i6VBVZYNsUf/aAlTA8U2t8u95Mr2ssn6H0aRP2x2FAjG8wXz/4a2VfgI7sYWbLBRo5Mt/Z32LGpDWm/FR58ow/E6Ms/H7NklhKu4wm49uBjXGzXStI5404a0Tj1To1dLa9SQiFSdzxYGysBOJl7NuwCUDhayr86aIFcM46MntjuYy/6teQ0ea/ZmTmgapT+Mt3ZNgTJuCFUuwPGfE2hMQ3Sl1M11rDCocsaVFjpYUcGLP9TF//+h1+DFbV2vRMx4pSjl1JiaotagEb+iNVDgfDB+Or61U8Bp9hKk0Yhx3+1CuRTPuxynwKydwZ2u7cw9tJYluBIVJGQ1qg9qwiMfVfJVyQLv/8oErq
 
 class CrabCups:
 
-    cupList: list[int] = []
-    current: int = -1
+    cupMinMax: tuple[int, int] = (0,0)
+    cupLinks: dict[int, int] = {}
+    current: int = 0
     totalMoves: int = 0
     move: int = 0
 
-    def __init__(self, cupList: list[int], numMoves: int) -> None:
-        self.cupList = cupList
-        self.current = self.cupList[0]
+    def __init__(self, cupLinks: dict[int, int], head: int, numMoves: int) -> None:
+        self.cupLinks = cupLinks
+        self.current = head
         self.totalMoves = numMoves
         self.move = 0
+
+        keys = [x for x in cupLinks.keys()]
+        self.cupMinMax = (min(keys), max(keys))
 
     def perform_move(self) -> bool:
         self.move += 1
         if self.move > self.totalMoves:
             return False
 
-        liftedCupList = self.take_cups(3)
-        targetCup = self.get_target_cup()
-        self.add_cups_at(liftedCupList, targetCup)
+        liftedCuplist = self.take_cups(3)
+        targetCup = self.get_target_cup(liftedCuplist)
+        self.add_cups_at(liftedCuplist, targetCup)
         self.set_next_current()
 
         return True
 
     def take_cups(self, numCups: int) -> list[int]:
-        liftedCupList: list[int] = []
-        startIdx = self.cupList.index(self.current) + 1
-        while numCups > 0 and startIdx < len(self.cupList):
-            liftedCupList.append(self.cupList.pop(startIdx))
-            numCups -= 1
-        while numCups > 0:
-            liftedCupList.append(self.cupList.pop(0))
-            numCups -= 1
+        liftedCuplist = []
+        tmp = self.current
+        i = 0
+        while i < numCups:
+            tmp = self.cupLinks[tmp]
+            liftedCuplist.append(tmp)
+            i += 1
 
-        return liftedCupList
+        self.cupLinks[self.current] = self.cupLinks[tmp]
+        self.cupLinks[tmp] = -1
+        return liftedCuplist
 
-    def get_target_cup(self) -> int:
+    def get_target_cup(self, excludedCupsList: list[int]) -> int:
         targetCup = self.current
         while True:
             targetCup -= 1
-            if targetCup < min(self.cupList):
-                targetCup = max(self.cupList)
-            if targetCup in self.cupList:
-                break
+            if targetCup < self.cupMinMax[0]:
+                targetCup = self.cupMinMax[1]
+            if targetCup in excludedCupsList:
+                continue
+            break
         return targetCup
 
     def add_cups_at(self, toAdd: list[int], afterCup: int):
-        idx = self.cupList.index(afterCup) + 1
-        for x in toAdd:
-            self.cupList.insert(idx, x)
-            idx += 1
+        tmp = self.cupLinks[afterCup]
+        self.cupLinks[afterCup] = toAdd[0]
+        self.cupLinks[toAdd[len(toAdd) - 1]] = tmp
 
     def set_next_current(self):
-        idx = self.cupList.index(self.current) + 1
-        if idx >= len(self.cupList):
-            idx = 0
-        self.current = self.cupList[idx]
+        self.current = self.cupLinks[self.current]
 
     def get_cups_after_1(self) -> str:
-        idx = self.cupList.index(1)
-        tmp = self.cupList[idx + 1:].copy()
-        tmp.extend(self.cupList[:idx])
-        result = "".join(str(x) for x in tmp)
+        result = ""
+        tmp = self.cupLinks[1]
+        while tmp != 1:
+            result += str(tmp)
+            tmp = self.cupLinks[tmp]
         return result
 
-    def get_cups_after_1b(self) -> list[int]:
-        idx = self.cupList.index(1)
-        tmp = self.cupList[idx + 1:2].copy()
-        return tmp
+
+
+    def get_cups_after_1b(self) -> tuple[int, int]:
+        tmp = self.cupLinks[1]
+        return (tmp, self.cupLinks[tmp])
 
 #-------------------------------------------------------------------------------
 
@@ -78,25 +84,33 @@ def str_to_int_list(input: str) -> list[int]:
     return [int(x) for x in input]
 
 
+def int_list_to_dict_links(values: list[int]) -> dict[int, int]:
+    links = {number: values[(idx + 1) % len(values)] for idx, number in enumerate(values)}
+    return links
+
+
 def run_part1(title: str, input: str, numMoves: int, correctResult: str):
     cupList = str_to_int_list(input)
-    game = CrabCups(cupList, numMoves)
+    cupLinks = int_list_to_dict_links(cupList)
+
+    game = CrabCups(cupLinks, cupList[0], numMoves)
     while game.perform_move():
         pass
     result = game.get_cups_after_1()
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: str, numMoves: int, correctResult: str):
+def run_part2(title: str, input: str, numMoves: int, correctResult: int):
     cupList = str_to_int_list(input)
-
     tmp = range(max(cupList) + 1, 1000001, 1)
     cupList.extend(tmp)
+    cupLinks = int_list_to_dict_links(cupList)
 
-    game = CrabCups(cupList, numMoves)
+    game = CrabCups(cupLinks, cupList[0], numMoves)
     while game.perform_move():
         pass
-    result = game.get_cups_after_1b()
+    values = game.get_cups_after_1b()
+    result = values[0] * values[1]
     utils.validate_result(title, result, correctResult)
 
 
@@ -104,26 +118,26 @@ if __name__ == "__main__":
     day = 23
     print(f"---- Day {day}: Crab Cups ----")
 
-    run_part1("Test Case 1 (10 moves)",
-        "389125467",
-        10,
-        "92658374")
-    run_part1("Test Case 1 (10 moves)",
-        "389125467",
-        100,
-        "67384529")
+    # run_part1("Test Case 1 (10 moves)",
+    #     "389125467",
+    #     10,
+    #     "92658374")
+    # run_part1("Test Case 1 (10 moves)",
+    #     "389125467",
+    #     100,
+    #     "67384529")
     run_part1("problem",
         "643719258",
         100,
         "54896723")
 
-    # print("---- part 2 ----")
+    print("---- part 2 ----")
 
     # run_part2("Test Case 1 (10,000,000 moves)",
     #     "389125467",
-    #     # 10000000,
-    #     10,
-    #     "92658374")
-    # run_part2("problem",
-    #     utils.read_input_as_list(day, "input"),
-    #     0)
+    #     10000000,
+    #     149245887792)
+    run_part2("problem",
+        "643719258",
+        10000000,
+        146304752384)
