@@ -11,24 +11,28 @@ import math
 # def binary_reverse(n: int) -> int:
 #     return int(format(n,'010b')[::-1], 2)
 
+TileGrid = list[list[str]]
 
 class TileData:
-    id: int = 0
-    tile: list[str] = []
-    tileSize: int = 0
-
-    # tileSides: dict[str, str] = {}
-    tileSides: list[str] = []
-    allPossibleTileSides: list[str] = []
+    id: int
+    tile: TileGrid
+    tileSize: int
+    tileSides: list[str]
+    allPossibleTileSides: list[str]
 
     def __init__(self, id: int, tileData: list[str]) -> None:
         self.id = id
-        self.tile = tileData
+        self.tile = []
+        for line in tileData:
+            tmp = [c for c in line]
+            self.tile.append(tmp)
         self.tileSize = len(self.tile)
+        self.tileSides = []
+        self.allPossibleTileSides = []
         self.set_tile_sides()
 
     def __repr__(self) -> str:
-        return f"Tile {self.id}:\n" + "\n".join([x for x in self.tile])
+        return f"Tile {self.id}:\n" + "\n".join(["".join(x) for x in self.tile])
 
     def remove_edges(self) -> None:
         self.tile = [line[1:self.tileSize - 1] for line in self.tile[1:self.tileSize - 1]]
@@ -45,10 +49,10 @@ class TileData:
         self.allPossibleTileSides = self.tileSides + [x[::-1] for x in self.tileSides]
 
     def get_edge_top(self) -> str:
-        return self.tile[0]
+        return "".join(self.tile[0])
 
     def get_edge_bottom(self) -> str:
-        return self.tile[self.tileSize - 1]
+        return "".join(self.tile[self.tileSize - 1])
 
     def get_edge_left(self) -> str:
         return self.get_vertical_line(0)
@@ -65,22 +69,26 @@ class TileData:
         return newLine
 
     def rotate_tile(self):
-        newTile: list[str] = []
+        newTile: TileGrid = []
         x = 0
         while x < self.tileSize:
             newLine = self.get_vertical_line(x)
-            newTile.append(newLine)
+            tmp = [c for c in newLine]
+            newTile.append(tmp)
             x += 1
-        self.tile.clear()
         self.tile = newTile
         self.set_tile_sides()
 
     def flip_tile(self):
         y = 0
         while y < self.tileSize:
-            self.tile[y] = self.tile[y][::-1]
+            self.tile[y].reverse()
             y += 1
         self.set_tile_sides()
+
+    def get_rotate_flip_actions(self) -> list[any]:
+        actionList = ([self.rotate_tile] * 3) + [self.flip_tile] + ([self.rotate_tile] * 4)
+        return actionList
 
 #-------------------------------------------------------------------------------
 
@@ -133,10 +141,10 @@ def run_part1(title: str, inputData: str, correctResult: int):
     #     for t in tileList:
     #         print(str(t))
     #         print()
-    #         t2 = "\n".join(t.get_tile_date_without_edges())
-    #         print(t2)
-    #         print()
-    #         print()
+    #         # t2 = "\n".join(t.get_tile_date_without_edges())
+    #         # print(t2)
+    #         # print()
+    #         # print()
     cornerTiles = get_open_side_tiles(tileList, 2)
     result = 1
     for corner in cornerTiles:
@@ -153,15 +161,12 @@ def run_part2(title: str, inputData: str, correctResult: int):
     grid: list[list[TileData]] = [[None for x in range(sideSize)] for y in range(sideSize)] # jigsaw grid
 
     cornerTiles = get_open_side_tiles(tileList, 2)
-    # sideTiles = get_open_side_tiles(tileList, 1)
-    # for t in cornerTiles: tileList.remove(t)
-    # for t in sideTiles: tileList.remove(t)
 
     t = cornerTiles[0]
     grid[0][0] = t
 
     # starting corner
-    for transformFunc in [t.rotate_tile, t.rotate_tile, t.rotate_tile, t.rotate_tile, t.flip_tile, t.rotate_tile, t.rotate_tile, t.rotate_tile]:
+    for transformFunc in t.get_rotate_flip_actions():
         bottomMatches = find_matching_tiles(tileList, t.get_edge_bottom())
         leftMatches = find_matching_tiles(tileList, t.get_edge_left())
         if len(bottomMatches) == 1 and len(leftMatches) == 1:
@@ -173,8 +178,9 @@ def run_part2(title: str, inputData: str, correctResult: int):
         edge = grid[0][x-1].get_edge_right()
         rtList = find_matching_tiles(tileList, edge)
         rtList.remove(grid[0][x-1])
+        assert(len(rtList) == 1)
         rt = rtList[0]
-        for transformFunc in [rt.rotate_tile, rt.rotate_tile, rt.rotate_tile, rt.flip_tile, rt.rotate_tile, rt.rotate_tile, rt.rotate_tile]:
+        for transformFunc in rt.get_rotate_flip_actions():
             if rt.get_edge_left() == edge:
                 grid[0][x] = rt
                 break
@@ -186,8 +192,9 @@ def run_part2(title: str, inputData: str, correctResult: int):
             edge = grid[y-1][x].get_edge_top()
             ntList = find_matching_tiles(tileList, edge)
             ntList.remove(grid[y-1][x])
+            assert(len(ntList) == 1)
             nt = ntList[0]
-            for transformFunc in [nt.rotate_tile, nt.rotate_tile, nt.rotate_tile, nt.flip_tile, nt.rotate_tile, nt.rotate_tile, nt.rotate_tile, nt.rotate_tile]:
+            for transformFunc in nt.get_rotate_flip_actions():
                 if nt.get_edge_bottom() == edge:
                     grid[y][x] = nt
                     break
@@ -203,7 +210,14 @@ def run_part2(title: str, inputData: str, correctResult: int):
 
     for y in range(sideSize - 1, -1, -1): #top down (each tile)
         for i in range(grid[0][0].tileSize):
-            line = "".join([grid[y][x].tile[i] for x in range(sideSize)])
+            lineParts = ["".join(grid[y][x].tile[i]) for x in range(sideSize)]
+            # lineParts = []
+            # for x in range(sideSize):
+            #     a = grid[y][x].tile[i]
+            #     b = "".join(a)
+            #     lineParts.append(b)
+
+            line = "".join(lineParts)
             imageList.append(line)
 
     t = TileData(0, imageList)
@@ -213,28 +227,32 @@ def run_part2(title: str, inputData: str, correctResult: int):
     monsterimage = f"                  # {spaces}#    ##    ##    ###{spaces} #  #  #  #  #  #   "
     monsterIndexes = [i for i,c in enumerate(monsterimage) if c == '#']
 
-    for transformFunc in [t.rotate_tile, t.rotate_tile, t.rotate_tile, t.rotate_tile, t.flip_tile, t.rotate_tile, t.rotate_tile, t.rotate_tile]:
-        image = "".join(t.tile)
+    monstersFound = False
+    for transformFunc in t.get_rotate_flip_actions():
+        image = "".join(["".join(x) for x in t.tile])
         for row in range(t.tileSize - 2):
             for i in range(t.tileSize - monsterLengh):
                 start = (row * (t.tileSize)) + i
                 if find_monster(image, start, monsterIndexes):
+                    monstersFound = True
                     tag_monster(t, start, monsterIndexes)
+        if monstersFound:
+            break
         transformFunc()
 
-    # fullImage.rotate_tile()
-    # print(str(fullImage))
-    # fullImage = "\n".join(imageList)
-    # print(fullImage)
+    image = "\n".join(["".join(x) for x in t.tile])
+    if utils.showDebug:
+        utils.dprint("--- IMAGE ---")
+        utils.dprint(image)
+        utils.dprint("")
 
-        # image += [''.join([grid[y][x].image_edges_stripped()[i] for x in range(12)]) for i in range(8)]
+    result = 0
 
+    for row in range(t.tileSize):
+        for x in range(t.tileSize):
+            if t.tile[row][x] == "#":
+                result += 1
 
-
-    result = 1
-    for corner in cornerTiles:
-        result *= corner.id
-        utils.dprint(f"tile id: {corner.id}")
     utils.validate_result(title, result, correctResult)
 
 def find_monster(image: str, idx: int, monsterIndexes: list[int]) -> bool:
@@ -247,13 +265,11 @@ def tag_monster(tile: TileData, idx: int, monsterIndexes: list[int]) -> None:
         tIdx = idx + i
         r = (tIdx % tile.tileSize)
         row = (tIdx - r) // tile.tileSize
-        s = [c for c in tile.tile[row]]
-
-        pass
-    pass
+        xidx = tIdx - (row * tile.tileSize)
+        tile.tile[row][xidx] = "O"
 
 
-utils.showDebug = True
+# utils.showDebug = True
 if __name__ == "__main__":
     day = 20
     print(f"---- Day {day}: Jurassic Jigsaw ----")
@@ -261,15 +277,15 @@ if __name__ == "__main__":
     run_part1("Test Case 1",
         utils.read_input(day, "example1"),
         20899048083289)
-    # run_part1("problem",
-    #     utils.read_input(day, "input"),
-    #     28057939502729)
+    run_part1("problem",
+        utils.read_input(day, "input"),
+        28057939502729)
 
     print("---- part 2 ----")
 
     run_part2("Test Case 1",
         utils.read_input(day, "example1"),
         273)
-    # run_part2("problem",
-    #     utils.read_input(day, "input"),
-    #     0)
+    run_part2("problem",
+        utils.read_input(day, "input"),
+        2489)
