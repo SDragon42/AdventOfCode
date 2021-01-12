@@ -197,11 +197,6 @@ def run_part2(title: str, inputData: str, correctResult: int):
     for y in range(sideSize - 1, -1, -1): #top down (each tile)
         for i in range(grid[0][0].tileSize):
             lineParts = ["".join(grid[y][x].tile[i]) for x in range(sideSize)]
-            # lineParts = []
-            # for x in range(sideSize):
-            #     a = grid[y][x].tile[i]
-            #     b = "".join(a)
-            #     lineParts.append(b)
 
             line = "".join(lineParts)
             imageList.append(line)
@@ -260,18 +255,18 @@ if __name__ == "__main__":
     day = 20
     print(f"---- Day {day}: Jurassic Jigsaw ----")
 
-    run_part1("Test Case 1",
-        utils.read_input(day, "example1"),
-        20899048083289)
+    # run_part1("Test Case 1",
+    #     utils.read_input(day, "example1"),
+    #     20899048083289)
     run_part1("problem",
         utils.read_input(day, "input"),
         28057939502729)
 
     print("---- part 2 ----")
 
-    run_part2("Test Case 1",
-        utils.read_input(day, "example1"),
-        273)
+    # run_part2("Test Case 1",
+    #     utils.read_input(day, "example1"),
+    #     273)
     run_part2("problem",
         utils.read_input(day, "input"),
         2489)
