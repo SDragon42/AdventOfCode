@@ -1,16 +1,17 @@
 import utils
+from typing import Callable, List, Dict
 
 #---------------------------------------------------------------------
 class AccumulatorProcessor:
 
     idx: int
     accValue: int
-    code: list[str]
-    instructionDict: dict[str, str]
-    callStack: list[int]
+    code: List[str]
+    instructionDict: Dict[str, Callable]
+    callStack: List[int]
 
 
-    def __init__(self, code: list[str]):
+    def __init__(self, code: List[str]):
         self.code = code
         self.idx = 0
         self.accValue = 0
@@ -58,7 +59,7 @@ class AccumulatorProcessor:
 #---------------------------------------------------------------------
 
 
-def flip_instruction(instructionIdx: int, input: list[str]) -> list[str]:
+def flip_instruction(instructionIdx: int, input: List[str]) -> List[str]:
     if input[instructionIdx].startswith("nop"):
         input[instructionIdx] = input[instructionIdx].replace("nop", "jmp")
     else:
@@ -66,13 +67,13 @@ def flip_instruction(instructionIdx: int, input: list[str]) -> list[str]:
     return input
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     comp = AccumulatorProcessor(input)
     comp.run()
     utils.validate_result(title, comp.accValue, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     comp = AccumulatorProcessor(input)
     comp.run()
 

@@ -1,4 +1,5 @@
 import utils
+from typing import List, Any
 
 
 def check_password(entry: str) -> int:
@@ -21,6 +22,7 @@ def check_password(entry: str) -> int:
         return 1
     return 0
 
+
 def check_password2(entry: str) -> int:
     entryParts = entry.split()
     
@@ -39,14 +41,14 @@ def check_password2(entry: str) -> int:
     return 0
 
 
-
-def run_part1(title: str, input: [], correctResult: int):
+def run_part1(title: str, input: List[Any], correctResult: int):
     result = 0
     for entry in input:
         result += check_password(entry)
     utils.validate_result(title, result, correctResult)
 
-def run_part2(title: str, input: [], correctResult: int):
+
+def run_part2(title: str, input: List[Any], correctResult: int):
     result = 0
     for entry in input:
         result += check_password2(entry)

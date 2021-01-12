@@ -1,4 +1,5 @@
 import utils
+from typing import List, Dict
 
 #-------------------------------------------------------------------------------
 
@@ -11,8 +12,8 @@ class BagInfo:
         self.count = count
 
 
-BagList = list[BagInfo]
-BagDict = dict[str, BagList]
+BagList = List[BagInfo]
+BagDict = Dict[str, BagList]
 
 #-------------------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ def clean_bag_name(name: str) -> str:
     return name
 
 
-def parse_rules(input: list[str]) -> BagDict:
+def parse_rules(input: List[str]) -> BagDict:
     rules: BagDict = {}
 
     for line in input:
@@ -48,7 +49,7 @@ def parse_rules(input: list[str]) -> BagDict:
     return rules
 
 
-def count_bags_containing(rules: BagDict, bag: str, foundBags: list[str]):
+def count_bags_containing(rules: BagDict, bag: str, foundBags: List[str]):
     for ruleKey in rules:
         for contentBag in rules[ruleKey]:
             if contentBag.bag == bag:
@@ -68,15 +69,15 @@ def count_bags_in(rules: BagDict, bag: str) -> int:
     return result
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     rules = parse_rules(input)
-    foundBags: list[str] = []
+    foundBags: List[str] = []
     count_bags_containing(rules, "shiny gold", foundBags)
     result = len(foundBags)
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     rules = parse_rules(input)
     result = count_bags_in(rules, "shiny gold")
     utils.validate_result(title, result, correctResult)

@@ -1,4 +1,5 @@
 import utils
+from typing import List
 
 
 def loop_transform(value: int, subjectNumber: int) -> int:
@@ -27,7 +28,7 @@ def calculate_encryption_key(publicKey: int, loopSize: int) -> int:
     return encryptKey
 
 
-def run_part1(title: str, input: list[int], correctResult: int):
+def run_part1(title: str, input: List[int], correctResult: int):
     cardPublicKey = input[0]
     doorPublicKey = input[1]
 
@@ -46,7 +47,7 @@ def run_part1(title: str, input: list[int], correctResult: int):
     utils.validate_result(title, result1, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     result = 0
     utils.validate_result(title, result, correctResult)
 
@@ -57,18 +58,9 @@ if __name__ == "__main__":
     print(f"---- Day {day}: Combo Breaker ----")
 
 
-    run_part1("Test Case 1",
-        [5764801,17807724],
-        14897079)
+    # run_part1("Test Case 1",
+    #     [5764801,17807724],
+    #     14897079)
     run_part1("problem",
         [8458505,16050997],
         0)
-
-    # print("---- part 2 ----")
-
-    # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
-    #     0)
-    # run_part2("problem",
-    #     [8458505,16050997],
-    #     0)

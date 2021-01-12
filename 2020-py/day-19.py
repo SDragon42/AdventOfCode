@@ -1,13 +1,14 @@
-from test import find_rule_with_only_strings
 import utils
 import re
+from typing import List, Dict, Any, Optional
+
 # huge refernece from
 # https://topaz.github.io/paste/#XQAAAQAnCgAAAAAAAAA0m0pnuFI8c/fBNApcL1Y57OO7A++6puZ0JXJD/kBA29C/HOta3P9p+BHeTV45JG3dakoaAXufTQCuMSCrM908JfdUCKMTdVciHZCGEpf5Yk1dAAXBwmZE2X0cXQQJmUmI4FG+Ph+D+nIfhnkYdBHCPSAEc8elDbDk4dR8lkza37FF7vA+/sm+M77GjNUTTAB7enRY8imtootH1tuhW69nHowJZ2J7sv0euurJJaDZPbUvvPqiDb3RQuvuiJxN88MaPHiO+pvp6lMzsO0QDz5wWNi2cUDTLRiS/k8EZ80afTVkaH2E6vtroX05RQyjc7h1Yf3eFf4f8v2BWKCfH9iLgteU0yWih8xIUXfqOjYwS0AlQId5EH/xWTn01Wn/3HdWvUrVuUtI8e9RJI1NCVVCbS03ZAKiQzsi3YZxxCj7d8oN2hMqmIjYKBiycNyxSemSR8lCldMGidpd8KRPp3pfW07Jq5zKRfcqUV50tCU8NH1G4/fbcOY4UHQli40PwY031Vb8v0sp1CNxC4EAdX8Wyw07qFdIUJNkD3POItH6pPhsG3r3CTAart7LERoepfwsZeLyyzBlv7N+ZESGETJvGEZZAJSR0KgL+u22Ys11SsUQTkbC7hfE4t/E6xsGcHkBASNtV9C2gm+WZwibxX+5DPnVkIESAmhLw4QtAgPsGKaFe5l020QI4NLrx4G/HujXIoF9pOamxrAErfxWNJfOpp1+aZZ1yfjdRDT7NhQEBfE2iX+jyLcFzSGZ9L5lqe7tDnsAW2SHsIs9ZTcPzDxsB+vtOXcDQh+toIod7cURf1oEAAC0HRj/qbRyYd5/lzHGrO35IYbqLRKTtlgPDbQOPllY0Qbxw6bRNBTG9LFwk8nh0bMd4XzpBHcWN6D1k8q/6Vu24zT1A3sY6eJldPzvdfsXdujOLt2EvZ9XH+akwcZN6Yls+D1ZzCHF2Jt0mnoc59UvZ33J056fo+Fio9/uza77aU93MxvmAvDB+xyXuNoJDWLSHyQeBjRthIYZ6d9RL5+vzI1aq2wrdVp5C76vxoB79LSS2EFBV1KNxSfRFddXbtziYOFfujOq6SmrsEZi5pTRyG88Wrc/yfiiA7LLVWr3l3XV7tvejXNxQJ2731LjBRGGseQcY2s5iIFgF1fBJEzOSdvg9TjxJfjHwmskQmILnHK3ZLkqzc2ItdWgTD23FDYuy3eODWXcUK5x9Ul4l15x6v2YeF4lVm0N/8I0ueM=
 
-RuleChains = list[list[any]]
+RuleChains = List[List[Any]]
 
-def build_rule_dict(input: list[str]) -> dict[int, RuleChains]:
-    rules: dict[int, RuleChains] = {}
+def build_rule_dict(input: List[str]) -> Dict[int, RuleChains]:
+    rules: Dict[int, RuleChains] = {}
 
     for line in input:
         i = line.index(":")
@@ -31,7 +32,7 @@ def build_rule_dict(input: list[str]) -> dict[int, RuleChains]:
     return rules
 
 
-def convert_to_regex_rules(rules: dict[int, RuleChains]) -> dict[int, RuleChains]:
+def convert_to_regex_rules(rules: Dict[int, RuleChains]) -> Dict[int, RuleChains]:
     while True:
         key = get_str_only_rule(rules)
         if not key:
@@ -52,7 +53,7 @@ def rule_is_all_str(rule: RuleChains) -> bool:
     return True
 
 
-def get_str_only_rule(rules: dict[int, RuleChains]) -> int:
+def get_str_only_rule(rules: Dict[int, RuleChains]) -> Optional[int]:
     for key, rule in rules.items():
         if rule_is_all_str(rule):
             return key
@@ -75,7 +76,7 @@ def convert_to_regex(rule: RuleChains) -> str:
     return ref2
 
 
-def replace_references(rules: dict[int, RuleChains], replace_key: int, regex: str) -> dict[int, RuleChains]:
+def replace_references(rules: Dict[int, RuleChains], replace_key: int, regex: str) -> Dict[int, RuleChains]:
     for key, rule in rules.items():
         for gIdx, g in enumerate(rule):
             for cIdx, c in enumerate(g):
@@ -84,7 +85,7 @@ def replace_references(rules: dict[int, RuleChains], replace_key: int, regex: st
     return rules
 
 
-def process_image(imageData: str, rules: dict[str, RuleChains], charIdx: int, ruleKey: str) -> int:
+def process_image(imageData: str, rules: Dict[str, RuleChains], charIdx: int, ruleKey: str) -> int:
     chain: RuleChains = rules[ruleKey]
     # utils.dprint(imageData[charIdx:])
     # utils.dprint(f"rule: {ruleKey}  -  {chain}")
@@ -113,7 +114,7 @@ def process_image(imageData: str, rules: dict[str, RuleChains], charIdx: int, ru
             return successChars
     return 0
 
-def count_valid_images(messages: list[str], regex: str):
+def count_valid_images(messages: List[str], regex: str):
     regex += r'$' # Include line-end in regex to match whole line
     p = re.compile(regex)
     count = 0
@@ -124,7 +125,7 @@ def count_valid_images(messages: list[str], regex: str):
             utils.dprint(message)
     return count
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     end = input.index("")
     rules = build_rule_dict(input[:end])
     rules = convert_to_regex_rules(rules)
@@ -144,7 +145,7 @@ def run_part1(title: str, input: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     end = input.index("")
     rules = build_rule_dict(input[:end])
 

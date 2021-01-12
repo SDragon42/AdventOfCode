@@ -1,12 +1,14 @@
+from typing import List
+
 def generate_filename(day: int, name: str) -> str:
     filename = f".\\data\\day{day:02d}\\{name}.txt"
     return filename
 
 
-def read_input_as_int_list(day: int, name: str) -> list[int]:
-    """ Reads the input file as a list of ints """
+def read_input_as_int_list(day: int, name: str) -> List[int]:
+    """ Reads the input file as a List of ints """
     filename = generate_filename(day, name)
-    data: list[int] = []
+    data: List[int] = []
     with open(filename) as dataFile:
         while True:
             line = dataFile.readline()
@@ -18,10 +20,10 @@ def read_input_as_int_list(day: int, name: str) -> list[int]:
     return data
 
 
-def read_input_as_list(day: int, name: str) -> list[str]:
-    """ Reads the input file as a list of ints """
+def read_input_as_list(day: int, name: str) -> List[str]:
+    """ Reads the input file as a List of ints """
     filename = generate_filename(day, name)
-    data: list[str] = []
+    data: List[str] = []
     with open(filename) as dataFile:
         while True:
             line = dataFile.readline()
@@ -39,7 +41,7 @@ def read_input(day: int, name: str) -> str:
         return result
 
 
-def show_title(day: int, puzzle: int, title: str):
+def show_title(day: int, puzzle: int, title: str) -> None:
     """ Shows the Day/Puzzle/title header """
     print("------------------------------------------------------------")
     print(f"Day {day} Puzzle {puzzle} - {title}")
@@ -47,7 +49,7 @@ def show_title(day: int, puzzle: int, title: str):
     print()
 
 
-def validate_result(title: str, value, correct_value):
+def validate_result(title: str, value, correct_value) -> None:
     print(f"{title}  --  Result: {value}")
     if correct_value == value:
         print("   CORRECT")

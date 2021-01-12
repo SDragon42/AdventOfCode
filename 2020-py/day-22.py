@@ -1,7 +1,8 @@
 import utils
+from typing import List
 
 
-CardList = list[int]
+CardList = List[int]
 
 Const_Player1 = "Player 1"
 Const_Player2 = "Player 2"
@@ -53,7 +54,7 @@ def play_combat(p1Deck: CardList, p2Deck: CardList) -> CardList:
     return p2Deck
 
 
-def add_to_history(game: int, p1Deck: CardList, p2Deck: CardList, history: list[str]) -> bool:
+def add_to_history(game: int, p1Deck: CardList, p2Deck: CardList, history: List[str]) -> bool:
     p1DeckStr = ",".join(str(x) for x in p1Deck)
     p2DeckStr = ",".join(str(x) for x in p2Deck)
     state = f"Game {game}|{Const_Player1}:{p1DeckStr}|{Const_Player2}:{p2DeckStr}"
@@ -64,7 +65,7 @@ def add_to_history(game: int, p1Deck: CardList, p2Deck: CardList, history: list[
 
 
 nextGame:int = 1
-def play_recursive_combat(p1Deck: CardList, p2Deck: CardList, history: list[str]) -> tuple[str, CardList]:
+def play_recursive_combat(p1Deck: CardList, p2Deck: CardList, history: List[str]) -> tuple[str, CardList]:
     global nextGame
 
     game = nextGame
@@ -148,7 +149,7 @@ def run_part1(title: str, input: str, correctResult: int):
 
 def run_part2(title: str, input: str, correctResult: int):
     p1Deck, p2Deck = parse_input(input)
-    history: list[str] = []
+    history: List[str] = []
     winner, winnerDeck = play_recursive_combat(p1Deck, p2Deck, history)
     result = calculate_score(winnerDeck, 1)
     utils.validate_result(title, result, correctResult)

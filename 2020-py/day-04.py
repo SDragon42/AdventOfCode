@@ -1,10 +1,13 @@
 import utils
 import re
+from typing import List
 
 
 class KeyValuePair:
-    key = ""
-    value = ""
+    key: str
+    value: str
+
+#-------------------------------------------------------------------------------
 
 
 def validate_birth_year(value):
@@ -46,8 +49,8 @@ def validate_passport_id(value):
     return isMatch is not None
 
 
-def get_passort_key_values(lines: list[str]) -> list[KeyValuePair]:
-    keyValues = list[KeyValuePair]()
+def get_passort_key_values(lines: List[str]) -> List[KeyValuePair]:
+    keyValues: List[KeyValuePair] = []
 
     for l in lines:
         parts = l.split()
@@ -63,7 +66,7 @@ def get_passort_key_values(lines: list[str]) -> list[KeyValuePair]:
     return keyValues
 
 
-def has_required_fields(keyValues: list[KeyValuePair]) -> bool:
+def has_required_fields(keyValues: List[KeyValuePair]) -> bool:
     for key in passportFieldDict:
         notFound = True
 
@@ -78,7 +81,7 @@ def has_required_fields(keyValues: list[KeyValuePair]) -> bool:
     return True
 
 
-def validate_passort_fields(keyValues: list[KeyValuePair]) -> bool:
+def validate_passort_fields(keyValues: List[KeyValuePair]) -> bool:
     try:
         result = True
         for kv in keyValues:
@@ -89,7 +92,7 @@ def validate_passort_fields(keyValues: list[KeyValuePair]) -> bool:
         return False
 
 
-def count_valid_passorts(input: list[str], checkValues: bool) -> int:
+def count_valid_passorts(input: List[str], checkValues: bool) -> int:
     passportCount = 0
 
     ppStart = 0
@@ -117,7 +120,7 @@ def count_valid_passorts(input: list[str], checkValues: bool) -> int:
     return passportCount
 
 
-def run(title: str, checkValues: bool, input: list[str], correctResult: int):
+def run(title: str, checkValues: bool, input: List[str], correctResult: int):
     result = count_valid_passorts(input, checkValues)
     utils.validate_result(title, result, correctResult)
 

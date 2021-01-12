@@ -1,9 +1,9 @@
 # from typing import AnyStr, Callable
-from typing import Callable
+from typing import List, Callable
 import utils
 
 
-def count_unique_answers(lines: list[str]) -> int:
+def count_unique_answers(lines: List[str]) -> int:
     answers = []
 
     for line in lines:
@@ -14,7 +14,7 @@ def count_unique_answers(lines: list[str]) -> int:
     return len(answers)
 
 
-def count_unique_unanimous_answers(lines: list[str]) -> int:
+def count_unique_unanimous_answers(lines: List[str]) -> int:
     answers = {}
     pCount = 0
 
@@ -34,7 +34,7 @@ def count_unique_unanimous_answers(lines: list[str]) -> int:
     return result
 
 
-def run(title: str, input: list[str], process: Callable[[list[str]], int], correctResult: int):
+def run(title: str, input: List[str], process: Callable[[List[str]], int], correctResult: int):
     result = 0
 
     groupStart = 0

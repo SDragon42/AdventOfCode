@@ -1,7 +1,8 @@
 import utils
+from typing import List
 
 
-def count_trees(input: list[str], slopeX: int, slopeY: int) -> int:
+def count_trees(input: List[str], slopeX: int, slopeY: int) -> int:
     x = 0
     y = 0
     numTrees = 0
@@ -21,7 +22,7 @@ def count_trees(input: list[str], slopeX: int, slopeY: int) -> int:
     return numTrees
 
 
-def run(title: str, input: list[str], slopes: list[str], correctResult: int):
+def run(title: str, input: List[str], slopes: List[str], correctResult: int):
     result = 1
     for sl in slopes:
         result *= count_trees(input, int(sl[0]), int(sl[1]))

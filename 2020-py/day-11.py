@@ -1,4 +1,5 @@
 import utils
+from typing import List, Dict
 
 # classes
 #--------------------------------------------------------------------------------
@@ -10,7 +11,7 @@ class Offsets:
         self.x = xOffset
         self.y = yOffset
 
-directionOffsets: list[Offsets] = [
+directionOffsets: List[Offsets] = [
     Offsets(-1, -1),
     Offsets(0, -1),
     Offsets(1, -1),
@@ -24,7 +25,7 @@ directionOffsets: list[Offsets] = [
 
 # type aliases
 #--------------------------------------------------------------------------------
-table = list[list[str]]
+table = List[List[str]]
 
 
 
@@ -39,10 +40,10 @@ def clone_table(seats: table) -> table:
     return cloned
 
 
-def input_list_to_table(input: list[str]) -> table:
+def input_list_to_table(input: List[str]) -> table:
     seats: table = []
     for y in input:
-        seats.append(list(y))
+        seats.append(List(y))
     return seats
 
 
@@ -134,7 +135,7 @@ def rule_occupied_seat_part2(x: int, y: int, seats: table) -> str:
 
 # Common
 #--------------------------------------------------------------------------------
-def apply_rules_to_seats(seats: table, rules: dict) -> int:
+def apply_rules_to_seats(seats: table, rules: Dict) -> int:
     numChanges = 0
     y = 0
 
@@ -158,7 +159,7 @@ def apply_rules_to_seats(seats: table, rules: dict) -> int:
 
 
 
-def run(title: str, input: list[str], correctResult: int, rules: dict):
+def run(title: str, input: List[str], correctResult: int, rules: Dict):
     seats = input_list_to_table(input)
 
     numChanges = -1

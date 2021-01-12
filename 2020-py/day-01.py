@@ -1,7 +1,8 @@
 import utils
+from typing import List
 
 
-def get_value(num_splits: int, testInput: list[int], testValues: list[int]) -> int:
+def get_value(num_splits: int, testInput: List[int], testValues: List[int]) -> int:
     if num_splits == 0:
         for x in testInput:
             sumTotal = x
@@ -25,7 +26,7 @@ def get_value(num_splits: int, testInput: list[int], testValues: list[int]) -> i
     return -1
 
 
-def run(title: str, num_splits: int, input: list[int], correctResult: int):
+def run(title: str, num_splits: int, input: List[int], correctResult: int):
     result = get_value(num_splits, input, [])
     utils.validate_result(title, result, correctResult)
 

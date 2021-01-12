@@ -1,14 +1,13 @@
-from typing import final
+from typing import List, Dict
 import utils
-import collections
 
 # ref: https://github.com/BastiHz/Advent_of_Code/blob/main/2020/day_21.py
 
 # Types
 IngredientsSet = set[str]
-AllergenList = list[str]
-AllergenIngredientDict = dict[str, IngredientsSet]
-IngredientCounterDict = dict[str, int]
+AllergenList = List[str]
+AllergenIngredientDict = Dict[str, IngredientsSet]
+IngredientCounterDict = Dict[str, int]
 
 
 def parse_food_line(line: str) -> tuple[IngredientsSet, AllergenList]:
@@ -18,7 +17,7 @@ def parse_food_line(line: str) -> tuple[IngredientsSet, AllergenList]:
     return ingredients, allergens
 
 
-def process_food_lines(foodLineList: list[str]) -> tuple[AllergenIngredientDict, IngredientCounterDict]:
+def process_food_lines(foodLineList: List[str]) -> tuple[AllergenIngredientDict, IngredientCounterDict]:
     allergen_ingredients: AllergenIngredientDict = {}
     ingredient_counter: IngredientCounterDict = {}
 
@@ -47,7 +46,7 @@ def get_ingredients_without_allergens(allergen_ingredients: AllergenIngredientDi
     return without_allergens
 
 
-def run_part1(title: str, inputList: list[str], correctResult: int):
+def run_part1(title: str, inputList: List[str], correctResult: int):
     allergen_ingredients, ingredient_counter =  process_food_lines(inputList)
 
     without_allergens = get_ingredients_without_allergens(allergen_ingredients, ingredient_counter)
@@ -56,7 +55,7 @@ def run_part1(title: str, inputList: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, inputList: list[str], correctResult: str):
+def run_part2(title: str, inputList: List[str], correctResult: str):
     allergen_ingredients, ingredient_counter =  process_food_lines(inputList)
 
     finished = False

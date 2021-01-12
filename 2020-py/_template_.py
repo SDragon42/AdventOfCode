@@ -1,12 +1,13 @@
 import utils
+from typing import List
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     result = 0
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     result = 0
     utils.validate_result(title, result, correctResult)
 
