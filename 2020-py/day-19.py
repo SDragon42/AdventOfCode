@@ -7,6 +7,7 @@ from typing import List, Dict, Any, Optional
 
 RuleChains = List[List[Any]]
 
+
 def build_rule_dict(input: List[str]) -> Dict[int, RuleChains]:
     rules: Dict[int, RuleChains] = {}
 
@@ -61,8 +62,6 @@ def get_str_only_rule(rules: Dict[int, RuleChains]) -> Optional[int]:
 
 
 def convert_to_regex(rule: RuleChains) -> str:
-    # ref1 =  r'(' + '|'.join(['('+ ''.join([c for cs in group for c in cs])+ ')' for group in rule]) + ')'
-
     parts = []
     for group in rule:
         subParts = []
@@ -87,10 +86,7 @@ def replace_references(rules: Dict[int, RuleChains], replace_key: int, regex: st
 
 def process_image(imageData: str, rules: Dict[str, RuleChains], charIdx: int, ruleKey: str) -> int:
     chain: RuleChains = rules[ruleKey]
-    # utils.dprint(imageData[charIdx:])
-    # utils.dprint(f"rule: {ruleKey}  -  {chain}")
     for orChain in chain:
-        # utils.dprint(f"    {orChain}")
         successChars = 0
         for x in orChain:
             if charIdx + successChars >= len(imageData):
@@ -98,8 +94,6 @@ def process_image(imageData: str, rules: Dict[str, RuleChains], charIdx: int, ru
 
             if x == "a" or x == "b":
                 if x == imageData[charIdx + successChars]:
-                    # utils.dprint("    MATCH")
-                    # utils.dprint("")
                     return 1
                 else:
                     return 0
@@ -114,6 +108,7 @@ def process_image(imageData: str, rules: Dict[str, RuleChains], charIdx: int, ru
             return successChars
     return 0
 
+
 def count_valid_images(messages: List[str], regex: str):
     regex += r'$' # Include line-end in regex to match whole line
     p = re.compile(regex)
@@ -125,6 +120,7 @@ def count_valid_images(messages: List[str], regex: str):
             utils.dprint(message)
     return count
 
+
 def run_part1(title: str, input: List[str], correctResult: int):
     end = input.index("")
     rules = build_rule_dict(input[:end])
@@ -134,14 +130,6 @@ def run_part1(title: str, input: List[str], correctResult: int):
 
     regex = convert_to_regex(rules[0])
     result = count_valid_images(images, regex)
-    # result = 0
-    # for imageData in images:
-    #     # charIdx = 0
-    #     # utils.dprint(f"IMG: {imageData}")
-    #     charsMatched = process_image(imageData, rules, 0, "0") 
-    #     if charsMatched == len(imageData):
-    #         result += 1
-    #         utils.dprint(f"IMG: {imageData}")
     utils.validate_result(title, result, correctResult)
 
 
@@ -167,18 +155,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     images = input[end+1:]
 
     result = count_valid_images(images, regex)
-
-    # result = 0
-    # for imageData in images:
-    #     # charIdx = 0
-    #     # utils.dprint(f"IMG: {imageData}")
-    #     if imageData == "aaaabbaaaabbaaa":
-    #         print("---------")
-    #         pass
-    #     charsMatched = process_image(imageData, rules, 0, "0") 
-    #     if charsMatched == len(imageData):
-    #         result += 1
-    #         utils.dprint(f"IMG: {imageData}")
+    
     utils.validate_result(title, result, correctResult)
 
 

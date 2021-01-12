@@ -87,18 +87,18 @@ if __name__ == "__main__":
     day = 21
     print(f"---- Day {day}: Allergen Assessment ----")
 
-    run_part1("Test Case 1",
-        utils.read_input_as_list(day, "example1"),
-        5)
+    # run_part1("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     5)
     run_part1("problem",
         utils.read_input_as_list(day, "input"),
         2262)
 
     print("---- part 2 ----")
 
-    run_part2("Test Case 1",
-        utils.read_input_as_list(day, "example1"),
-        "mxmxvkd,sqjhc,fvjkl")
+    # run_part2("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     "mxmxvkd,sqjhc,fvjkl")
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         "cxsvdm,glf,rsbxb,xbnmzr,txdmlzd,vlblq,mtnh,mptbpz")

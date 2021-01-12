@@ -163,9 +163,9 @@ if __name__ == "__main__":
     # run_part1("Test Case 1",
     #     utils.read_input(day, "example1"),
     #     306)
-    # run_part1("problem",
-    #     utils.read_input(day, "input"),
-    #     31314)
+    run_part1("problem",
+        utils.read_input(day, "input"),
+        31314)
 
     print("---- part 2 ----")
 

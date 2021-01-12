@@ -165,12 +165,9 @@ def run(title: str, input: List[str], correctResult: int, rules: Dict):
     numChanges = -1
     numPasses = 0
 
-
-    # show_seat_map(seats, "Initial")
     while(numChanges != 0):
         numPasses += 1
         numChanges = apply_rules_to_seats(seats, rules)
-        # show_seat_map(seats, f"Pass: {numPasses}")
 
     result = count_occupied_seats(seats)
     utils.validate_result(title, result, correctResult)
@@ -185,10 +182,10 @@ if __name__ == "__main__":
         "#": rule_occupied_seat_part1,
     }
 
-    run("Test Case 1",
-        utils.read_input_as_list(11, "example1"),
-        37,
-        rules_part1)
+    # run("Test Case 1",
+    #     utils.read_input_as_list(11, "example1"),
+    #     37,
+    #     rules_part1)
     run("problem",
         utils.read_input_as_list(11, "input"),
         2238,
@@ -202,10 +199,10 @@ if __name__ == "__main__":
         "#": rule_occupied_seat_part2,
     }
 
-    run("Test Case 1",
-        utils.read_input_as_list(11, "example1"),
-        26,
-        rules_part2)
+    # run("Test Case 1",
+    #     utils.read_input_as_list(11, "example1"),
+    #     26,
+    #     rules_part2)
     run("problem",
         utils.read_input_as_list(11, "input"),
         2013,

@@ -142,18 +142,18 @@ if __name__ == "__main__":
     day = 14
     print(f"---- Day {day}: Docking Data ----")
 
-    run_part1("Test Case 1",
-        utils.read_input_as_list(day, "example1"),
-        165)
+    # run_part1("Test Case 1",
+    #     utils.read_input_as_list(day, "example1"),
+    #     165)
     run_part1("problem",
         utils.read_input_as_list(day, "input"),
         11327140210986)
 
     print("---- part 2 ----")
 
-    run_part2("Test Case 1",
-        utils.read_input_as_list(day, "example2"),
-        208)
+    # run_part2("Test Case 1",
+    #     utils.read_input_as_list(day, "example2"),
+    #     208)
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         2308180581795)
