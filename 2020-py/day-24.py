@@ -1,14 +1,14 @@
 import utils
 import collections
-import math
+from typing import List, Dict
 
 BLACK = True
 WHITE = False
 
 class SpatialAddress:
-    coordinates: list[int] = []
+    coordinates: List[int] = []
 
-    def __init__(self, coordinates: list[int]) -> None:
+    def __init__(self, coordinates: List[int]) -> None:
         self.coordinates = coordinates
 
     def __str__(self) -> str:
@@ -29,7 +29,7 @@ class SpatialAddress:
 #-------------------------------------------------------------------------------
 
 
-directionOffsets: dict[str, 'SpatialAddress'] = {
+directionOffsets: Dict[str, 'SpatialAddress'] = {
     "e": SpatialAddress([2, 0]),
     "w": SpatialAddress([-2, 0]),
     "ne": SpatialAddress([1, 1]),
@@ -38,10 +38,10 @@ directionOffsets: dict[str, 'SpatialAddress'] = {
     "sw": SpatialAddress([-1, -1]),
 }
 
-TileDict = dict[str, bool]
+TileDict = Dict[str, bool]
 
 
-def parse_move_line(line: str) -> list[str]:
+def parse_move_line(line: str) -> List[str]:
     moveList = []
     i = 0
     while i < len(line):
@@ -53,7 +53,7 @@ def parse_move_line(line: str) -> list[str]:
     return moveList
 
 
-def get_addr(moveList: list[str]) -> SpatialAddress:
+def get_addr(moveList: List[str]) -> SpatialAddress:
     addr = SpatialAddress([0, 0])
     for move in moveList:
         offset = directionOffsets[move]
@@ -61,7 +61,7 @@ def get_addr(moveList: list[str]) -> SpatialAddress:
     return addr
 
 
-def count_black_tiles(values: list[bool]) -> int:
+def count_black_tiles(values: List[bool]) -> int:
     count = 0
     for v in values:
         if v == BLACK:
@@ -70,7 +70,7 @@ def count_black_tiles(values: list[bool]) -> int:
 
 
 
-def build_tile_floor(input: list[str]) -> TileDict:
+def build_tile_floor(input: List[str]) -> TileDict:
     tileFloor: TileDict = collections.defaultdict(bool)
     for line in input:
         moveList = parse_move_line(line)
@@ -110,7 +110,7 @@ def get_range(tileFloor: TileDict, dimIdx: int) -> tuple[int, int]:
     return (low, high)
 
 
-def get_search_range(tileFloor: TileDict, dimension: int) -> list[int]:
+def get_search_range(tileFloor: TileDict, dimension: int) -> List[int]:
     r = get_range(tileFloor, dimension)
     r = (r[0] - 1, r[1] + 1)
     dist = abs(r[1] - r[0]) + 1
@@ -119,11 +119,11 @@ def get_search_range(tileFloor: TileDict, dimension: int) -> list[int]:
     return l
 
 
-def build_address_list(tileFloor: TileDict) -> list[str]:
+def build_address_list(tileFloor: TileDict) -> List[str]:
     xRange = get_search_range(tileFloor, 0)
     yRange = get_search_range(tileFloor, 1)
 
-    addressKeys: list[str] = []
+    addressKeys: List[str] = []
     for x in xRange:
         for y in yRange:
             bothOdd = (x % 2 == 1 and y % 2 == 1)
@@ -171,21 +171,21 @@ def update_floor_tiles(tileFloor: TileDict):
             tileFloor[addressKey] = rule_white_tile(addressKey, prevFloor)
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     tileFloor = build_tile_floor(input)
-    result = count_black_tiles(tileFloor.values())
+    result = count_black_tiles([x for x in tileFloor.values()])
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     tileFloor = build_tile_floor(input)
     day = 0
-    result = count_black_tiles(tileFloor.values())
+    result = count_black_tiles([x for x in tileFloor.values()])
     utils.dprint(f"Initial: {result} black tiles")
     while day < 100:
         day += 1
         update_floor_tiles(tileFloor)
-        result = count_black_tiles(tileFloor.values())
+        result = count_black_tiles([x for x in tileFloor.values()])
         utils.dprint(f"Day {day}: {result}")
 
 

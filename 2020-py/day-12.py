@@ -1,4 +1,5 @@
 import utils
+from typing import List
 
 
 class WaypointPosition:
@@ -117,25 +118,22 @@ def full_steam_ahead(currentPos: Position, value: int) -> Position:
 #-------------------------------------------------------------------------------
 
 
-def move_ship(currentPos: Position, code: str, value: int, path: list[Position]) -> Position:
-
+def move_ship(currentPos: Position, code: str, value: int, path: List[Position]) -> Position:
     if code == "F":
         code = currentPos.heading
 
-    if code in actions:
-        newPos = actions[code](currentPos, value)
-        path.append(newPos)
-
+    newPos = actions[code](currentPos, value)
+    path.append(newPos)
     return newPos
-
+    
 
 def calc_manhattan_distance(x: int, y: int) -> int:
     return abs(x) + abs(y)
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     currentPos = Position(0, 0, "E")
-    path: list[Position] = []
+    path: List[Position] = []
     path.append(currentPos)
 
     for data in input:
@@ -147,11 +145,11 @@ def run_part1(title: str, input: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     currentPos = Position(0, 0, "E")
     currentPos.waypoint = WaypointPosition(10, 1)
 
-    path: list[Position] = []
+    path: List[Position] = []
     path.append(currentPos)
 
     for data in input:

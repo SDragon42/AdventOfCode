@@ -1,4 +1,5 @@
 import utils
+from typing import List, Dict
 
 class LastSaid:
     value: str = ""
@@ -6,8 +7,8 @@ class LastSaid:
     prevTurn: int = 0
 
 
-def run(title: str, input: list[str], lastTurn: int, correctResult: int):
-    history: dict[str, int] = {}
+def run(title: str, input: List[str], lastTurn: int, correctResult: int):
+    history: Dict[str, int] = {}
     turn = 0
     ls = LastSaid()
     initialSeq = input[0].split(",")

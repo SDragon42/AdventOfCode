@@ -1,4 +1,5 @@
 import utils
+from typing import List
 
 OPS = ["+","*"]
 
@@ -93,7 +94,7 @@ def evaluate2(equation: str) -> int:
 
     return result
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     result = 0
     for line in input:
         result += evaluate(line)
@@ -102,7 +103,7 @@ def run_part1(title: str, input: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     result = 0
     for line in input:
         total = evaluate2(line)

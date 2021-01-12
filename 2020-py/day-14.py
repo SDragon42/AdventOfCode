@@ -1,19 +1,19 @@
 import utils
 import math
-import re
+from typing import List, Dict
 
 bitWidth: int = 36
 
-memory: dict[int, int] = {}
+memory: Dict[int, int] = {}
 mask: str = "".rjust(bitWidth, "X")
 
 
-def int_to_binary(value: int) -> list[str]:
-    ba = list(bin(value)[2:].rjust(bitWidth, "0"))
+def int_to_binary(value: int) -> List[str]:
+    ba = List(bin(value)[2:].rjust(bitWidth, "0"))
     return ba
 
 
-def binary_to_int(bValue: list[str]) -> int:
+def binary_to_int(bValue: List[str]) -> int:
     value = int("".join(bValue), 2)
     return value
 
@@ -23,7 +23,7 @@ def set_mask(line: str):
     mask = line[7:]
 
 
-def apply_mask_v1(bValue: list[str]):
+def apply_mask_v1(bValue: List[str]):
     global mask
     i = 0
     while i < len(mask):
@@ -47,7 +47,7 @@ def set_memory_v1(line: str):
     memory[address] = value
 
 
-def apply_mask_v2(bValue: list[str]):
+def apply_mask_v2(bValue: List[str]):
     global mask
     i = 0
     while i < len(mask):
@@ -56,7 +56,7 @@ def apply_mask_v2(bValue: list[str]):
         i += 1
 
 
-def flip_address_bits(bValue: list[str], replacements: str) -> list[str]:
+def flip_address_bits(bValue: List[str], replacements: str) -> List[str]:
     i = 0
     while i < len(bValue):
         if bValue[i] == "X":
@@ -66,9 +66,9 @@ def flip_address_bits(bValue: list[str], replacements: str) -> list[str]:
     return bValue
 
 
-def get_all_possible_addresses(bValue: list[str]) -> list[int]:
+def get_all_possible_addresses(bValue: List[str]) -> List[int]:
     global mask
-    addresses: list[int] = []
+    addresses: List[int] = []
     count = mask.count("X")
     num = int(math.pow(2, count))
     rangeNums = range(num)
@@ -96,7 +96,7 @@ def set_memory_v2(line: str):
         memory[addr] = value
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     global memory
     memory.clear()
 
@@ -117,7 +117,7 @@ def run_part1(title: str, input: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     global memory
     memory.clear()
 

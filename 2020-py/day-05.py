@@ -1,4 +1,5 @@
 import utils
+from typing import List
 
 
 def get_row(lowCode: str, highCode: str, lowStart: int, highStart: int, input: str) -> int:
@@ -24,7 +25,7 @@ def get_seat_id(boardingPass: str) -> int:
     return seatId
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     result = 0
     for bPass in input:
         seatId = get_seat_id(bPass)
@@ -33,7 +34,7 @@ def run_part1(title: str, input: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     seats = []
     for x in range(1024):
         seats.append(x)

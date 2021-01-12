@@ -1,8 +1,9 @@
 import utils
+from typing import List, Dict
 
 
-def get_jolt_differences(adapters: list[int]) -> dict[int, int]:
-    diffDict: dict[int, int] = {}
+def get_jolt_differences(adapters: List[int]) -> Dict[int, int]:
+    diffDict: Dict[int, int] = {}
     
     last = 0
     for a in adapters:
@@ -15,15 +16,15 @@ def get_jolt_differences(adapters: list[int]) -> dict[int, int]:
     return diffDict
 
 
-def get_next_possible_adapters(current: int, adapters: list[int]) -> list[int]:
-    result: list[int] = []
+def get_next_possible_adapters(current: int, adapters: List[int]) -> List[int]:
+    result: List[int] = []
     for x in adapters:
         if x > current and x <= current + 3:
             result.append(x)
     return result
 
 
-def count_adapterChains(current:int, adapters: list[int], chainsUnder: dict[int, int]) -> int:
+def count_adapterChains(current:int, adapters: List[int], chainsUnder: Dict[int, int]) -> int:
     if current in chainsUnder:
         return chainsUnder[current]
 
@@ -38,7 +39,7 @@ def count_adapterChains(current:int, adapters: list[int], chainsUnder: dict[int,
     return result
 
 
-def run_part1(title: str, adapters: list[str], correctResult: int):
+def run_part1(title: str, adapters: List[int], correctResult: int):
     adapters = sorted(adapters)
     adapters.append(max(adapters) + 3)
 
@@ -48,8 +49,8 @@ def run_part1(title: str, adapters: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, adapters: list[str], correctResult: int):
-    chainsUnder: dict[int, int] = {}
+def run_part2(title: str, adapters: List[int], correctResult: int):
+    chainsUnder: Dict[int, int] = {}
     adapters = sorted(adapters)
     
     result = count_adapterChains(0, adapters, chainsUnder)

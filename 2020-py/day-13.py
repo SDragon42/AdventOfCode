@@ -1,5 +1,6 @@
 import math
 import utils
+from typing import List
 
 class BusDepatureInfo:
     busId: int = 0
@@ -16,8 +17,8 @@ def get_next_time(currentTime: int, busId: int) -> int:
         currentTime += 1
     return currentTime
 
-def get_soonest_bus(earliestTime: int, buses: list[str]) -> BusDepatureInfo:
-    nextDepartures: list(BusDepatureInfo) = []
+def get_soonest_bus(earliestTime: int, buses: List[str]) -> BusDepatureInfo:
+    nextDepartures: List[BusDepatureInfo] = []
 
     for x in buses:
         if x == "x":
@@ -45,7 +46,7 @@ def get_next_matching_time(time: int, busId: int, increment: int, offset: int) -
     return time
 
 
-def run_part1(title: str, input: list[str], correctResult: int):
+def run_part1(title: str, input: List[str], correctResult: int):
     earliestTime = int(input[0])
     buses = input[1].split(",")
     bus = get_soonest_bus(earliestTime, buses)
@@ -53,7 +54,7 @@ def run_part1(title: str, input: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[str], correctResult: int):
+def run_part2(title: str, input: List[str], correctResult: int):
     buses = input[1].split(",")
     increment = 0
     lcmValue = 1

@@ -1,4 +1,5 @@
 import utils
+from typing import List, Dict
 
 # Assistence from:
 # https://topaz.github.io/paste/#XQAAAQBmBwAAAAAAAAA0m0pnuFI8c/fBNApcL1pmU7gQJ13v1+YhguIn3pR0zOaQ4v8vj0T0GZD91/Qbo2hM5nCqaFlDw+OBPRSF3ewxIy5NZrOqQbD9Kh7oFNwchmD9695r4vyj+mz1c4oXVWCGYHHwJ2VwiL3QE7OrbNzmf2w9+mDd+zLHFeykh3A6dHonmdmCrpyWv9HWuYGtqYmaTmo0XPFtAbhipfsM5QpMgmJca3QZDAyJ2VutU4lqC1zCBnqJPh81yJaW7+5A12miU2B58CiK3YmwFi5dt6gYyutT/6sW6nPhSpIu+04o47ZoEuRvPF+Sbc7OptvVIJAgPtQRSU7Urjnb3GxLnj61pTk3oc7o5G97Qx85tpA0/TA9LYq6QCARuEKSUn/kJJMujuDHGGRdjEU85SY5afeqaKlIGStnDCp26i4n0iX2z65LF8QUVap9GUamNLeelfLlqcXCKselRZJeC5eiDfWHe30MG/DuZ35NSh3Ui7qK2R5SXVIcz5ofmhI11FLhgCGdVvJ2CyHl/TEmEzTdZWK90OVTZkzygCuQf608vj3GpQeocemQvGNT98YWNdVwG+49RlCSluol1A8lkBd/mYu416rsFVQK+9TtOiummhnxTLo2SGEbgSdL0x0cEGq9cuka6BF2Sp1kyHTWPoQ3H3StqUB5y6jAC8h7oXJZqcseoUvhZUsVUgj9FQRcSASOvoxqgP+4urD4d1QeiStRA3qHB/nJBUcDkP7c7LkrJvYVz0jOUJiTPHDLbwob4ZxBtEj+/yok0WRApn6Txw9m7NBcVS2q/AqiItbrLa/qi01kFFsPqi2CesKmBkK95zUXYulQ3t95nY/y+xWiu+i6VBVZYNsUf/aAlTA8U2t8u95Mr2ssn6H0aRP2x2FAjG8wXz/4a2VfgI7sYWbLBRo5Mt/Z32LGpDWm/FR58ow/E6Ms/H7NklhKu4wm49uBjXGzXStI5404a0Tj1To1dLa9SQiFSdzxYGysBOJl7NuwCUDhayr86aIFcM46MntjuYy/6teQ0ea/ZmTmgapT+Mt3ZNgTJuCFUuwPGfE2hMQ3Sl1M11rDCocsaVFjpYUcGLP9TF//+h1+DFbV2vRMx4pSjl1JiaotagEb+iNVDgfDB+Or61U8Bp9hKk0Yhx3+1CuRTPuxynwKydwZ2u7cw9tJYluBIVJGQ1qg9qwiMfVfJVyQLv/8oErq
@@ -6,12 +7,12 @@ import utils
 class CrabCups:
 
     cupMinMax: tuple[int, int] = (0,0)
-    cupLinks: dict[int, int] = {}
+    cupLinks: Dict[int, int] = {}
     current: int = 0
     totalMoves: int = 0
     move: int = 0
 
-    def __init__(self, cupLinks: dict[int, int], head: int, numMoves: int) -> None:
+    def __init__(self, cupLinks: Dict[int, int], head: int, numMoves: int) -> None:
         self.cupLinks = cupLinks
         self.current = head
         self.totalMoves = numMoves
@@ -32,7 +33,7 @@ class CrabCups:
 
         return True
 
-    def take_cups(self, numCups: int) -> list[int]:
+    def take_cups(self, numCups: int) -> List[int]:
         liftedCuplist = []
         tmp = self.current
         i = 0
@@ -45,7 +46,7 @@ class CrabCups:
         self.cupLinks[tmp] = -1
         return liftedCuplist
 
-    def get_target_cup(self, excludedCupsList: list[int]) -> int:
+    def get_target_cup(self, excludedCupsList: List[int]) -> int:
         targetCup = self.current
         while True:
             targetCup -= 1
@@ -56,7 +57,7 @@ class CrabCups:
             break
         return targetCup
 
-    def add_cups_at(self, toAdd: list[int], afterCup: int):
+    def add_cups_at(self, toAdd: List[int], afterCup: int):
         tmp = self.cupLinks[afterCup]
         self.cupLinks[afterCup] = toAdd[0]
         self.cupLinks[toAdd[len(toAdd) - 1]] = tmp
@@ -80,11 +81,11 @@ class CrabCups:
 
 #-------------------------------------------------------------------------------
 
-def str_to_int_list(input: str) -> list[int]:
+def str_to_int_list(input: str) -> List[int]:
     return [int(x) for x in input]
 
 
-def int_list_to_dict_links(values: list[int]) -> dict[int, int]:
+def int_list_to_dict_links(values: List[int]) -> Dict[int, int]:
     links = {number: values[(idx + 1) % len(values)] for idx, number in enumerate(values)}
     return links
 

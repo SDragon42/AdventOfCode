@@ -1,9 +1,10 @@
 import utils
+from typing import List, Dict
 
 class SpatialAddress:
-    coordinates: list[int] = []
+    coordinates: List[int] = []
 
-    def __init__(self, coordinates: list[int]):
+    def __init__(self, coordinates: List[int]):
         self.coordinates = coordinates
 
     def __str__(self) -> str:
@@ -28,12 +29,12 @@ class ConwayCube:
     ACTIVE = "#"
     INACTIVE = "."
 
-    SHIFTS: list[SpatialAddress] = []
+    SHIFTS: List[SpatialAddress] = []
 
-    cubeSpace: dict[str, str] = {}
+    cubeSpace: Dict[str, str] = {}
     numDimensions: int = 0
 
-    def __init__(self, inputList: list[str], numDimensions: int):
+    def __init__(self, inputList: List[str], numDimensions: int):
         self.numDimensions = numDimensions
         y = len(inputList) // 2
         xStart = (len(inputList[0])) // 2 * -1
@@ -51,7 +52,7 @@ class ConwayCube:
 
         self.build_address_offsets([0] * numDimensions)
 
-    def inc_index(self, i: int, arr: list[int], maxIdx: int) -> bool:
+    def inc_index(self, i: int, arr: List[int], maxIdx: int) -> bool:
         if arr[i] < maxIdx:
             arr[i] += 1
             return True
@@ -63,7 +64,7 @@ class ConwayCube:
 
         return self.inc_index(i + 1, arr, maxIdx)
 
-    def build_address_offsets(self, indexList: list[int]):
+    def build_address_offsets(self, indexList: List[int]):
         self.SHIFTS.clear()
         offsetRange = [i for i in range(3)]
         maxIdx = len(offsetRange) - 1
@@ -87,8 +88,8 @@ class ConwayCube:
         s = [int(value) for value in coordinate.split(",")]
         return SpatialAddress(s)
 
-    def make_int_list(self, low: int, high: int) -> list[int]:
-        result: list[int] = []
+    def make_int_list(self, low: int, high: int) -> List[int]:
+        result: List[int] = []
         while low <= high:
             result.append(low)
             low += 1
@@ -104,7 +105,7 @@ class ConwayCube:
             return value1
         return value2
 
-    def get_range(self, dimIdx: int) -> list[int]:
+    def get_range(self, dimIdx: int) -> List[int]:
         low = 0
         high = 0
         for key in self.cubeSpace:
@@ -114,7 +115,7 @@ class ConwayCube:
         return self.make_int_list(low, high)
 
 
-    def get_cube(self, addr: SpatialAddress, cubes: dict[str, str]) -> str:
+    def get_cube(self, addr: SpatialAddress, cubes: Dict[str, str]) -> str:
         sAddr = str(addr)
         if sAddr in cubes:
             return cubes[sAddr]
@@ -128,7 +129,7 @@ class ConwayCube:
         self.cubeSpace.pop(sAddr, None)
 
 
-    def inflate_range(self, indexes: list[int]):
+    def inflate_range(self, indexes: List[int]):
         indexes.insert(0, indexes[0] - 1)
         indexes.append(indexes[len(indexes) - 1] + 1)
 
@@ -166,7 +167,7 @@ class ConwayCube:
     #     print()
 
 
-    def rule_active_cube(self, addr: SpatialAddress, cubes: dict[str, str]):
+    def rule_active_cube(self, addr: SpatialAddress, cubes: Dict[str, str]):
         """
         If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active.
         Otherwise, the cube becomes inactive.
@@ -184,7 +185,7 @@ class ConwayCube:
         self.set_cube(addr, newState)
 
 
-    def rule_inactive_cube(self, addr: SpatialAddress, cubes: dict[str, str]):
+    def rule_inactive_cube(self, addr: SpatialAddress, cubes: Dict[str, str]):
         """
         If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active.
         Otherwise, the cube remains inactive.
@@ -202,7 +203,7 @@ class ConwayCube:
         self.set_cube(addr, newState)
 
 
-    def apply_rule_at(self, address: list[int], rangeList: list[int], otherRanges: list[list[int]], cubes: dict[str, str]):
+    def apply_rule_at(self, address: List[int], rangeList: List[int], otherRanges: List[List[int]], cubes: Dict[str, str]):
         for i in rangeList:
             newAddr = address + [i]
             if len(otherRanges) > 0:
@@ -220,7 +221,7 @@ class ConwayCube:
 
     def apply_rules(self):
         oldCubeSpace = self.cubeSpace.copy()
-        allRanges: list[list[int]] = []
+        allRanges: List[List[int]] = []
         i = 0
         while i < self.numDimensions:
             temp = self.get_range(i)
@@ -241,7 +242,7 @@ class ConwayCube:
 #-------------------------------------------------------------------------------
 
 
-def run(title: str, inputList: list[str], numDimensions: int, numCycles: int, correctResult: int):
+def run(title: str, inputList: List[str], numDimensions: int, numCycles: int, correctResult: int):
     cc = ConwayCube(inputList, numDimensions)
     # cc.show_cube_space("Before any cycles:")
 

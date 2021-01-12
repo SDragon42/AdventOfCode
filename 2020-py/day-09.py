@@ -1,7 +1,8 @@
 import utils
+from typing import List
 
 
-def is_valid(value: int, input: list[int]) -> bool:
+def is_valid(value: int, input: List[int]) -> bool:
     if len(input) == 0:
         return False
 
@@ -14,7 +15,7 @@ def is_valid(value: int, input: list[int]) -> bool:
     return is_valid(value, rest)
 
 
-def scan_input(input: list[int], windowSize: int) -> int:
+def scan_input(input: List[int], windowSize: int) -> int:
     lowIdx = 0
     highIdx = lowIdx + windowSize
     i = windowSize
@@ -29,7 +30,7 @@ def scan_input(input: list[int], windowSize: int) -> int:
     return - 1
 
 
-def find_weakness(input: list[int], invalidNum: int) -> int:
+def find_weakness(input: List[int], invalidNum: int) -> int:
     start = 0
     end = 1
 
@@ -51,12 +52,12 @@ def find_weakness(input: list[int], invalidNum: int) -> int:
     return -1
 
 
-def run_part1(title: str, input: list[int], windowSize: int, correctResult: int):
+def run_part1(title: str, input: List[int], windowSize: int, correctResult: int):
     result = scan_input(input, windowSize)
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, input: list[int], windowSize: int, correctResult: int):
+def run_part2(title: str, input: List[int], windowSize: int, correctResult: int):
     invalidNum = scan_input(input, windowSize)
     result = find_weakness(input, invalidNum)
     utils.validate_result(title, result, correctResult)

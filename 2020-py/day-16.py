@@ -1,4 +1,5 @@
 import utils
+from typing import List, Dict
 
 #-------------------------------------------------------------------------------
 
@@ -17,7 +18,7 @@ class ValueRange:
 
 class FieldInfo:
     field: str = ""
-    valueRanges: list[ValueRange] = []
+    valueRanges: List[ValueRange] = []
 
     def __init__(self, field: str):
         self.field = field
@@ -38,14 +39,14 @@ class FieldInfo:
 
 #-------------------------------------------------------------------------------
 
-fieldDefInputList: list[FieldInfo] = []
+fieldDefInputList: List[FieldInfo] = []
 myTicketValues: str = ""
-otherTicketValuesList: list[str] = []
-fieldOrderDict: dict[int, list[str]] = {}
+otherTicketValuesList: List[str] = []
+fieldOrderDict: Dict[int, List[str]] = {}
 
 #-------------------------------------------------------------------------------
 
-def parse_input_data(inputList: list[str]):
+def parse_input_data(inputList: List[str]):
     global myTicketValues
     global otherTicketValuesList
 
@@ -71,7 +72,7 @@ def get_field_info_record(field: str) -> FieldInfo:
     return rec
 
 
-def parse_field_definitions(inputList: list[str]):
+def parse_field_definitions(inputList: List[str]):
     global fieldDefInputList
 
     fieldDefInputList.clear()
@@ -99,7 +100,7 @@ def init_field_order_list():
     i = 0
     numValues = myTicketValues.count(",") + 1
     while i < numValues:
-        fieldList: list[str] = []
+        fieldList: List[str] = []
         for f in fieldDefInputList:
             fieldList.append(f.field)
         fieldOrderDict[i] = fieldList
@@ -108,14 +109,14 @@ def init_field_order_list():
 
 #-------------------------------------------------------------------------------
 
-def get_ticket_values(ticket: str) -> list[int]:
-    result: list[int] = []
+def get_ticket_values(ticket: str) -> List[int]:
+    result: List[int] = []
     for value in ticket.split(","):
         result.append(int(value))
     return result
 
 
-def is_ticket_valid(ticket: str, invalidValues: list[int]) -> bool:
+def is_ticket_valid(ticket: str, invalidValues: List[int]) -> bool:
     global fieldDefInputList
 
     valueList = get_ticket_values(ticket)
@@ -132,8 +133,8 @@ def is_ticket_valid(ticket: str, invalidValues: list[int]) -> bool:
     return result
 
 
-def get_invalid_ticket_values(ticketValues: list[str]) -> list[int]:
-    invalidValues: list[int] = []
+def get_invalid_ticket_values(ticketValues: List[str]) -> List[int]:
+    invalidValues: List[int] = []
     for ticket in ticketValues:
         is_ticket_valid(ticket, invalidValues)
     return invalidValues
@@ -203,7 +204,7 @@ def identify_fields_with_ticket(ticket: str):
             i += 1
 
 
-def run_part1(title: str, inputList: list[str], correctResult: int):
+def run_part1(title: str, inputList: List[str], correctResult: int):
     global otherTicketValuesList
     parse_input_data(inputList)
 
@@ -213,7 +214,7 @@ def run_part1(title: str, inputList: list[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-def run_part2(title: str, inputList: list[str], correctResult: int):
+def run_part2(title: str, inputList: List[str], correctResult: int):
     global otherTicketValuesList
     global fieldOrderDict
     global myTicketValues
@@ -223,7 +224,7 @@ def run_part2(title: str, inputList: list[str], correctResult: int):
     init_field_order_list()
     identify_fields()
 
-    indexes: list[int] = []
+    indexes: List[int] = []
     for i in fieldOrderDict:
         field = fieldOrderDict[i][0]
         if field.startswith("departure"):
