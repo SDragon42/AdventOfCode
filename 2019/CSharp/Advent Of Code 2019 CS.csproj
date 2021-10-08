@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>AdventOfCode.CSharp.Year2019</RootNamespace>
+    <AssemblyName>AOC2019</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CSharp.Common\CSharp.Common.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="..\input\**\*.*" CopyToOutputDirectory="PreserveNewest" Link="input\%(RecursiveDir)\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>
