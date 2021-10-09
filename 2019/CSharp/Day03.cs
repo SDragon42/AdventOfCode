@@ -29,10 +29,11 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
 
-        class InputAnswer// : InputAnswer<List<string>, int?>
+        class InputAnswer : InputAnswer<List<string>, int?>
         {
             public InputAnswer(List<string> input, int? expectedAnswer)
             {
+                Input = input;
                 Wire1 = BuildWirePoints(input[0], 0, 0);
                 Wire2 = BuildWirePoints(input[1], 0, 0);
                 ExpectedAnswer = expectedAnswer;
@@ -40,9 +41,6 @@ namespace AdventOfCode.CSharp.Year2019
 
             public List<Point> Wire1 { get; private set; }
             public List<Point> Wire2 { get; private set; }
-
-            public int? ExpectedAnswer { get; private set; }
-
 
 
             List<Point> BuildWirePoints(string input, int x, int y)
