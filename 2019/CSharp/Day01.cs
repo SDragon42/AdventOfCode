@@ -1,65 +1,85 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using AdventOfCode.CSharp.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AdventOfCode.CSharp.Common;
 
-//namespace AdventOfCode.CSharp.Year2019
-//{
-//    class Day01
-//    {
-//        static void Main(string[] args)
-//        {
-//            var me = new Day01();
+namespace AdventOfCode.CSharp.Year2019
+{
+    /// <summary>
+    /// https://adventofcode.com/2019/day/1
+    /// </summary>
+    class Day01 : IPuzzle
+    {
+        public void Run()
+        {
+            Console.WriteLine("--- Day 1: The Tyranny of the Rocket Equation ---");
+            //RunPart1(GetPuzzleData(1, "example1"));
+            //RunPart1(GetPuzzleData(1, "example2"));
+            //RunPart1(GetPuzzleData(1, "example3"));
+            //RunPart1(GetPuzzleData(1, "example4"));
+            RunPart1(GetPuzzleData(1, "input"));
 
-//            Console.WriteLine("--- Day 1: The Tyranny of the Rocket Equation ---");
-//            // me.RunPart1(InputHelper.LoadLinesAsArray<long>("example101"), 2);
-//            // me.RunPart1(InputHelper.LoadLinesAsArray<long>("example102"), 2);
-//            // me.RunPart1(InputHelper.LoadLinesAsArray<long>("example103"), 654);
-//            // me.RunPart1(InputHelper.LoadLinesAsArray<long>("example104"), 33583);
-//            me.RunPart1(InputHelper.LoadLines<long>("input").ToArray(), 3373568);
+            Console.WriteLine("--- Part Two ---");
+            //RunPart2(GetPuzzleData(2, "example2"));
+            //RunPart2(GetPuzzleData(2, "example3"));
+            RunPart2(GetPuzzleData(2, "input"));
+        }
 
-//            Console.WriteLine("--- Part Two ---");
-//            // me.RunPart2(InputHelper.LoadLinesAsArray<long>("example102"), 2);
-//            // me.RunPart2(InputHelper.LoadLinesAsArray<long>("example103"), 966);
-//            me.RunPart2(InputHelper.LoadLines<long>("input").ToArray(), 5057481);
+        InputAnswer<List<int>, int?> GetPuzzleData(int part, string name)
+        {
+            var input = InputHelper.LoadInputFile(1, name)
+                .Split("\r\n")
+                .Select(l => l.ToInt32())
+                .ToList();
 
-//        }
+            var answer = default(int?);
+            try { answer = InputHelper.LoadAnswerFile(1, part, name).ToInt32(); }
+            catch { answer = null; }
+            
+            var result = new InputAnswer<List<int>, int?>(input, answer);
+            return result;
+        }
 
-//        long CalcFuel(long mass)
-//        {
-//            return Convert.ToInt32(Math.Truncate(mass / 3.0)) - 2;
-//        }
 
-//        long CalcTotalFuel(long mass)
-//        {
-//            var fuelMass = CalcFuel(mass);
-//            if (fuelMass <= 0L)
-//                return 0L;
-//            return fuelMass + CalcTotalFuel(fuelMass);
-//        }
+        void RunPart1(InputAnswer<List<int>, int?> puzzleData)
+        {
+            var totalFuel = puzzleData.Input.Sum(CalcFuel);
+            Helper.ShowPuzzleResult($"Total Fuel needed: {totalFuel}", totalFuel, puzzleData.ExpectedAnswer);
+        }
 
-//        void ShowInput(long[] input)
-//        {
-//            foreach (var item in input)
-//                Console.WriteLine($"{item,10:N0}");
-//        }
+        void RunPart2(InputAnswer<List<int>, int?> puzzleData)
+        {
+            var totalFuel = puzzleData.Input.Sum(CalcTotalFuel);
+            Helper.ShowPuzzleResult($"Total Fuel needed: {totalFuel}", totalFuel, puzzleData.ExpectedAnswer);
+        }
 
-//        public void RunPart1(long[] input, long? correctAnswer = null)
-//        {
-//            //ShowInput(input);
-//            var totalFuel = input.Sum(moduleMass => CalcFuel(moduleMass));
 
-//            PuzzleHelper.ShowPuzzleResult($"Total Fuel needed: {totalFuel}", totalFuel, correctAnswer);
-//        }
+        /// <summary>
+        /// Calculates the Fuel needed for the mass.
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <returns></returns>
+        int CalcFuel(int mass)
+        {
+            return (mass / 3) - 2;
+        }
+        
 
-//        public void RunPart2(long[] input, long? correctAnswer = null)
-//        {
-//            var totalFuel = input.Sum(moduleMass => CalcTotalFuel(moduleMass));
-//            var fuelNeeded = totalFuel;
+        /// <summary>
+        /// Calculates the fuel need to lift the mass, including the fuel.
+        /// </summary>
+        /// <param name="mass"></param>
+        /// <returns></returns>
+        int CalcTotalFuel(int mass)
+        {
+            var fuelMass = CalcFuel(mass);
+            if (fuelMass <= 0L)
+                return 0;
+            return fuelMass + CalcTotalFuel(fuelMass);
+        }
 
-//            PuzzleHelper.ShowPuzzleResult($"Total Fuel needed: {totalFuel}", totalFuel, correctAnswer);
-//        }
-//    }
-//}
+    }
+
+}

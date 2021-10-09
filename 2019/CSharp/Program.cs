@@ -11,25 +11,28 @@ namespace AdventOfCode.CSharp.Year2019
     {
         static void Main(string[] args)
         {
-            var firstArg = args.FirstOrDefault();
+            //var firstArg = args.FirstOrDefault();
 
-            var asm = Assembly.GetExecutingAssembly();
-            var allPuzzleTypes = asm.GetTypes()
-                .Where(t => typeof(IPuzzle).IsAssignableFrom(t))
-                .Where(t => !t.IsInterface)
-                .Where(t => !t.IsAbstract)
-                .OrderBy(t => t.Name)
-                .ToList();
+            //var asm = Assembly.GetExecutingAssembly();
+            //var allPuzzleTypes = asm.GetTypes()
+            //    .Where(t => typeof(IPuzzle).IsAssignableFrom(t))
+            //    .Where(t => !t.IsInterface)
+            //    .Where(t => !t.IsAbstract)
+            //    .OrderBy(t => t.Name)
+            //    .ToList();
 
-            IEnumerable<Type> typeList = null;
-            if (firstArg != null)
-                typeList = allPuzzleTypes.Where(t => t.Name.StartsWith(firstArg));
+            //IEnumerable<Type> typeList = null;
+            //if (firstArg != null)
+            //    typeList = allPuzzleTypes.Where(t => t.Name.StartsWith(firstArg));
 
-            if (typeList == null)
-                typeList = allPuzzleTypes.Where(t => t.Equals(allPuzzleTypes.LastOrDefault())); // Run last puzzle
+            //if (typeList == null)
+            //    typeList = allPuzzleTypes.Where(t => t.Equals(allPuzzleTypes.LastOrDefault())); // Run last puzzle
 
-            // Run all puzzles
-            typeList.ForEach(RunPuzzle);
+            //// Run all puzzles
+            //typeList.ForEach(RunPuzzle);
+            var pz = PuzzleRunner.GetPuzzle(1);
+            if (pz != null)
+                pz.Run();
         }
 
         static void RunPuzzle(Type typeItem)
@@ -46,6 +49,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
         static void Line() => Console.WriteLine(string.Empty.PadRight(60, '-'));
-    
+
     }
 }

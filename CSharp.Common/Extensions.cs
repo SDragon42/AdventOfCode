@@ -20,5 +20,8 @@ namespace AdventOfCode.CSharp.Common
             foreach (var item in elements)
                 actionMethod(item);
         }
+
+
+        public static int ToInt32(this string text) => (int)Convert.ChangeType(text, typeof(int));
     }
 }

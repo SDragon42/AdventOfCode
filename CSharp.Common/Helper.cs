@@ -10,6 +10,37 @@ namespace AdventOfCode.CSharp.Common
     public static class Helper
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message"></param>
+        /// <param name="foundAnswer"></param>
+        /// <param name="correctAnswer"></param>
+        public static void ShowPuzzleResult<T>(string message, T foundAnswer, T? correctAnswer = null) where T : struct
+        {
+            Console.WriteLine(message);
+            if (correctAnswer.HasValue)
+                Console.WriteLine("    " + (foundAnswer.Equals(correctAnswer.Value) ? "CORRECT" : "WRONG"));
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="foundAnswer"></param>
+        /// <param name="correctAnswer"></param>
+        public static void ShowPuzzleResult(string message, string foundAnswer, string correctAnswer = null)
+        {
+            Console.WriteLine(message);
+            if (!string.IsNullOrEmpty(correctAnswer))
+                Console.WriteLine("    " + (foundAnswer.Equals(correctAnswer) ? "CORRECT" : "WRONG"));
+            Console.WriteLine();
+        }
+
+
+
+        /// <summary>
         /// Gets a single digit from the specified number (right to left).
         /// </summary>
         /// <param name="value">The number value.</param>
