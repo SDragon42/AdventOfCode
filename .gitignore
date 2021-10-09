@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/csharp,python,fsharp,visualstudio,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=csharp,python,fsharp,visualstudio,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/fsharp,python,csharp,visualstudio,visualstudiocode,dotnetcore
+# Edit at https://www.toptal.com/developers/gitignore?templates=fsharp,python,csharp,visualstudio,visualstudiocode,dotnetcore
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -66,6 +66,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+**/Properties/launchSettings.json
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -391,6 +392,15 @@ FodyWeavers.xsd
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+### DotnetCore ###
+# .NET Core build folders
+bin/
+obj/
+
+# Common node modules locations
+/node_modules
+/wwwroot/node_modules
 
 ### fsharp ###
 lib/debug
@@ -724,4 +734,4 @@ cython_debug/
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/csharp,python,fsharp,visualstudio,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/fsharp,python,csharp,visualstudio,visualstudiocode,dotnetcore
