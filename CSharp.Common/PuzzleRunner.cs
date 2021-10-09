@@ -9,14 +9,38 @@ namespace AdventOfCode.CSharp.Common
 {
     public static class PuzzleRunner
     {
-
-        public static IPuzzle GetPuzzle(int day)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        public static IPuzzle CreatePuzzle(int? day)
         {
-            var puzzleType = Assembly.GetEntryAssembly()
+            Type puzzle = GetPuzzleType(day);
+            return (IPuzzle)Activator.CreateInstance(puzzle);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        private static Type GetPuzzleType(int? day)
+        {
+            var puzzleTypes = Assembly.GetEntryAssembly()
                 .GetTypes()
-                .Where(p => p.Name == $"Day{day:00}")
+                .Where(t => typeof(IPuzzle).IsAssignableFrom(t));
+
+            // Get the specified day Puzzle
+            if (day.HasValue)
+                return puzzleTypes
+                    .Where(p => p.Name == $"Day{day:00}")
+                    .FirstOrDefault();
+
+            // Get the highest day puzzle
+            return puzzleTypes
+                .OrderByDescending(t => t.Name)
                 .FirstOrDefault();
-            return (IPuzzle)Activator.CreateInstance(puzzleType);
         }
     }
 }

@@ -18,10 +18,7 @@ namespace AdventOfCode.CSharp.Common
         /// <param name="correctAnswer"></param>
         public static void ShowPuzzleResult<T>(string message, T foundAnswer, T? correctAnswer = null) where T : struct
         {
-            Console.WriteLine(message);
-            if (correctAnswer.HasValue)
-                Console.WriteLine("    " + (foundAnswer.Equals(correctAnswer.Value) ? "CORRECT" : "WRONG"));
-            Console.WriteLine();
+            ShowPuzzleResult(message, foundAnswer.ToString(), correctAnswer.ToString());
         }
 
         /// <summary>
@@ -32,9 +29,9 @@ namespace AdventOfCode.CSharp.Common
         /// <param name="correctAnswer"></param>
         public static void ShowPuzzleResult(string message, string foundAnswer, string correctAnswer = null)
         {
-            Console.WriteLine(message);
+            Console.Write(message);
             if (!string.IsNullOrEmpty(correctAnswer))
-                Console.WriteLine("    " + (foundAnswer.Equals(correctAnswer) ? "CORRECT" : "WRONG"));
+                Console.Write("    " + (foundAnswer.Equals(correctAnswer) ? "CORRECT" : "WRONG"));
             Console.WriteLine();
         }
 
@@ -138,7 +135,7 @@ namespace AdventOfCode.CSharp.Common
         /// <remarks>
         /// https://stackoverflow.com/a/20824923/6136
         /// </remarks>
-        public static long FindGCF(long a, long b)
+        public static long FindGreatestCommonFactor(long a, long b)
         {
             while (b != 0)
             {
@@ -158,9 +155,9 @@ namespace AdventOfCode.CSharp.Common
         /// <remarks>
         /// https://stackoverflow.com/a/20824923/6136
         /// </remarks>
-        public static long FindLCM(long a, long b)
+        public static long FindLeastCommonMultiple(long a, long b)
         {
-            return (a / FindGCF(a, b)) * b;
+            return (a / FindGreatestCommonFactor(a, b)) * b;
         }
 
 
