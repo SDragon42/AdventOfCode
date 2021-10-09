@@ -95,7 +95,7 @@ namespace AdventOfCode.CSharp.Year2019.Day15
     What is the fewest number of movement commands required to move the repair droid from its 
     starting position to the location of the oxygen system?
     */
-    class Day15Puzzle1 : IPuzzle
+    class Day15Puzzle1// : IPuzzle
     {
         public Day15Puzzle1()
         {
@@ -122,12 +122,12 @@ namespace AdventOfCode.CSharp.Year2019.Day15
             //var startPoint = new Point(0, 0);
             robotLocation = startPoint;
             map.Add(robotLocation, 'D');
-            var robot = new RepairDroid();
+            var robot = new RepairDroid(puzzleInput);
 
             robot.RequestMovement += Robot_RequestMovement;
             robot.ReportStatus += Robot_ReportStatus;
 
-            robot.Init(puzzleInput);
+            //robot.Init(puzzleInput);
 
             robot.Start();
 

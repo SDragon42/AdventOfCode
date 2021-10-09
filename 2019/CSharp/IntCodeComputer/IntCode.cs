@@ -11,238 +11,286 @@ namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
     {
         const int NumOpCodeDigits = 2;
 
-        enum ParamaterMode
+
+
+        enum ParameterMode
         {
-            Position = 0,
-            Immediate = 1
+            Positional = 0,
+            Immediate = 1,
+            Relative = 2,
         }
 
-        readonly Dictionary<int, MethodInfo> OpCodes = new Dictionary<int, MethodInfo>();
-        readonly bool showMemoryOnStep = false;
-        readonly bool showMessages = false;
 
-        public IntCode(bool showMemoryOnStep = false, bool showMessages = false)
+
+        readonly Dictionary<int, MethodInfo> OpCodesDict;
+        readonly Dictionary<long, long> memory = new Dictionary<long, long>();
+
+        int opCode = -1;
+        readonly List<ParameterMode> paramModes = new List<ParameterMode>();
+        readonly Queue<long> inputBuffer = new Queue<long>();
+        long relativeBase = 0;
+
+
+        public long AddressPointer { get; private set; } = 0;
+        public IntCodeState State { get; private set; } = IntCodeState.Running;
+
+
+
+        public IntCode(IEnumerable<long> input)
         {
-            this.showMemoryOnStep = showMemoryOnStep;
-            this.showMessages = showMessages;
-
-            // Load all OpCodes
-            GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+            OpCodesDict = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
                 .Select(m => new { methodInfo = m, OpCodeAttribute = m.GetCustomAttribute<OpCodeAttribute>() })
                 .Where(m => m.OpCodeAttribute != null)
-                .ForEach(m => OpCodes.Add(m.OpCodeAttribute.OpCode, m.methodInfo));
+                .ToDictionary(k => k.OpCodeAttribute.OpCode, v => v.methodInfo);
+
+            //for (var i = 0; i < input.Length; i++)
+            //    memory.Add(i, input[i]);
+            var i = 0;
+            input.ForEach(v => memory.Add(i++, v));
+
+            AddressPointer = 0;
         }
 
 
 
-        bool continueExecution = true;
-        int[] memory;
-        int position;
-        int opCode = 0;
-        int paramValue = 0;
-        readonly Queue<int> inputValues = new Queue<int>();
-
-        public List<int> OutputValues { get; } = new List<int>();
+        public event EventHandler<IntCodeOutputEventArgs> Output;
+        public event EventHandler AfterRunStep;
 
 
 
-        public void Init(int[] code)
+        /// <summary>Runs the IntCode in memory.
+        /// </summary>
+        public void Run()
         {
-            memory = code;
-            position = 0;
-            opCode = 99;
-            paramValue = 0;
-            inputValues.Clear();
-            OutputValues.Clear();
-        }
+            if (State == IntCodeState.Finished)
+                throw new ApplicationException("Already finished");
+            if (State == IntCodeState.NeedsInput && inputBuffer.Count == 0)
+                throw new ApplicationException("Needs Input");
 
-        public void Run(params int[] values)
-        {
-            LoadInputValues(values);
-            OutputValues.Clear();
-            continueExecution = true;
+            State = IntCodeState.Running;
 
-            while (continueExecution)
-                RunStep();
-        }
-        void RunStep()
-        {
-            ReadCommand();
-
-            if (!OpCodes.ContainsKey(opCode))
+            while (State == IntCodeState.Running)
             {
-                Console.WriteLine("Something went Wrong!");
-                continueExecution = true;
-                return;
+                ReadInstruction();
+
+                if (!OpCodesDict.ContainsKey(opCode))
+                    throw new ApplicationException($"Unknown OpCode '{opCode}'.");
+
+                var opCodeAction = OpCodesDict[opCode];
+                opCodeAction.Invoke(this, null);
+
+                AfterRunStep?.Invoke(this, null);
             }
-
-            OpCodes[opCode].Invoke(this, null);
-
-            if (showMemoryOnStep)
-                ShowMemoryDump();
         }
 
-        public int Peek(int address)
+        /// <summary>Reads the value as the specified memory address.
+        /// </summary>
+        /// <param name="address">The memory address index.</param>
+        /// <returns></returns>
+        public long Peek(long address)
         {
-            return memory[address];
-        }
-        public void Poke(int address, int value)
-        {
-            memory[address] = value;
-        }
-        public void ShowMemoryDump()
-        {
-            Console.WriteLine($"MEM: {string.Join(',', memory)}");
+            return ReadMemory(address);
         }
 
-
-
-
-        void LoadInputValues(int[] values)
+        /// <summary>Writes a value to the specified memory address.
+        /// </summary>
+        /// <param name="address">The memory address index.</param>
+        /// <param name="value">The value to write.</param>
+        public void Poke(long address, long value)
         {
-            inputValues.Clear();
-            if (values == null)
-                return;
-            foreach (var v in values)
-                inputValues.Enqueue(v);
-        }
-
-        void ReadCommand()
-        {
-            var value = memory[position].ToString();
-            opCode = (value.Length >= NumOpCodeDigits)
-                ? Convert.ToInt32(value.Substring(value.Length - NumOpCodeDigits))
-                : Convert.ToInt32(value);
-            paramValue = (value.Length > NumOpCodeDigits)
-                ? Convert.ToInt32(value.Substring(0, value.Length - NumOpCodeDigits))
-                : 0;
-        }
-
-        ParamaterMode GetParamaterMode(int value, int paramNumber)
-        {
-            var result = Helper.GetDigitRight(value, paramNumber);
-            if (!Enum.IsDefined(typeof(ParamaterMode), result))
-                throw new InvalidOperationException();
-            return (ParamaterMode)result;
+            WriteMemory(address, value);
         }
 
 
-        int GetValue(int pos, ParamaterMode mode)
+        /// <summary>Dumps the IntCode memory as a comma-separated string of values.
+        /// </summary>
+        /// <returns></returns>
+        public string Dump()
         {
+            var result = string.Join(",", memory);
+            return result;
+        }
+
+        public void AddInput(params long[] data)
+        {
+            foreach (var value in data)
+                inputBuffer.Enqueue(value);
+        }
+
+
+
+        void ReadInstruction()
+        {
+            var value = ReadMemory(AddressPointer).ToString();
+
+            var opCodeStr = (value.Length >= NumOpCodeDigits)
+                ? value.Substring(value.Length - NumOpCodeDigits)
+                : value;
+            opCode = Convert.ToInt32(opCodeStr);
+
+            var pValues = value.Substring(0, value.Length - opCodeStr.Length)
+                .PadLeft(3, '0')
+                .Reverse()
+                .Select(c => (ParameterMode)Char.GetNumericValue(c));
+            paramModes.Clear();
+            paramModes.AddRange(pValues);
+        }
+        void MoveToNext(long increment)
+        {
+            AddressPointer += increment;
+            opCode = -1;
+            for (var i = 0; i < paramModes.Count; i++)
+                paramModes[i] = ParameterMode.Positional;
+        }
+
+        long ReadMemory(long address, ParameterMode mode = ParameterMode.Immediate)
+        {
+            ValidateAddress(address);
             switch (mode)
             {
-                case ParamaterMode.Position: return memory[memory[pos]];
-                case ParamaterMode.Immediate: return memory[pos];
+                case ParameterMode.Positional: return ReadMemory(memory[address]);
+                case ParameterMode.Relative: return ReadMemory(memory[address] + relativeBase);
+                case ParameterMode.Immediate: return memory[address];
                 default: throw new InvalidOperationException();
             }
         }
-        void SetValue(int pos, ParamaterMode mode, int value)
+
+        void WriteMemory(long address, long value, ParameterMode mode = ParameterMode.Immediate)
         {
+            ValidateAddress(address);
             switch (mode)
             {
-                case ParamaterMode.Position: memory[memory[pos]] = value; break;
-                case ParamaterMode.Immediate: memory[pos] = value; break;
+                case ParameterMode.Positional: WriteMemory(memory[address], value); break;
+                case ParameterMode.Relative: WriteMemory(memory[address] + relativeBase, value); break;
+                case ParameterMode.Immediate: memory[address] = value; break;
                 default: throw new InvalidOperationException();
             }
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="address"></param>
+        void ValidateAddress(long address)
+        {
+            if (memory.ContainsKey(address))
+                return;
+            memory.Add(address, default(long));
+        }
+
+        /// <summary>Gets the Parameter Mode for the specified parameter.
+        /// </summary>
+        /// <param name="paramNumber">The number of the parameter.</param>
+        /// <returns></returns>
+        ParameterMode GetParameterMode(int paramNumber)
+        {
+            var index = paramNumber - 1;
+            if (index >= paramModes.Count)
+                return ParameterMode.Positional;
+            return paramModes[index];
+        }
+
+
 
         [OpCode(1)]
-        void OpAdd()
+        void OP_Add()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
-            var value = param1 + param2;
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            var param2 = ReadMemory(AddressPointer + 2, GetParameterMode(2));
+            var result = param1 + param2;
+            WriteMemory(AddressPointer + 3, result, GetParameterMode(3));
+            MoveToNext(4);
         }
+
         [OpCode(2)]
-        void OpMultiply()
+        void OP_Multiply()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            var param2 = ReadMemory(AddressPointer + 2, GetParameterMode(2));
             var value = param1 * param2;
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            WriteMemory(AddressPointer + 3, value, GetParameterMode(3));
+            MoveToNext(4);
         }
+
         [OpCode(3)]
-        void OpInput()
+        void OP_Input()
         {
-            int value;
-            if (inputValues.Count > 0)
+            var check = inputBuffer.TryDequeue(out long value);
+            if (!check)
             {
-                //if (showMessages)
-                Console.Write("INPUT: ");
-                value = inputValues.Dequeue();
-                //if (showMessages)
-                Console.WriteLine(value);
+                State = IntCodeState.NeedsInput;
+                return;
             }
-            else
-            {
-                Console.Write("INPUT: ");
-                var input = Console.ReadLine();
-                value = Convert.ToInt32(input);
-            }
-            SetValue(position + 1, ParamaterMode.Position, value);
-            position += 2;
+
+            WriteMemory(AddressPointer + 1, value, GetParameterMode(1));
+            MoveToNext(2);
         }
         [OpCode(4)]
-        void OpOutput()
+        void OP_Output()
         {
-            var value = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            OutputValues.Add(value);
-            //if (showMessages)
-            Console.WriteLine($"OUTPUT: {value}");
-            position += 2;
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            Output?.Invoke(this, new IntCodeOutputEventArgs(param1));
+            MoveToNext(2);
         }
+
         [OpCode(5)]
-        void OpJumpIfTrue()
+        void OP_JumpIfTrue()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            var param2 = ReadMemory(AddressPointer + 2, GetParameterMode(2));
             if (param1 != 0)
-                position = param2;
-            else
-                position += 3;
+            {
+                AddressPointer = param2;
+                return;
+            }
+            MoveToNext(3);
         }
+
         [OpCode(6)]
-        void OpJumpIfFalse()
+        void OP_JumpIfFalse()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            var param2 = ReadMemory(AddressPointer + 2, GetParameterMode(2));
             if (param1 == 0)
-                position = param2;
-            else
-                position += 3;
+            {
+                AddressPointer = param2;
+                return;
+            }
+            MoveToNext(3);
         }
+
         [OpCode(7)]
-        void OpLessThan()
+        void OP_LessThan()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
-            var param3 = GetValue(position + 3, GetParamaterMode(paramValue, 3));
-
-            var value = (param1 < param2) ? 1 : 0;
-
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            var param2 = ReadMemory(AddressPointer + 2, GetParameterMode(2));
+            var value = param1 < param2 ? 1 : 0;
+            WriteMemory(AddressPointer + 3, value, GetParameterMode(3));
+            MoveToNext(4);
         }
+
         [OpCode(8)]
-        void OpEquals()
+        void OP_Equals()
         {
-            var param1 = GetValue(position + 1, GetParamaterMode(paramValue, 1));
-            var param2 = GetValue(position + 2, GetParamaterMode(paramValue, 2));
-            var param3 = GetValue(position + 3, GetParamaterMode(paramValue, 3));
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            var param2 = ReadMemory(AddressPointer + 2, GetParameterMode(2));
+            var value = param1 == param2 ? 1 : 0;
+            WriteMemory(AddressPointer + 3, value, GetParameterMode(3));
+            MoveToNext(4);
+        }
 
-            var value = (param1 == param2) ? 1 : 0;
-
-            SetValue(position + 3, ParamaterMode.Position, value);
-            position += 4;
+        [OpCode(9)]
+        void OP_AdjustRelativeBase()
+        {
+            var param1 = ReadMemory(AddressPointer + 1, GetParameterMode(1));
+            relativeBase += param1;
+            MoveToNext(2);
         }
 
         [OpCode(99)]
-        void OpQuitExecution()
+        void OP_Halt()
         {
-            continueExecution = false;
+            State = IntCodeState.Finished;
+            MoveToNext(1);
         }
 
     }

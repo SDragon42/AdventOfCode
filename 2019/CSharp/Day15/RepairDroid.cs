@@ -26,11 +26,12 @@ namespace AdventOfCode.CSharp.Year2019.Day15
 
     class RepairDroid
     {
-        readonly IIntCodeV3 brain = new IntCodeV3();
+        IntCode brain;// = new IntCode();
 
-        public RepairDroid()//Point startLocation)
+        public RepairDroid(IEnumerable<long> brainCode)//Point startLocation)
         {
-            brain.OnOutput += Brain_OnOutput;
+            brain = new IntCode(brainCode);
+            brain.Output += Brain_OnOutput;
             //CurrenLocation = startLocation;
             LastMoveDirection = MoveDirection.North;
         }
@@ -44,14 +45,14 @@ namespace AdventOfCode.CSharp.Year2019.Day15
 
 
 
-        public void Init(IEnumerable<long> brainCode)
-        {
-            brain.Init(brainCode);
-        }
+        //public void Init(IEnumerable<long> brainCode)
+        //{
+        //    brain.Init(brainCode);
+        //}
 
         public void Start()
         {
-            while (brain.State != IntCodeState.Finished || brain.State == IntCodeState.Error)
+            while (brain.State != IntCodeState.Finished)// || brain.State == IntCodeState.Error)
             {
                 brain.Run();
                 if (brain.State == IntCodeState.NeedsInput)
@@ -66,7 +67,7 @@ namespace AdventOfCode.CSharp.Year2019.Day15
 
 
 
-        void Brain_OnOutput(object sender, OutputEventArgs e)
+        void Brain_OnOutput(object sender, IntCodeOutputEventArgs e)
         {
             var code = (RepairDroidStatusCode)e.OutputValue;
             //if (code != RepairDroidStatusCode.HitWall)
