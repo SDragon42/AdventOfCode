@@ -8,12 +8,9 @@ namespace AdventOfCode.CSharp.Common
 {
     public class InputAnswer<TI, TA>
     {
-        public InputAnswer(TI input)
+        public InputAnswer(TI input, TA expectedAnswer)
         {
             this.Input = input;
-        }
-        public InputAnswer(TI input, TA expectedAnswer) : this(input)
-        {
             this.ExpectedAnswer = expectedAnswer;
         }
 

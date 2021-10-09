@@ -15,7 +15,9 @@ namespace AdventOfCode.CSharp.Common
         }
         public static string LoadAnswerFile(int day, int part, string name)
         {
-            return File.ReadAllText($@".\input\Day{day:00}\{name}-answer{part}.txt");
+            var filename = $@".\input\Day{day:00}\{name}-answer{part}.txt";
+            var text = File.ReadAllText(filename);
+            return text;
         }
 
 
