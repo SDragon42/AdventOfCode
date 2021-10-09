@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode.CSharp.Year2019
 {
+    /// <summary>
+    /// https://adventofcode.com/2019/day/3
+    /// </summary>
     class Day03 : PuzzleBase
     {
         public Day03(bool benchmark) : base(benchmark) { }

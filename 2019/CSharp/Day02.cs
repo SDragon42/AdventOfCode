@@ -8,7 +8,7 @@ using AdventOfCode.CSharp.Common;
 namespace AdventOfCode.CSharp.Year2019
 {
     /// <summary>
-    /// https://adventofcode.com/2019/day/1
+    /// https://adventofcode.com/2019/day/2
     /// </summary>
     class Day02 : PuzzleBase
     {
