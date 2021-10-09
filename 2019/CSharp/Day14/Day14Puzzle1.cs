@@ -114,7 +114,7 @@ namespace AdventOfCode.CSharp.Year2019.Day14
     Given the list of reactions in your puzzle input, what is the minimum amount of ORE required 
     to produce exactly 1 FUEL?
     */
-    class Day14Puzzle1 : IPuzzle
+    class Day14Puzzle1 //: IPuzzle
     {
         public Day14Puzzle1()
         {
