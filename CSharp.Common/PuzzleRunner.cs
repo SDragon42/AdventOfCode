@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CommandLine;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -7,40 +9,92 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode.CSharp.Common
 {
-    public static class PuzzleRunner
+    public class PuzzleRunner
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="day"></param>
-        /// <returns></returns>
-        public static IPuzzle CreatePuzzle(int? day)
-        {
-            Type puzzle = GetPuzzleType(day);
-            return (IPuzzle)Activator.CreateInstance(puzzle);
-        }
+        private readonly string[] titleLines;
+
+
 
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="day"></param>
-        /// <returns></returns>
-        private static Type GetPuzzleType(int? day)
+        /// <param name="titles">The title lines to write at the start.</param>
+        public PuzzleRunner(params string[] titles)
+        {
+            this.titleLines = titles;
+        }
+
+
+
+        /// <summary>
+        /// Runs all the puzzles specified by command line arguments.
+        /// </summary>
+        /// <param name="args">The command line arguments</param>
+        public void Run(string[] args)
+        {
+            WriteHeader();
+
+            Parser.Default
+                .ParseArguments<CmdLineOptions>(args)
+                .WithParsed(SolvePuzzles);
+        }
+
+
+
+        void SolvePuzzles(CmdLineOptions options)
+        {
+            var puzzleTypes = GetPuzzleTypes(options).ToList();
+            for (var i = 0; i < puzzleTypes.Count; i++)
+            {
+                var puzzle = (PuzzleBase)Activator.CreateInstance(puzzleTypes[i], (object)options.Benchmark);
+
+                puzzle.SolvePuzzle()
+                    .ForEach(Console.WriteLine);
+                
+                WriteSectionSeperator();
+            }
+        }
+
+        IEnumerable<Type> GetPuzzleTypes(CmdLineOptions options)
         {
             var puzzleTypes = Assembly.GetEntryAssembly()
                 .GetTypes()
-                .Where(t => typeof(IPuzzle).IsAssignableFrom(t));
+                .Where(t => typeof(PuzzleBase).IsAssignableFrom(t));
 
-            // Get the specified day Puzzle
-            if (day.HasValue)
+            // All puzzles?
+            if (options.RunAll)
+                return puzzleTypes;
+
+            // only the last puzzle?
+            if (options.PuzzleDays.Count() == 0)
                 return puzzleTypes
-                    .Where(p => p.Name == $"Day{day:00}")
-                    .FirstOrDefault();
+                    .OrderByDescending(t => t.Name)
+                    .Take(1);
 
-            // Get the highest day puzzle
+            // all specified puzzles
+            var puzzleNames = options.PuzzleDays.Select(d => $"Day{d:00}").ToList();
             return puzzleTypes
-                .OrderByDescending(t => t.Name)
-                .FirstOrDefault();
+                .Where(t => puzzleNames.Contains(t.Name));
         }
+
+        void WriteHeader()
+        {
+            var titleWidth = titleLines.Select(t => t.Length).Max();
+            var titleBorder = "+-" + string.Empty.PadRight(titleWidth, '-') + "-+";
+
+            Console.WriteLine(titleBorder);
+            foreach (var text in titleLines)
+                Console.WriteLine($"| {text.PadRight(titleWidth)} |");
+            Console.WriteLine(titleBorder);
+            Console.WriteLine();
+        }
+
+        void WriteSectionSeperator()
+        {
+            Console.WriteLine();
+            Console.WriteLine(string.Empty.PadRight(60, '-'));
+            Console.WriteLine();
+        }
+
     }
+
 }

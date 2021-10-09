@@ -9,30 +9,16 @@ namespace AdventOfCode.CSharp.Common
 {
     public static class Helper
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="message"></param>
-        /// <param name="foundAnswer"></param>
-        /// <param name="correctAnswer"></param>
-        public static void ShowPuzzleResult<T>(string message, T foundAnswer, T? correctAnswer = null) where T : struct
+        public static string GetPuzzleResultText<T>(string message, T foundAnswer, T? correctAnswer = null) where T : struct
         {
-            ShowPuzzleResult(message, foundAnswer.ToString(), correctAnswer.ToString());
+            return GetPuzzleResultText(message, foundAnswer.ToString(), correctAnswer.ToString());
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="foundAnswer"></param>
-        /// <param name="correctAnswer"></param>
-        public static void ShowPuzzleResult(string message, string foundAnswer, string correctAnswer = null)
+        public static string GetPuzzleResultText(string message, string foundAnswer, string correctAnswer = null)
         {
-            Console.Write(message);
+            var answerCheckText = string.Empty;
             if (!string.IsNullOrEmpty(correctAnswer))
-                Console.Write("    " + (foundAnswer.Equals(correctAnswer) ? "CORRECT" : "WRONG"));
-            Console.WriteLine();
+                answerCheckText = "    " + (foundAnswer.Equals(correctAnswer) ? "CORRECT" : "WRONG");
+            return message + answerCheckText;
         }
 
 
