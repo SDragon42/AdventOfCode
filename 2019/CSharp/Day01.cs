@@ -10,49 +10,57 @@ namespace AdventOfCode.CSharp.Year2019
     /// <summary>
     /// https://adventofcode.com/2019/day/1
     /// </summary>
-    class Day01 : IPuzzle
+    class Day01 : PuzzleBase
     {
-        public void Run()
-        {
-            Console.WriteLine("--- Day 1: The Tyranny of the Rocket Equation ---");
-            //RunPart1(GetPuzzleData(1, "example1"));
-            //RunPart1(GetPuzzleData(1, "example2"));
-            //RunPart1(GetPuzzleData(1, "example3"));
-            //RunPart1(GetPuzzleData(1, "example4"));
-            RunPart1(GetPuzzleData(1, "input"));
+        public Day01(bool benchmark) : base(benchmark) { }
 
-            Console.WriteLine("--- Part Two ---");
-            //RunPart2(GetPuzzleData(2, "example2"));
-            //RunPart2(GetPuzzleData(2, "example3"));
-            RunPart2(GetPuzzleData(2, "input"));
+        public override IEnumerable<string> SolvePuzzle()
+        {
+            yield return "Day 1: The Tyranny of the Rocket Equation";
+
+            yield return string.Empty;
+            yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
+            yield return " Ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2")));
+            yield return " Ex. 3) " + base.Run(() => RunPart1(GetPuzzleData(1, "example3")));
+            yield return " Ex. 4) " + base.Run(() => RunPart1(GetPuzzleData(1, "example4")));
+            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
+
+            yield return string.Empty;
+            yield return " Ex. 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "example2")));
+            yield return " Ex. 3) " + base.Run(() => RunPart2(GetPuzzleData(2, "example3")));
+            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
         }
 
-        InputAnswer<List<int>, int?> GetPuzzleData(int part, string name)
+
+        class InputAnswer : InputAnswer<List<int>, int?> { }
+        InputAnswer GetPuzzleData(int part, string name)
         {
-            var input = InputHelper.LoadInputFile(1, name)
+            const int DAY = 1;
+
+            var result = new InputAnswer();
+
+            result.Input = InputHelper.LoadInputFile(DAY, name)
                 .Split("\r\n")
                 .Select(l => l.ToInt32())
                 .ToList();
 
-            var answer = default(int?);
-            try { answer = InputHelper.LoadAnswerFile(1, part, name).ToInt32(); }
-            catch { answer = null; }
-            
-            var result = new InputAnswer<List<int>, int?>(input, answer);
+            try { result.ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name).ToInt32(); }
+            catch { }
+
             return result;
         }
 
 
-        void RunPart1(InputAnswer<List<int>, int?> puzzleData)
+        string RunPart1(InputAnswer puzzleData)
         {
-            var totalFuel = puzzleData.Input.Sum(CalcFuel);
-            Helper.ShowPuzzleResult($"Total Fuel needed: {totalFuel}", totalFuel, puzzleData.ExpectedAnswer);
+            var answer = puzzleData.Input.Sum(CalcFuel);
+            return Helper.GetPuzzleResultText($"Total Fuel needed: {answer}", answer, puzzleData.ExpectedAnswer);
         }
 
-        void RunPart2(InputAnswer<List<int>, int?> puzzleData)
+        string RunPart2(InputAnswer puzzleData)
         {
-            var totalFuel = puzzleData.Input.Sum(CalcTotalFuel);
-            Helper.ShowPuzzleResult($"Total Fuel needed: {totalFuel}", totalFuel, puzzleData.ExpectedAnswer);
+            var answer = puzzleData.Input.Sum(CalcTotalFuel);
+            return Helper.GetPuzzleResultText($"Total Fuel needed: {answer}", answer, puzzleData.ExpectedAnswer);
         }
 
 
@@ -65,7 +73,7 @@ namespace AdventOfCode.CSharp.Year2019
         {
             return (mass / 3) - 2;
         }
-        
+
 
         /// <summary>
         /// Calculates the fuel need to lift the mass, including the fuel.
