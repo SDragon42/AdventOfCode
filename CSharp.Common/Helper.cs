@@ -9,15 +9,15 @@ namespace AdventOfCode.CSharp.Common
 {
     public static class Helper
     {
-        public static string GetPuzzleResultText<T>(string message, T foundAnswer, T? correctAnswer = null) where T : struct
+        public static string GetPuzzleResultText<T>(string message, T foundAnswer, T? expectedAnswer = null) where T : struct
         {
-            return GetPuzzleResultText(message, foundAnswer.ToString(), correctAnswer.ToString());
+            return GetPuzzleResultText(message, foundAnswer.ToString(), expectedAnswer.ToString());
         }
-        public static string GetPuzzleResultText(string message, string foundAnswer, string correctAnswer = null)
+        public static string GetPuzzleResultText(string message, string foundAnswer, string expectedAnswer = null)
         {
             var answerCheckText = string.Empty;
-            if (!string.IsNullOrEmpty(correctAnswer))
-                answerCheckText = "    " + (foundAnswer.Equals(correctAnswer) ? "CORRECT" : "WRONG");
+            if (!string.IsNullOrEmpty(expectedAnswer))
+                answerCheckText = "    " + (foundAnswer.Equals(expectedAnswer) ? "CORRECT" : "WRONG");
             return message + answerCheckText;
         }
 
