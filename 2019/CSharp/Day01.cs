@@ -19,15 +19,15 @@ namespace AdventOfCode.CSharp.Year2019
             yield return "Day 1: The Tyranny of the Rocket Equation";
 
             yield return string.Empty;
-            yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
-            yield return " Ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2")));
-            yield return " Ex. 3) " + base.Run(() => RunPart1(GetPuzzleData(1, "example3")));
-            yield return " Ex. 4) " + base.Run(() => RunPart1(GetPuzzleData(1, "example4")));
+            //yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
+            //yield return " Ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2")));
+            //yield return " Ex. 3) " + base.Run(() => RunPart1(GetPuzzleData(1, "example3")));
+            //yield return " Ex. 4) " + base.Run(() => RunPart1(GetPuzzleData(1, "example4")));
             yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
 
             yield return string.Empty;
-            yield return " Ex. 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "example2")));
-            yield return " Ex. 3) " + base.Run(() => RunPart2(GetPuzzleData(2, "example3")));
+            //yield return " Ex. 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "example2")));
+            //yield return " Ex. 3) " + base.Run(() => RunPart2(GetPuzzleData(2, "example3")));
             yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
         }
 
@@ -37,15 +37,14 @@ namespace AdventOfCode.CSharp.Year2019
         {
             const int DAY = 1;
 
-            var result = new InputAnswer();
-
-            result.Input = InputHelper.LoadInputFile(DAY, name)
-                .Split("\r\n")
-                .Select(l => l.ToInt32())
-                .ToList();
-
-            try { result.ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name).ToInt32(); }
-            catch { }
+            var result = new InputAnswer()
+            {
+                Input = InputHelper.LoadInputFile(DAY, name)
+                    .Split("\r\n")
+                    .Select(l => l.ToInt32())
+                    .ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name).ToInt32()
+            };
 
             return result;
         }
