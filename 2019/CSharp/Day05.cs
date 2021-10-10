@@ -8,6 +8,9 @@ using AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
 namespace AdventOfCode.CSharp.Year2019
 {
+    /// <summary>
+    /// https://adventofcode.com/2019/day/5
+    /// </summary>
     class Day05 : PuzzleBase
     {
         public Day05(bool benchmark) : base(benchmark) { }
