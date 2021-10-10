@@ -77,13 +77,6 @@ namespace AdventOfCode.CSharp.Year2019
                 InputHelper.LoadInputFile(DAY, name).Split("\r\n").ToList(),
                 InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt32()
                 );
-            //{
-            //    Input = InputHelper.LoadInputFile(DAY, name)
-            //        .Split("\r\n")
-            //        .ToList(),
-            //    ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt32()
-            //};
-            //result.BuildWires();
             return result;
         }
 
@@ -91,8 +84,6 @@ namespace AdventOfCode.CSharp.Year2019
         string RunPart1(InputAnswer puzzleData)
         {
             var origin = new Point(0, 0);
-            //var wire1 = BuildWirePoints(puzzleData.Input[0], 0, 0);
-            //var wire2 = BuildWirePoints(puzzleData.Input[1], 0, 0);
 
             var intersctions = FindIntersections(puzzleData.Wire1, puzzleData.Wire2)
                 .Where(p => p != origin);
@@ -105,8 +96,6 @@ namespace AdventOfCode.CSharp.Year2019
         string RunPart2(InputAnswer puzzleData)
         {
             var origin = new Point(0, 0);
-            //var wire1 = BuildWirePoints(puzzleData.Input[0], 0, 0);
-            //var wire2 = BuildWirePoints(puzzleData.Input[1], 0, 0);
 
             var intersctions = FindIntersectionsWithDistance(puzzleData.Wire1, puzzleData.Wire2)
                 .Where(p => p.IntersectPoint != origin);
@@ -117,29 +106,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
 
-
-        //List<Point> BuildWirePoints(string input, int x, int y)
-        //{
-        //    var wire = new List<Point>();
-        //    wire.Add(new Point(x, y));
-
-        //    var _directions = input.Split(',');
-        //    foreach (var item in _directions)
-        //    {
-        //        var t = item.Substring(1);
-        //        var dist = Convert.ToInt32(t);
-        //        switch (item[0])
-        //        {
-        //            case 'R': x += dist; break;
-        //            case 'L': x -= dist; break;
-        //            case 'U': y += dist; break;
-        //            case 'D': y -= dist; break;
-        //        }
-        //        wire.Add(new Point(x, y));
-        //    }
-
-        //    return wire;
-        //}
 
         IEnumerable<Point> FindIntersections(List<Point> wire1, List<Point> wire2)
         {
