@@ -12,24 +12,32 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day01 : PuzzleBase
     {
-        public Day01(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 1: The Tyranny of the Rocket Equation";
 
             yield return string.Empty;
-            //yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
-            //yield return " Ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2")));
-            //yield return " Ex. 3) " + base.Run(() => RunPart1(GetPuzzleData(1, "example3")));
-            //yield return " Ex. 4) " + base.Run(() => RunPart1(GetPuzzleData(1, "example4")));
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
+            yield return RunExample(Example1);
+            yield return RunExample(Example2);
+            yield return RunExample(Example3);
+            yield return RunExample(Example4);
+            yield return Run(Part1);
 
             yield return string.Empty;
-            //yield return " Ex. 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "example2")));
-            //yield return " Ex. 3) " + base.Run(() => RunPart2(GetPuzzleData(2, "example3")));
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            yield return RunExample(Example2P2);
+            yield return RunExample(Example3P2);
+            yield return Run(Part2);
         }
+
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
+        string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
+        string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
+        string Example4() => " Ex. 4) " + RunPart1(GetPuzzleData(1, "example4"));
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
+
+        string Example2P2() => " Ex. 2) " + RunPart1(GetPuzzleData(2, "example2"));
+        string Example3P2() => " Ex. 3) " + RunPart1(GetPuzzleData(2, "example3"));
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
 
         class InputAnswer : InputAnswer<List<int>, int?> { }
@@ -40,10 +48,9 @@ namespace AdventOfCode.CSharp.Year2019
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name)
-                    .Split("\r\n")
                     .Select(l => l.ToInt32())
                     .ToList(),
-                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name).ToInt32()
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
             };
 
             return result;

@@ -13,19 +13,21 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day02 : PuzzleBase
     {
-        public Day02(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 2: 1202 Program Alarm";
 
             yield return string.Empty;
-            yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input"), 12, 2));
+            yield return RunExample(Example1);
+            yield return Run(Part1);
 
             yield return string.Empty;
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            yield return Run(Part2);
         }
+
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 12, 2);
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
 
         class InputAnswer : IntCodeInputAnswer<long?> { }
@@ -35,8 +37,8 @@ namespace AdventOfCode.CSharp.Year2019
 
             var result = new InputAnswer()
             {
-                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
-                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
+                Input = InputHelper.LoadInputFile(DAY, name).ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
             };
             return result;
         }

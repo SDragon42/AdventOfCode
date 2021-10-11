@@ -45,9 +45,11 @@ namespace AdventOfCode.CSharp.Common
             var puzzleTypes = GetPuzzleTypes(options).ToList();
             for (var i = 0; i < puzzleTypes.Count; i++)
             {
-                var puzzle = (PuzzleBase)Activator.CreateInstance(puzzleTypes[i], (object)options.Benchmark);
+                var puzzle = (PuzzleBase)Activator.CreateInstance(puzzleTypes[i]);
+                puzzle.SetOptions(options.RunBenchmark, options.RunExamples);
 
                 puzzle.SolvePuzzle()
+                    .Where(t => t != null)
                     .ForEach(Console.WriteLine);
                 
                 WriteSectionSeperator();

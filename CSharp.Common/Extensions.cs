@@ -25,7 +25,5 @@ namespace AdventOfCode.CSharp.Common
         public static int ToInt32(this string text) => (int)Convert.ChangeType(text, typeof(int));
         public static long ToInt64(this string text) => (long)Convert.ChangeType(text, typeof(long));
 
-
-        public static IEnumerable<string> AsLines(this string text) => text.Split("\r\n");
     }
 }

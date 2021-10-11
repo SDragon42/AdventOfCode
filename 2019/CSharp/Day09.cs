@@ -13,21 +13,26 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day09 : PuzzleBase
     {
-        public Day09(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 9: Sensor Boost";
 
             yield return string.Empty;
-            //yield return " Ex. 1) " + base.Run(() => RunExample(GetPuzzleData(1, "example1")));
-            //yield return " Ex. 2) " + base.Run(() => RunExample(GetPuzzleData(1, "example2")));
-            //yield return " Ex. 3) " + base.Run(() => RunExample(GetPuzzleData(1, "example3")));
-            yield return "Part 1) " + base.Run(() => RunBOOST(GetPuzzleData(1, "input"), 1));
+            yield return RunExample(Example1);
+            yield return RunExample(Example2);
+            yield return RunExample(Example3);
+            yield return Run(Part1);
 
             yield return string.Empty;
-            yield return "Part 2) " + base.Run(() => RunBOOST(GetPuzzleData(2, "input"), 2));
+            yield return Run(Part2);
         }
+
+        string Example1() => " Ex. 1) " + RunTestCase(GetPuzzleData(1, "example1"));
+        string Example2() => " Ex. 2) " + RunTestCase(GetPuzzleData(1, "example2"));
+        string Example3() => " Ex. 3) " + RunTestCase(GetPuzzleData(1, "example3"));
+        string Part1() => "Part 1) " + RunBOOST(GetPuzzleData(1, "input"), 1);
+
+        string Part2() => "Part 2) " + RunBOOST(GetPuzzleData(2, "input"), 2);
 
         class InputAnswer : IntCodeInputAnswer<string> { }
         InputAnswer GetPuzzleData(int part, string name)
@@ -36,8 +41,8 @@ namespace AdventOfCode.CSharp.Year2019
 
             var result = new InputAnswer()
             {
-                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
-                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)
+                Input = InputHelper.LoadInputFile(DAY, name).ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()
             };
             return result;
         }
@@ -56,7 +61,7 @@ namespace AdventOfCode.CSharp.Year2019
             return Helper.GetPuzzleResultText($"BOOST key-code: {answer}", answer, puzzleData.ExpectedAnswer);
         }
 
-        string RunExample(InputAnswer puzzleData)
+        string RunTestCase(InputAnswer puzzleData)
         {
             var outputBuffer = new List<long>();
             var computer = new IntCode(puzzleData.Code);

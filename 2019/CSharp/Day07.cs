@@ -13,23 +13,30 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day07 : PuzzleBase
     {
-        public Day07(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 7: Amplification Circuit";
 
             yield return string.Empty;
-            //yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
-            //yield return " Ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2")));
-            //yield return " Ex. 3) " + base.Run(() => RunPart1(GetPuzzleData(1, "example3")));
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
+            yield return RunExample(Example1);
+            yield return RunExample(Example2);
+            yield return RunExample(Example3);
+            yield return Run(Part1);
 
             yield return string.Empty;
-            //yield return " Ex. 4) " + base.Run(() => RunPart2(GetPuzzleData(2, "example4")));
-            //yield return " Ex. 5) " + base.Run(() => RunPart2(GetPuzzleData(2, "example5")));
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            yield return RunExample(Example4);
+            yield return RunExample(Example5);
+            yield return Run(Part2);
         }
+
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
+        string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
+        string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
+
+        string Example4() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example4"));
+        string Example5() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example5"));
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
 
         class InputAnswer : IntCodeInputAnswer<long?>
@@ -51,8 +58,8 @@ namespace AdventOfCode.CSharp.Year2019
 
             var result = new InputAnswer()
             {
-                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
-                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
+                Input = InputHelper.LoadInputFile(DAY, name).ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
             };
             return result;
         }
