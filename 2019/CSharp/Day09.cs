@@ -29,31 +29,16 @@ namespace AdventOfCode.CSharp.Year2019
             yield return "Part 2) " + base.Run(() => RunBOOST(GetPuzzleData(2, "input"), 2));
         }
 
-        class InputAnswer : InputAnswer<List<string>, string>
-        {
-            public InputAnswer(List<string> input, string expectedAnswer)
-            {
-                Input = input;
-                ExpectedAnswer = expectedAnswer;
-
-                Code = Input.First()
-                    .Split(',')
-                    .Select(v => v.ToInt64())
-                    .ToList();
-            }
-
-            public List<long> Code { get; set; }
-        }
+        class InputAnswer : IntCodeInputAnswer<string> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
             const int DAY = 9;
 
-            var result = new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name)
-                    .Split("\r\n")
-                    .ToList(),
-                InputHelper.LoadAnswerFile(DAY, part, name)
-            );
+            var result = new InputAnswer()
+            {
+                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)
+            };
             return result;
         }
 

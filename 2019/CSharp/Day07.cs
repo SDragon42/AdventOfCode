@@ -32,36 +32,28 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
 
-        class InputAnswer : InputAnswer<List<string>, long?> { 
-            public InputAnswer(List<string> input, long? expectedAnswer)
+        class InputAnswer : IntCodeInputAnswer<long?>
+        {
+            protected override void SetInput(List<string> value)
             {
-                Input = input;
-                ExpectedAnswer = expectedAnswer;
-
-                Code = Input.First()
-                    .Split(',')
-                    .Select(v => v.ToInt64())
-                    .ToList();
-
+                base.SetInput(value);
                 Phase = Input.Skip(1).FirstOrDefault()
                     ?.Split(',')
                     ?.Select(v => v.ToInt64())
                     ?.ToList();
             }
 
-            public List<long> Code { get; set; }
             public List<long> Phase { get; set; }
         }
         InputAnswer GetPuzzleData(int part, string name)
         {
             const int DAY = 7;
 
-            var result = new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name)
-                    .Split("\r\n")
-                    .ToList(),
-                InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
-            );
+            var result = new InputAnswer()
+            {
+                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
+            };
             return result;
         }
 

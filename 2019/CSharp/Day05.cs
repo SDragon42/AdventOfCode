@@ -33,17 +33,14 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
 
-        class InputAnswer : InputAnswer<List<long>, long?> { }
+        class InputAnswer : IntCodeInputAnswer<long?> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
             const int DAY = 5;
 
             var result = new InputAnswer()
             {
-                Input = InputHelper.LoadInputFile(DAY, name)
-                    .Split(',')
-                    .Select(l => l.ToInt64())
-                    .ToList(),
+                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
                 ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
             };
             return result;
@@ -56,7 +53,7 @@ namespace AdventOfCode.CSharp.Year2019
                 puzzleData.ExpectedAnswer = overrideExpectedAnswer.Value;
 
             var answer = 0L;
-            var computer = new IntCode(puzzleData.Input);
+            var computer = new IntCode(puzzleData.Code);
             computer.Output += (s, e) => { answer = e.OutputValue; };
 
             computer.Run();
@@ -73,7 +70,7 @@ namespace AdventOfCode.CSharp.Year2019
         string RunPart2(InputAnswer puzzleData)
         {
             var answer = 0L;
-            var computer = new IntCode(puzzleData.Input);
+            var computer = new IntCode(puzzleData.Code);
             computer.Output += (s, e) => { answer = e.OutputValue; };
 
             computer.Run();
