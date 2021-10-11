@@ -148,7 +148,7 @@ namespace AdventOfCode.CSharp.Common
 
 
 
-        public static void DrawPointGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod = null, Rectangle? minArea = null)
+        public static string DrawPointGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod = null, Rectangle? minArea = null)
         {
             var minX = gridData.Keys.Select(h => h.X).Min();
             var maxX = gridData.Keys.Select(h => h.X).Max();
@@ -187,15 +187,15 @@ namespace AdventOfCode.CSharp.Common
 
                     var element = DrawElementMethod?.Invoke(value) ?? value?.ToString() ?? " ";
                     text.Append(element);
-                    //text.Append(DrawElementMethod(value));
                 }
-                text.AppendLine();
+                if (y > minY)
+                    text.AppendLine();
             }
 
-            Console.WriteLine(text.ToString());
+            return text.ToString();
         }
 
-        public static void DrawScreenGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod = null)
+        public static string DrawScreenGrid2D<TValue>(IDictionary<Point, TValue> gridData, Func<TValue, string> DrawElementMethod = null)
         {
             var minX = gridData.Keys.Select(h => h.X).Min();
             var maxX = gridData.Keys.Select(h => h.X).Max();
@@ -219,7 +219,8 @@ namespace AdventOfCode.CSharp.Common
                 text.AppendLine();
             }
 
-            Console.WriteLine(text.ToString());
+            //Console.WriteLine(text.ToString());
+            return text.ToString();
         }
     }
 }
