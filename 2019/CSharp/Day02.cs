@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdventOfCode.CSharp.Common;
+using AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
 namespace AdventOfCode.CSharp.Year2019
 {
@@ -27,17 +28,14 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
 
-        class InputAnswer : InputAnswer<List<long>, long?> { }
+        class InputAnswer : IntCodeInputAnswer<long?> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
             const int DAY = 2;
 
             var result = new InputAnswer()
             {
-                Input = InputHelper.LoadInputFile(DAY, name)
-                    .Split(',')
-                    .Select(l => l.ToInt64())
-                    .ToList(),
+                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
                 ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
             };
             return result;
@@ -46,7 +44,7 @@ namespace AdventOfCode.CSharp.Year2019
 
         string RunPart1(InputAnswer puzzleData, int valueAt1 = -1, int valueAt2 = -1)
         {
-            var answer = RunCode(puzzleData.Input, valueAt1, valueAt2);
+            var answer = RunCode(puzzleData.Code, valueAt1, valueAt2);
             return Helper.GetPuzzleResultText($"Value as position 0 : {answer}", answer, puzzleData.ExpectedAnswer);
         }
 
@@ -54,14 +52,14 @@ namespace AdventOfCode.CSharp.Year2019
 
         string RunPart2(InputAnswer puzzleData)
         {
-            var answer = FindNounVerb(puzzleData.Input, 19690720);
+            var answer = FindNounVerb(puzzleData.Code, 19690720);
             return Helper.GetPuzzleResultText($"Noun-Verb pair is : {answer}", answer, puzzleData.ExpectedAnswer);
         }
 
 
         private long RunCode(List<long> code, long valueAt1, long valueAt2)
         {
-            var computer = new IntCodeComputer.IntCode(code);
+            var computer = new IntCode(code);
             if (valueAt1 >= 0) computer.Poke(1, valueAt1);
             if (valueAt2 >= 0) computer.Poke(2, valueAt2);
             computer.Run();
