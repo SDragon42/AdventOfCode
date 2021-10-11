@@ -12,20 +12,25 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day06 : PuzzleBase
     {
-        public Day06(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 6: Universal Orbit Map";
 
             yield return string.Empty;
-            //yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1")));
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
+            yield return RunExample(Example1);
+            yield return Run(Part1);
 
             yield return string.Empty;
-            //yield return " Ex. 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "example2")));
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            yield return RunExample(Example2);
+            yield return Run(Part2);
         }
+
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
+
+        string Example2() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2"));
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
+
 
         class InputAnswer : InputAnswer<List<string>, int?>
         {
@@ -61,8 +66,8 @@ namespace AdventOfCode.CSharp.Year2019
             const int DAY = 6;
 
             var result = new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).Split("\r\n").ToList(),
-                InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt32()
+                InputHelper.LoadInputFile(DAY, name).ToList(),
+                InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
                 );
 
             return result;

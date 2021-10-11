@@ -7,30 +7,42 @@ namespace AdventOfCode.CSharp.Common
 {
     public abstract class PuzzleBase
     {
-        readonly Stopwatch benchmark;
-
-        public PuzzleBase(bool benchmark)
+        public PuzzleBase()
         {
-            if (benchmark)
-                this.benchmark = new Stopwatch();
+            Run = RunWithoutBenchmarks;
+            RunExample = Run_DoNothing;
+        }
+
+        public void SetOptions(bool benchmarks, bool examples)
+        {
+            if (benchmarks)
+                Run = RunWithBenchmarks;
+
+            if (examples)
+                RunExample = Run;
         }
 
 
         public abstract IEnumerable<string> SolvePuzzle();
 
 
-        protected string Run(Func<string> method)
+        private string RunWithoutBenchmarks(Func<string> method)
         {
-            benchmark?.Start();
             var text = method.Invoke();
-            benchmark?.Stop();
-
-            if (benchmark != null)
-                return text + $" - {benchmark.ElapsedMilliseconds} ms";
-            else
-                return text;
+            return text;
         }
+        private string RunWithBenchmarks(Func<string> method)
+        {
+            var benchmark = new Stopwatch();
+            benchmark.Start();
+            var text = RunWithoutBenchmarks(method);
+            benchmark.Stop();
+            return text + $" - {benchmark.ElapsedMilliseconds} ms";
+        }
+        private string Run_DoNothing(Func<string> method) => null;
 
+        protected Func<Func<string>, string> Run = (f) => null;
+        protected Func<Func<string>, string> RunExample = (f) => null;
 
     }
 }

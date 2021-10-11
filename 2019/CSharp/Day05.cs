@@ -13,25 +13,32 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day05 : PuzzleBase
     {
-        public Day05(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 5: Sunny with a Chance of Asteroids";
 
             yield return string.Empty;
-            //yield return " Ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1"), 69, 69));
-            //yield return " Ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2"), 1, 0));
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input"), 1));
+            yield return RunExample(Example1);
+            yield return RunExample(Example2);
+            yield return Run(Part1);
 
             yield return string.Empty;
-            //yield return base.Run(() => RunPart2Example3(8));
-            //yield return base.Run(() => RunPart2Example3(7));
-            //yield return base.Run(() => RunPart2Example4(0));
-            //yield return base.Run(() => RunPart2Example4(42));
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            //yield return RunExample(Example3a);
+            //yield return RunExample(Example3b);
+            //yield return RunExample(Example4a);
+            //yield return RunExample(Example4b);
+            yield return Run(Part2);
         }
 
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"), 69, 69);
+        string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"), 1, 0);
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 1);
+
+        string Example3a() => " Ex. 3a) " + RunPart2Example3(8);
+        string Example3b() => " Ex. 3b) " + RunPart2Example3(7);
+        string Example4a() => " Ex. 4a) " + RunPart2Example4(0);
+        string Example4b() => " Ex. 4b) " + RunPart2Example4(42);
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
         class InputAnswer : IntCodeInputAnswer<long?> { }
         InputAnswer GetPuzzleData(int part, string name)
@@ -40,8 +47,8 @@ namespace AdventOfCode.CSharp.Year2019
 
             var result = new InputAnswer()
             {
-                Input = InputHelper.LoadInputFile(DAY, name).AsLines().ToList(),
-                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt64()
+                Input = InputHelper.LoadInputFile(DAY, name).ToList(),
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
             };
             return result;
         }
@@ -87,7 +94,6 @@ namespace AdventOfCode.CSharp.Year2019
         {
             var sb = new StringBuilder();
             var inputList = InputHelper.LoadInputFile(5, "example3")
-                .Split("\r\n")
                 .Select(l => l.Split(',').Select(v => v.ToInt64()).ToList());
 
             sb.AppendLine($"Input: {inputValue}");
@@ -112,18 +118,15 @@ namespace AdventOfCode.CSharp.Year2019
         {
             var sb = new StringBuilder();
             var inputList = InputHelper.LoadInputFile(5, "example4")
-                .Split("\r\n")
                 .Select(l => l.Split(',').Select(v => v.ToInt64()).ToList());
 
             sb.AppendLine($"Input: {inputValue}");
             foreach (var input in inputList)
             {
-                Console.WriteLine("-------------------");
+                sb.AppendLine("-------------------");
                 var computer = new IntCode(input);
-                //computer.AfterRunStep += (s, e) => ShowState((IntCode)s).ForEach(l => sb.AppendLine(l));
                 computer.Output += (s, e) => sb.AppendLine($"Output: {e.OutputValue}");
 
-                //ShowState(computer).ForEach(l => sb.AppendLine(l));
                 computer.Run();
                 if (computer.State == IntCodeState.NeedsInput)
                 {

@@ -16,18 +16,19 @@ namespace AdventOfCode.CSharp.Year2019
         readonly List<RuleMethod> Rules = new List<RuleMethod>();
 
 
-        public Day04(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 4: Secure Container";
 
             yield return string.Empty;
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
+            yield return Run(Part1);
 
             yield return string.Empty;
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            yield return Run(Part2);
         }
+
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
 
         class InputAnswer : InputAnswer<List<int>, int?>
@@ -42,10 +43,11 @@ namespace AdventOfCode.CSharp.Year2019
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name)
+                    .First()
                     .Split('-')
                     .Select(l => l.ToInt32())
                     .ToList(),
-                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.ToInt32()
+                ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
             };
             return result;
         }

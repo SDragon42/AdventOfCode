@@ -12,27 +12,29 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day08 : PuzzleBase
     {
-        public Day08(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 8: Space Image Format";
 
             yield return string.Empty;
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input")));
+            yield return Run(Part1);
 
             yield return string.Empty;
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input")));
+            yield return Run(Part2);
         }
+
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
 
         class InputAnswer : InputAnswer<string, int?>
         {
-            public InputAnswer(string input, int? expectedAnswer1 = null, string expectedAnswer2 = null)
+            public InputAnswer(string input, int? expectedAnswer1 = null, IEnumerable<string> expectedAnswer2 = null)
             {
                 Input = input;
                 ExpectedAnswer = expectedAnswer1;
-                ExpectedAnswer2 = expectedAnswer2;
+                if (expectedAnswer2 != null)
+                    ExpectedAnswer2 = string.Join("\r\n", expectedAnswer2);
 
                 ImageData = Input.Select(c => (int)char.GetNumericValue(c)).ToList();
             }
@@ -47,11 +49,11 @@ namespace AdventOfCode.CSharp.Year2019
             var result = part switch
             {
                 1 => new InputAnswer(
-                    InputHelper.LoadInputFile(DAY, name),
-                    expectedAnswer1: InputHelper.LoadAnswerFile(DAY, part, name).ToInt32()
+                    InputHelper.LoadInputFile(DAY, name).First(),
+                    expectedAnswer1: InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault().ToInt32()
                     ),
                 2 => new InputAnswer(
-                    InputHelper.LoadInputFile(DAY, name),
+                    InputHelper.LoadInputFile(DAY, name).First(),
                     expectedAnswer2: InputHelper.LoadAnswerFile(DAY, part, name)
                     ),
                 _ => throw new ApplicationException($"Invalid part ({part}) value")
@@ -81,7 +83,7 @@ namespace AdventOfCode.CSharp.Year2019
         {
             var compositeImage = buildCompositImage(puzzleData.ImageData);
 
-            return Helper.GetPuzzleResultText("\r\n"+compositeImage, compositeImage, puzzleData.ExpectedAnswer2);
+            return Helper.GetPuzzleResultText(Environment.NewLine + compositeImage, compositeImage, puzzleData.ExpectedAnswer2);
         }
 
         int GetFindLayerNumberWithLeast(IList<int> imageData, int value)

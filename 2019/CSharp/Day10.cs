@@ -13,25 +13,34 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day10 : PuzzleBase
     {
-        public Day10(bool benchmark) : base(benchmark) { }
-
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 10: Monitoring Station";
 
             yield return string.Empty;
-            //yield return " ex. 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "example1"), out _));
-            //yield return " ex. 2) " + base.Run(() => RunPart1(GetPuzzleData(1, "example2"), out _));
-            //yield return " ex. 3) " + base.Run(() => RunPart1(GetPuzzleData(1, "example3"), out _));
-            //yield return " ex. 4) " + base.Run(() => RunPart1(GetPuzzleData(1, "example4"), out _));
-            //yield return " ex. 5) " + base.Run(() => RunPart1(GetPuzzleData(1, "example5"), out _));
+            yield return RunExample(Example1);
+            yield return RunExample(Example2);
+            yield return RunExample(Example3);
+            yield return RunExample(Example4);
+            yield return RunExample(Example5);
             var baseLocation = default(Point);
-            yield return "Part 1) " + base.Run(() => RunPart1(GetPuzzleData(1, "input"), out baseLocation));
+            yield return Run(() => Part1(out baseLocation));
 
             yield return string.Empty;
-            //yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "example5"), new Point(11, 13), 200));
-            yield return "Part 2) " + base.Run(() => RunPart2(GetPuzzleData(2, "input"), baseLocation, 200));
+            yield return RunExample(Example5P2);
+            yield return Run(() => Part2(baseLocation));
         }
+
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"), out _);
+        string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"), out _);
+        string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"), out _);
+        string Example4() => " Ex. 4) " + RunPart1(GetPuzzleData(1, "example4"), out _);
+        string Example5() => " Ex. 5) " + RunPart1(GetPuzzleData(1, "example5"), out _);
+        string Part1(out Point baseLocation) => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), out baseLocation);
+
+        string Example5P2() => " Ex. 6) " + RunPart2(GetPuzzleData(2, "example5"), new Point(11, 13), 200);
+        string Part2(Point baseLocation) => "Part 2) " + RunPart2(GetPuzzleData(2, "input"), baseLocation, 200);
+
 
 
         class InputAnswer : InputAnswer<string[], int?>
@@ -70,12 +79,12 @@ namespace AdventOfCode.CSharp.Year2019
             var result = part switch
             {
                 1 => new InputAnswer(
-                    InputHelper.LoadInputFile(DAY, name).Split("\r\n"),
-                    InputHelper.LoadAnswerFile(DAY, part, name).ToInt32()
+                    InputHelper.LoadInputFile(DAY, name).ToArray(),
+                    InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
                     ),
                 2 => new InputAnswer(
-                    InputHelper.LoadInputFile(DAY, name).Split("\r\n"),
-                    InputHelper.LoadAnswerFile(DAY, part, name).ToInt32()
+                    InputHelper.LoadInputFile(DAY, name).ToArray(),
+                    InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
                     ),
                 _ => throw new ApplicationException($"Invalid part ({part}) value")
             };
@@ -106,8 +115,6 @@ namespace AdventOfCode.CSharp.Year2019
 
         string RunPart2(InputAnswer puzzleData, Point baseLocation, int vaporizeNumber)
         {
-            var sb = new StringBuilder();
-
             var vaporizeCount = 0;
             var foundBet = 0;
 
@@ -135,7 +142,6 @@ namespace AdventOfCode.CSharp.Year2019
 
                 if (vaporizeCount == vaporizeNumber)
                 {
-                    sb.AppendLine($"{vaporizeCount}th vaporized at ({target.asteroid.Location.X},{target.asteroid.Location.Y})");
                     foundBet = (target.asteroid.Location.X * 100) + target.asteroid.Location.Y;
                     break;
                 }
@@ -150,12 +156,9 @@ namespace AdventOfCode.CSharp.Year2019
             }
 
             
-            var resultMessage = Helper.GetPuzzleResultText($"Winning Bet: {foundBet}",
+            return Helper.GetPuzzleResultText($"Winning Bet: {foundBet}",
                 foundBet,
                 puzzleData.ExpectedAnswer);
-
-            sb.AppendLine(resultMessage);
-            return sb.ToString();
         }
 
 

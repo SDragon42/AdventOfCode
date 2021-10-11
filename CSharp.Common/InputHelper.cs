@@ -7,19 +7,17 @@ namespace AdventOfCode.CSharp.Common
 {
     public static class InputHelper
     {
-        public static string LoadInputFile(int day, string name)
+        public static IEnumerable<string> LoadInputFile(int day, string name)
         {
             var filename = $@".\input\Day{day:00}\{name}.txt";
-            var text = File.ReadAllText(filename);
-            return text;
+            return File.ReadLines(filename);
         }
-        public static string LoadAnswerFile(int day, int part, string name)
+        public static IEnumerable<string> LoadAnswerFile(int day, int part, string name)
         {
             try
             {
                 var filename = $@".\input\Day{day:00}\{name}-answer{part}.txt";
-                var text = File.ReadAllText(filename);
-                return text;
+                return File.ReadLines(filename);
             }
             catch { return null; }
         }
