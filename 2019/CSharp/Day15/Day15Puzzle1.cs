@@ -6,7 +6,7 @@ using System.Text;
 using AdventOfCode.CSharp.Year2019.IntCodeComputer;
 using AdventOfCode.CSharp.Common;
 
-namespace AdventOfCode.CSharp.Year2019.Day15
+namespace AdventOfCode.CSharp.Year2019.Day15_Old
 {
     /*
     --- Day 15: Oxygen System ---
