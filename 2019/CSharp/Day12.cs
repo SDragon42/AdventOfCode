@@ -9,6 +9,9 @@ using AdventOfCode.CSharp.Common;
 
 namespace AdventOfCode.CSharp.Year2019
 {
+    /// <summary>
+    /// https://adventofcode.com/2019/day/12
+    /// </summary>
     class Day12 : PuzzleBase
     {
         public override IEnumerable<string> SolvePuzzle()
