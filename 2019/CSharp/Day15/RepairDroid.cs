@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace AdventOfCode.CSharp.Year2019.Day15
+namespace AdventOfCode.CSharp.Year2019.Day15_Old
 {
     enum RepairDroidStatusCode
     {
