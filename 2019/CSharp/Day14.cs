@@ -10,19 +10,24 @@ namespace AdventOfCode.CSharp.Year2019
     /// <summary>
     /// https://adventofcode.com/2019/day/14
     /// </summary>
+    /// <remarks>
+    /// used https://asmartins.com/blog/rocket-fuel/ to solve this puzzle.
+    /// </remarks>
     class Day14 : PuzzleBase
     {
+        const string FUEL = "FUEL";
+        const string ORE = "ORE";
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 14: Space Stoichiometry";
 
-            yield return string.Empty;
             yield return RunExample(Example1);
             yield return RunExample(Example2);
             yield return RunExample(Example3);
             yield return RunExample(Example4);
             yield return RunExample(Example5);
-            //yield return Run(Part1);
+            yield return Run(Part1);
 
             yield return string.Empty;
             //yield return RunExample(Example1P2);
@@ -30,13 +35,12 @@ namespace AdventOfCode.CSharp.Year2019
             //yield return Run(Part2);
         }
 
-        string Example1() => "\r\n\r\n\r\n Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-        string Example2() => "\r\n\r\n\r\n Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
-        string Example3() => "\r\n\r\n\r\n Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
-        string Example4() => "\r\n\r\n\r\n Ex. 4) " + RunPart1(GetPuzzleData(1, "example4"));
-        string Example5() => "\r\n\r\n\r\n Ex. 5) " + RunPart1(GetPuzzleData(1, "example5"));
-        //string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"), 100);
-        //string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 1000);
+        string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
+        string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
+        string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
+        string Example4() => " Ex. 4) " + RunPart1(GetPuzzleData(1, "example4"));
+        string Example5() => " Ex. 5) " + RunPart1(GetPuzzleData(1, "example5"));
+        string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
 
         //string Example1P2() => " Ex. 1) " + RunPart2(GetPuzzleData(2, "example1"));
         //string Example2P2() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2"));
@@ -58,42 +62,113 @@ namespace AdventOfCode.CSharp.Year2019
         }
 
 
-        readonly Dictionary<string, ChemReaction> ReactionChains = new Dictionary<string, ChemReaction>();
-        readonly Dictionary<string, Chemical> ExcessChems = new Dictionary<string, Chemical>();
-
-
+        readonly StringBuilder Log = new StringBuilder();
 
         string RunPart1(InputAnswer puzzleData)
         {
-            ReactionChains.Clear();
-            ExcessChems.Clear();
-            BuildReactionChains(puzzleData.Input);
+            Log.Clear();
+            var reactions = BuildReactionChains(puzzleData.Input);
+            var orderedChems = SetTopologicalOrder(reactions);
+            
+            var oreNeeded = CalcOreNeeded_Topological(FUEL, 1, reactions, orderedChems);
+            
+            Log.Clear();
+            Log.AppendLine(Helper.GetPuzzleResultText($"Minimum amount of ORE needed for 1 Fuel: {oreNeeded}", oreNeeded, puzzleData.ExpectedAnswer));
+            return Log.ToString().Trim();
+        }
+        IList<string> SetTopologicalOrder(IDictionary<string, ChemReaction> reactions)
+        {
+            //OrderedChemicals.Clear();
+            var orderedChems = new List<string>();
+            var visitedChems = new List<string>();
 
-            var sb = new StringBuilder();
+            DepthFirstSearch(FUEL);
+            orderedChems.Reverse();
+            orderedChems.Add(ORE);
+            //Log.AppendLine("ORDER: " + string.Join(" -> ", OrderedChems));
 
-            sb.AppendLine("REACTION CHAINS");
+            return orderedChems;
 
-            DisplayReachionChains()
-                .ForEach(l => sb.AppendLine(l));
+            void DepthFirstSearch(string chemName)
+            {
+                visitedChems.Add(chemName);
+                if (chemName == ORE)
+                    return;
+                var ingredients = reactions[chemName];
 
-            ////Console.WriteLine("--- Raw Data ---".PadRight(50, '-'));
-            ////rawData.ForEach(d => Console.WriteLine(d));
-            var oreNeeded = CalcOreNeeded("FUEL", 1);
+                foreach (var reactant in ingredients.Reactants)
+                {
+                    if (!visitedChems.Contains(reactant.Product.Name))
+                        DepthFirstSearch(reactant.Product.Name);
+                }
 
-            //Console.WriteLine($"ORE needed: {oreNeeded}");
-            //if (oreNeeded == CorrectAnswer)
-            //    Console.WriteLine("\tCorrect");
-            //else
-            //    Console.WriteLine($"  Expected: {CorrectAnswer}");
-            //Console.WriteLine();
+                orderedChems.Add(chemName);
+            }
+        }
+        private int CalcOreNeeded_Topological(string chemName, int amountNeeded, IDictionary<string, ChemReaction> reactions, IList<string> orderedChems)
+        {
+            //Log.AppendLine("-");
 
-            sb.AppendLine(Helper.GetPuzzleResultText($"Number of block tiles are on the screen: {oreNeeded}", oreNeeded, puzzleData.ExpectedAnswer));
+            var needs = new List<Chemical>();
+            needs.Add(new Chemical(chemName, amountNeeded));
 
-            return sb.ToString();
+            var oreRequired = 0;
+            var iterations = 0;
+
+            while (needs.Count > 0)
+            {
+                iterations++;
+
+                //Log.Append(
+                //    $"{iterations,2}: " +
+                //    $"{string.Join(',', needs.Select(r => r.ToString().Replace(" ", ""))),8}" +
+                //    " -> ");
+
+                var t = orderedChems[0];
+                orderedChems.RemoveAt(0);
+
+                var chemical = needs.Where(a => a.Name == t).First();
+                var qty_required = chemical.Quantity;
+                needs.Remove(chemical);
+
+                var x = reactions[chemical.Name];
+                var qty_produced = x.Product.Quantity;
+                var ingredients = x.Reactants;
+                var n = (int)Math.Ceiling((decimal)qty_required / qty_produced);
+
+                foreach (var ingredient in ingredients)
+                {
+                    var n2 = ingredient.Product.Quantity * n;
+                    if (ingredient.Product.Name == ORE)
+                    {
+                        oreRequired += n2;
+                        continue;
+                    }
+
+                    var tmp = needs
+                        .Where(i => i.Name == ingredient.Product.Name)
+                        .FirstOrDefault();
+
+                    if (tmp == null)
+                    {
+                        tmp = new Chemical(ingredient.Product.Name, 0);
+                        needs.Add(tmp);
+                    }
+
+                    tmp.Quantity += n2;
+                }
+
+                //Log.AppendLine(
+                //    $"{string.Join(',', needs.Select(r => r.ToString().Replace(" ", ""))),-8}" +
+                //    $"{string.Join(',', Stock.Where(s => s.Value > 0).Select(s => $"{s.Value}{s.Key}")),-8}" +
+                //    $"{oreRequired,4}");
+            }
+            return oreRequired;
         }
 
-        void BuildReactionChains(IEnumerable<string> inputLines)
+        IDictionary<string, ChemReaction> BuildReactionChains(IEnumerable<string> inputLines)
         {
+            var reactions = new Dictionary<string, ChemReaction>();
             foreach (var line in inputLines)
             {
                 var parts = line.Split("=>", 2);
@@ -103,87 +178,29 @@ namespace AdventOfCode.CSharp.Year2019
                 foreach (var rec in neededParts)
                     endNode.Reactants.Add(MakeChemReaction(rec.Trim()));
 
-                ReactionChains.Add(endNode.Product.Name, endNode);
+                reactions.Add(endNode.Product.Name, endNode);
             }
 
-            ChemReaction MakeChemReaction(string chemInfo)
-            {
-                var parts = chemInfo.Split(" ", 2);
-                var chem = new Chemical(parts[1].Trim(), Convert.ToInt32(parts[0].Trim()));
-                var item = new ChemReaction(chem);
-                return item;
-            }
+            return reactions;
         }
-
-
-
-
-        //readonly IReadOnlyList<string> rawData;
-
-        //readonly IDictionary<string, Chemical> ExcessChems = new Dictionary<string, Chemical>();
-        //readonly int CorrectAnswer;
-
-
-        private int CalcOreNeeded(string chemical, int amountNeeded)
+        ChemReaction MakeChemReaction(string chemInfo)
         {
-            if (chemical == "ORE")
-                return amountNeeded;
-
-            var oreNeeded = 0;
-            var chain = ReactionChains[chemical];
-            var chem = chain.Product;
-            var gotten = 0;
-
-            //var t2 = GetExcessChemical(chemical);
-            //if (t2.Quantity >= amountNeeded)
-            //{
-            //    t2.Quantity -= amountNeeded;
-            //    return 0;
-            //}
-
-            for (int l = 1; l <= amountNeeded; l += chem.Quantity)
-            {
-                foreach (var neededChem in chain.Reactants)
-                {
-                    var t = GetExcessChemical(neededChem.Product.Name);
-                    if (t.Quantity >= neededChem.Product.Quantity)
-                        t.Quantity -= neededChem.Product.Quantity;
-                    else
-                        oreNeeded += CalcOreNeeded(neededChem.Product.Name, neededChem.Product.Quantity);
-                }
-                gotten += chem.Quantity;
-            }
-
-            var excess = gotten - amountNeeded;
-            if (excess > 0)
-            {
-                var t = GetExcessChemical(chemical);
-                t.Quantity += excess;
-            }
-            return oreNeeded;
+            var parts = chemInfo.Split(" ", 2);
+            var chem = new Chemical(parts[1].Trim(), Convert.ToInt32(parts[0].Trim()));
+            var item = new ChemReaction(chem);
+            return item;
         }
 
-        Chemical GetExcessChemical(string chemicalName)
+        IEnumerable<string> DisplayReachionChains(IDictionary<string, ChemReaction> reactions)
         {
-            if (!ExcessChems.ContainsKey(chemicalName))
-                ExcessChems.Add(chemicalName, new Chemical(chemicalName, 0));
-            return ExcessChems[chemicalName];
-        }
-
-
-        IEnumerable<string> DisplayReachionChains()
-        {
-            foreach (var key in ReactionChains.Keys)
+            foreach (var key in reactions.Keys)
             {
-                var rec = ReactionChains[key];
+                var rec = reactions[key];
 
-                var rneeds = rec.Reactants.Select(r => r.ToString());
-                yield return $"{string.Join(", ", rneeds)} => {rec}";
+                var rNeeds = rec.Reactants.Select(r => r.ToString());
+                yield return $"{string.Join(", ", rNeeds)} => {rec}";
             }
         }
-
-
-
 
 
 

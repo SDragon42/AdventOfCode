@@ -51,7 +51,7 @@ namespace AdventOfCode.CSharp.Common
                 puzzle.SolvePuzzle()
                     .Where(t => t != null)
                     .ForEach(Console.WriteLine);
-                
+
                 WriteSectionSeperator();
             }
         }
@@ -75,7 +75,7 @@ namespace AdventOfCode.CSharp.Common
             // all specified puzzles
             var puzzleNames = options.PuzzleDays.Select(d => $"Day{d:00}").ToList();
             return puzzleTypes
-                .Where(t => puzzleNames.Contains(t.Name));
+                .Where(t => puzzleNames.Any(p => t.Name.StartsWith(p)));
         }
 
         void WriteHeader()
