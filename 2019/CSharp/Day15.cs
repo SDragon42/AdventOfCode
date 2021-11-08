@@ -22,7 +22,7 @@ namespace AdventOfCode.CSharp.Year2019
             yield return Run(Part1);
 
             yield return string.Empty;
-            //yield return Run(Part2);
+            yield return Run(Part2);
         }
 
         string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
@@ -72,24 +72,59 @@ namespace AdventOfCode.CSharp.Year2019
             {
                 robot.Start();
             }
-            catch (Exception)
-            {
-            }
-            
+            catch (Exception) { }
+
 
             var sb = new StringBuilder();
             sb.AppendLine();
             sb.AppendLine(map.RenderMap());
             sb.AppendLine();
             var result = stepCount;
-            sb.AppendLine( Helper.GetPuzzleResultText($"The fewest number of movement commands: {result}", result, puzzleData.ExpectedAnswer));
+            sb.AppendLine(Helper.GetPuzzleResultText($"The fewest number of movement commands: {result}", result, puzzleData.ExpectedAnswer));
             return sb.ToString();
         }
 
 
         string RunPart2(InputAnswer puzzleData)
         {
-            return string.Empty;
+            var minutes = 0;
+
+            var start = map.MapData
+                .Where(kv => kv.Value == MapLegend.O2Generator)
+                .Select(kv => kv.Key)
+                .First();
+
+            map.Set(start, MapLegend.Oxygen);
+
+            var hallTiles = map.MapData
+                .Where(kv => kv.Value == MapLegend.Hall);
+            var tilesToFill = hallTiles
+                .Where(kv => NextToOxygen(kv.Key))
+                .Select(kv => kv.Key);
+
+            while (hallTiles.Count() > 0)
+            {
+                minutes++;
+                var tmp = tilesToFill.ToList();
+                foreach (var p in tmp)
+                    map.Set(p, MapLegend.Oxygen);
+            }
+
+
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine(map.RenderMap());
+            sb.AppendLine();
+            sb.AppendLine(Helper.GetPuzzleResultText($"# minutes to fill with oxygen: {minutes}", minutes, puzzleData.ExpectedAnswer));
+            return sb.ToString();
+        }
+
+        bool NextToOxygen(Point location)
+        {
+            var test = map.Offsets
+                .Select(kv => Point.Add(location, kv.Value))
+                .Any(p => map.MapData[p] == MapLegend.Oxygen);
+            return test;
         }
 
 
@@ -116,12 +151,15 @@ namespace AdventOfCode.CSharp.Year2019
             public const string Wall = "#";
             public const string Start = "S";
             public const string O2Generator = "@";
+            public const string Oxygen = "O";
         }
 
 
         class Map
         {
             private readonly Dictionary<Point, string> mapData = new();
+            public IDictionary<Point, string> MapData => mapData;
+
             private readonly Dictionary<Direction, Size> offsets = new()
             {
                 { Direction.North, new Size(0, 1) },
