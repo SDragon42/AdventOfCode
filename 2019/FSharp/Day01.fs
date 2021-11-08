@@ -28,10 +28,13 @@ type Day01 (runBenchmarks, runExamples) =
 
     member private this.CalcFuelCorrectly mass : int =
         let fuelMass = (mass / 3) - 2
-        if (fuelMass <= 0) then
-            0
-        else
-            fuelMass + this.CalcFuelCorrectly(fuelMass)
+        match fuelMass with
+        | _ when fuelMass > 0 -> fuelMass + this.CalcFuelCorrectly(fuelMass)
+        | _ -> 0
+        //if (fuelMass > 0) then
+        //    fuelMass + this.CalcFuelCorrectly(fuelMass)
+        //else
+        //    0
 
 
     member private this.ShowResult (value: int, expected: Nullable<int>) =
