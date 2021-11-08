@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="CmdLineOptions.fs" />
     <Compile Include="InputAnswer.fs" />
     <Compile Include="PuzzleBase.fs" />
     <Compile Include="PuzzleRunner.fs" />
     <Compile Include="Helper.fs" />
     <Compile Include="InputHelper.fs" />
     <Compile Include="Library.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser.FSharp" Version="2.8.0" />
   </ItemGroup>
 
 </Project>

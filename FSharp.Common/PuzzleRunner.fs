@@ -3,18 +3,20 @@
 open System
 open System.Linq
 open System.Reflection
+open CommandLine
 
 type PuzzleRunner (titles: string []) =
+    let titleLines = titles
 
     member private this.WriteHeader = 
         let titleWidth = 
-            titles 
+            titleLines 
             |> Array.map(fun(t) -> t.Length) 
             |> Array.max
         
         let titleBorder = "+-" + String.Empty.PadRight(titleWidth, '-') + "-+"
         printfn "%s" titleBorder
-        titles 
+        titleLines 
             |> Array.map(fun t -> printfn "%s" $"| {t.PadRight(titleWidth)} |") 
             |> ignore
         printfn "%s" titleBorder
@@ -27,18 +29,25 @@ type PuzzleRunner (titles: string []) =
         printfn ""
 
 
-    member private this.GetPuzzleTypes =
-        let puzzleTypes = Assembly.GetEntryAssembly().GetTypes().Where(fun(t) -> 
-            typeof<PuzzleBase>.IsAssignableFrom(t)
-            )
-        
-        puzzleTypes.OrderByDescending(fun(t) -> t.Name).Take(1)
+    member private this.GetPuzzleTypes (options: CmdLineOptions) =
+        let puzzleTypes = Assembly.GetEntryAssembly().GetTypes().Where(fun t -> typeof<PuzzleBase>.IsAssignableFrom(t))
+        let FindMatches =
+            match options with
+            | _ when options.RunAll -> 
+                    puzzleTypes
+            | _ when options.PuzzleDays.Count() = 0 ->
+                    puzzleTypes.OrderByDescending(fun(t) -> t.Name).Take(1)
+            | _ -> 
+                    let puzzleNames = options.PuzzleDays |> Seq.map(fun i -> $"Day%02i{i}")
+                    puzzleTypes.Where(fun t -> puzzleNames.Any(fun n -> t.Name.StartsWith(n)))
+
+        FindMatches |> Seq.toList
 
 
-    member private this.SolvePuzzles =
-        let puzzleTypes = this.GetPuzzleTypes
+    member private this.SolvePuzzles (options: CmdLineOptions) =
+        let puzzleTypes = this.GetPuzzleTypes(options)
 
-        let args:obj[] = [|true;true|]
+        let args:obj[] = [| options.RunBenchmark ; options.RunExamples|]
         for i in puzzleTypes do
             let puzzle = Activator.CreateInstance(i, args) :?> PuzzleBase
             for text in puzzle.SolvePuzzle() do
@@ -49,6 +58,6 @@ type PuzzleRunner (titles: string []) =
 
     member this.Run (args: string []) =
         this.WriteHeader
-        this.SolvePuzzles
-        
+        Parser.Default.ParseArguments<CmdLineOptions>(args).WithParsed(fun o -> this.SolvePuzzles(o))
+            |> ignore
     
