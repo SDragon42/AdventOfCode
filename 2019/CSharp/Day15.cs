@@ -52,12 +52,15 @@ namespace AdventOfCode.CSharp.Year2019
         {
             map.Clear();
             stepStack.Clear();
+            var stepCount = 0;
 
             robot = new RepairDroid(puzzleData.Code, map);
             robot.ReportStatus += (s, e) =>
             {
                 if (e.StatusCode != RepairDroidStatusCode.HitWall)
                     stepStack.Push(robot.LastLocation);
+                if (e.StatusCode == RepairDroidStatusCode.MovedOneStep_AtDestination)
+                    stepCount = stepStack.Count;
             };
             robot.RequestMovement += (s, e) =>
             {
@@ -65,14 +68,21 @@ namespace AdventOfCode.CSharp.Year2019
                 e.Direction = dir;
             };
 
-            robot.Start();
+            try
+            {
+                robot.Start();
+            }
+            catch (Exception)
+            {
+            }
+            
 
             var sb = new StringBuilder();
             sb.AppendLine();
             sb.AppendLine(map.RenderMap());
             sb.AppendLine();
-            var result = stepStack.Count();
-            sb.AppendLine( Helper.GetPuzzleResultText($": {result}", result, puzzleData.ExpectedAnswer));
+            var result = stepCount;
+            sb.AppendLine( Helper.GetPuzzleResultText($"The fewest number of movement commands: {result}", result, puzzleData.ExpectedAnswer));
             return sb.ToString();
         }
 
@@ -196,7 +206,7 @@ namespace AdventOfCode.CSharp.Year2019
 
             public void Start()
             {
-                while (cpu.State != IntCodeState.Finished && o2Location.HasValue == false)
+                while (cpu.State != IntCodeState.Finished)// && o2Location.HasValue == false)
                 {
                     cpu.Run();
                     if (cpu.State == IntCodeState.NeedsInput)
@@ -242,6 +252,8 @@ namespace AdventOfCode.CSharp.Year2019
                         var lastTile = MapLegend.Hall;
                         if (LastLocation == startPoint)
                             lastTile = MapLegend.Start;
+                        if (LastLocation == o2Location)
+                            lastTile = MapLegend.O2Generator;
                         map.Set(LastLocation, lastTile);
                         map.Set(Location, MapLegend.Droid);
                         break;
