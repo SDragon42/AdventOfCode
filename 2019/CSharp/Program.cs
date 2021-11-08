@@ -11,9 +11,6 @@ namespace AdventOfCode.CSharp.Year2019
     {
         static void Main(string[] args)
         {
-            //var xxx = new Day15_Old.Day15Puzzle1();
-            //xxx.Run();
-
             var runner = new PuzzleRunner(
                 "Advent of Code 2019",
                 "https://adventofcode.com/2019",
