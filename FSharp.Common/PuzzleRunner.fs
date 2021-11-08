@@ -42,7 +42,8 @@ type PuzzleRunner (titles: string []) =
         for i in puzzleTypes do
             let puzzle = Activator.CreateInstance(i, args) :?> PuzzleBase
             for text in puzzle.SolvePuzzle() do
-                printfn "%s" text
+                if (text <> null) then
+                    printfn "%s" text
             this.WriteSectionSeparator
 
 
