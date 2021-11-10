@@ -13,7 +13,6 @@
     <Compile Include="PuzzleRunner.fs" />
     <Compile Include="Helper.fs" />
     <Compile Include="InputHelper.fs" />
-    <Compile Include="Library.fs" />
   </ItemGroup>
 
   <ItemGroup>
