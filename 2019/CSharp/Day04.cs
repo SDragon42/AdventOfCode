@@ -12,6 +12,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day04 : PuzzleBase
     {
+        const int DAY = 4;
+
+
         delegate bool RuleMethod(int[] digits);
         readonly List<RuleMethod> Rules = new List<RuleMethod>();
 
@@ -38,8 +41,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 4;
-
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name)

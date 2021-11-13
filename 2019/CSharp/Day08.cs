@@ -12,6 +12,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day08 : PuzzleBase
     {
+        const int DAY = 8;
+
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 8: Space Image Format";
@@ -44,8 +47,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 8;
-
             var result = part switch
             {
                 1 => new InputAnswer(

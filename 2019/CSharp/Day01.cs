@@ -12,6 +12,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day01 : PuzzleBase
     {
+        const int DAY = 1;
+
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 1: The Tyranny of the Rocket Equation";
@@ -43,8 +46,6 @@ namespace AdventOfCode.CSharp.Year2019
         class InputAnswer : InputAnswer<List<int>, int?> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 1;
-
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name)

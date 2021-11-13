@@ -13,6 +13,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day03 : PuzzleBase
     {
+        const int DAY = 3;
+
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 3: Crossed Wires";
@@ -78,8 +81,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 3;
-
             var result = new InputAnswer(
                 InputHelper.LoadInputFile(DAY, name).ToList(),
                 InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()

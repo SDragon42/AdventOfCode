@@ -14,6 +14,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day15 : PuzzleBase
     {
+        const int DAY = 15;
+
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 15: Oxygen System";
@@ -33,8 +36,6 @@ namespace AdventOfCode.CSharp.Year2019
         class InputAnswer : IntCodeInputAnswer<long?> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 15;
-
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name).ToList(),
