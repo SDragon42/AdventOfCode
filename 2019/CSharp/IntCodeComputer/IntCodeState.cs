@@ -9,6 +9,5 @@ namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
         Running,
         Finished,
         NeedsInput,
-        // Error,
     }
 }
