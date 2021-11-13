@@ -15,8 +15,12 @@ namespace AdventOfCode.CSharp.Year2019
     /// </remarks>
     class Day14 : PuzzleBase
     {
+        const int DAY = 14;
+
         const string FUEL = "FUEL";
         const string ORE = "ORE";
+
+        const long TRILLION_ORE = 1000000000000;
 
         public override IEnumerable<string> SolvePuzzle()
         {
@@ -30,9 +34,10 @@ namespace AdventOfCode.CSharp.Year2019
             yield return Run(Part1);
 
             yield return string.Empty;
-            //yield return RunExample(Example1P2);
-            //yield return RunExample(Example2P2);
-            //yield return Run(Part2);
+            yield return RunExample(Example3P2);
+            yield return RunExample(Example4P2);
+            yield return RunExample(Example5P2);
+            yield return Run(Part2);
         }
 
         string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
@@ -42,17 +47,16 @@ namespace AdventOfCode.CSharp.Year2019
         string Example5() => " Ex. 5) " + RunPart1(GetPuzzleData(1, "example5"));
         string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
 
-        //string Example1P2() => " Ex. 1) " + RunPart2(GetPuzzleData(2, "example1"));
-        //string Example2P2() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2"));
-        //string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
+        string Example3P2() => " Ex. 3) " + RunPart2(GetPuzzleData(2, "example3"));
+        string Example4P2() => " Ex. 4) " + RunPart2(GetPuzzleData(2, "example4"));
+        string Example5P2() => " Ex. 5) " + RunPart2(GetPuzzleData(2, "example5"));
+        string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
 
 
         class InputAnswer : InputAnswer<List<string>, long?> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 14;
-
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name).ToList(),
@@ -69,23 +73,44 @@ namespace AdventOfCode.CSharp.Year2019
             Log.Clear();
             var reactions = BuildReactionChains(puzzleData.Input);
             var orderedChems = SetTopologicalOrder(reactions);
-            
+
             var oreNeeded = CalcOreNeeded_Topological(FUEL, 1, reactions, orderedChems);
-            
-            Log.Clear();
+
             Log.AppendLine(Helper.GetPuzzleResultText($"Minimum amount of ORE needed for 1 Fuel: {oreNeeded}", oreNeeded, puzzleData.ExpectedAnswer));
             return Log.ToString().Trim();
         }
-        IList<string> SetTopologicalOrder(IDictionary<string, ChemReaction> reactions)
+
+        string RunPart2(InputAnswer puzzleData)
         {
-            //OrderedChemicals.Clear();
+            Log.Clear();
+            var reactions = BuildReactionChains(puzzleData.Input);
+            var orderedChems = SetTopologicalOrder(reactions);
+
+            var fuelProduced = 1L;
+            var args = (reactions, orderedChems);
+            (var estimations, _) = EstimateFuelProduced(reactions, TRILLION_ORE, orderedChems);
+            (long result, long i) = Bisect(f, TRILLION_ORE, estimations, args);
+
+            long f(long x, IDictionary<string, ChemReaction> reactions, List<string> orderedChems)
+            {
+                var ore = CalcOreNeeded_Topological(FUEL, x, reactions, orderedChems.ToList());
+                return ore;
+            }
+
+            fuelProduced = result;
+
+            Log.AppendLine(Helper.GetPuzzleResultText($"Maximum Fuel Produced: {fuelProduced}", fuelProduced, puzzleData.ExpectedAnswer));
+            return Log.ToString().Trim();
+        }
+
+        List<string> SetTopologicalOrder(IDictionary<string, ChemReaction> reactions)
+        {
             var orderedChems = new List<string>();
             var visitedChems = new List<string>();
 
             DepthFirstSearch(FUEL);
             orderedChems.Reverse();
             orderedChems.Add(ORE);
-            //Log.AppendLine("ORDER: " + string.Join(" -> ", OrderedChems));
 
             return orderedChems;
 
@@ -105,24 +130,17 @@ namespace AdventOfCode.CSharp.Year2019
                 orderedChems.Add(chemName);
             }
         }
-        private int CalcOreNeeded_Topological(string chemName, int amountNeeded, IDictionary<string, ChemReaction> reactions, IList<string> orderedChems)
+        private long CalcOreNeeded_Topological(string chemName, long amountNeeded, IDictionary<string, ChemReaction> reactions, IList<string> orderedChems)
         {
-            //Log.AppendLine("-");
-
             var needs = new List<Chemical>();
             needs.Add(new Chemical(chemName, amountNeeded));
 
-            var oreRequired = 0;
-            var iterations = 0;
+            var oreRequired = 0L;
+            var iterations = 0L;
 
             while (needs.Count > 0)
             {
                 iterations++;
-
-                //Log.Append(
-                //    $"{iterations,2}: " +
-                //    $"{string.Join(',', needs.Select(r => r.ToString().Replace(" ", ""))),8}" +
-                //    " -> ");
 
                 var t = orderedChems[0];
                 orderedChems.RemoveAt(0);
@@ -134,7 +152,7 @@ namespace AdventOfCode.CSharp.Year2019
                 var x = reactions[chemical.Name];
                 var qty_produced = x.Product.Quantity;
                 var ingredients = x.Reactants;
-                var n = (int)Math.Ceiling((decimal)qty_required / qty_produced);
+                var n = (long)Math.Ceiling((decimal)qty_required / qty_produced);
 
                 foreach (var ingredient in ingredients)
                 {
@@ -157,11 +175,6 @@ namespace AdventOfCode.CSharp.Year2019
 
                     tmp.Quantity += n2;
                 }
-
-                //Log.AppendLine(
-                //    $"{string.Join(',', needs.Select(r => r.ToString().Replace(" ", ""))),-8}" +
-                //    $"{string.Join(',', Stock.Where(s => s.Value > 0).Select(s => $"{s.Value}{s.Key}")),-8}" +
-                //    $"{oreRequired,4}");
             }
             return oreRequired;
         }
@@ -191,12 +204,61 @@ namespace AdventOfCode.CSharp.Year2019
             return item;
         }
 
+
+
+        ((long underEstimation, long overEstimation), long order) EstimateFuelProduced(IDictionary<string, ChemReaction> reactions, long ore_Qty, IReadOnlyList<string> orderedChems)
+        {
+            var ratio = CalcOreNeeded_Topological(FUEL, 1L, reactions, orderedChems.ToList());
+            var underEstimation = ore_Qty / ratio;
+            var order = Convert.ToInt64(Math.Log10(underEstimation));
+            var (qty, ore) = DoIt(order);
+            while (ore < ore_Qty)
+            {
+                order += 1;
+                (qty, ore) = DoIt(order);
+            }
+            ratio = Convert.ToInt64(Math.Floor((ore * 1.0) / (qty * 1.0)));
+            var overEstimation = ore_Qty / ratio;
+            return ((underEstimation, overEstimation), order);
+
+            (long, long) DoIt(long order)
+            {
+                var qty = Convert.ToInt64(Math.Pow(order, 10));
+                var ore = CalcOreNeeded_Topological(FUEL, qty, reactions, orderedChems.ToList());
+                return (qty, ore);
+            }
+        }
+
+
+        (long result, long i) Bisect(
+            Func<long, IDictionary<string, ChemReaction>, List<string>, long> f,
+            long target,
+            (long underEstimation, long overEstimation) interval,
+            (IDictionary<string, ChemReaction> reactions, List<string> orderedChems) args)
+        {
+            var iterations = 0L;
+            (long low, long high) = interval;
+            while (low <= high)
+            {
+                iterations++;
+                var mid = low + ((high - low) / 2);
+                var f_mid = f(mid, args.reactions, args.orderedChems);
+                if (f_mid == target)
+                    return (mid, iterations);
+                if (f_mid < target)
+                    low = mid + 1;
+                else
+                    high = mid - 1;
+            }
+            return (low - 1, iterations);
+        }
+
+
         IEnumerable<string> DisplayReachionChains(IDictionary<string, ChemReaction> reactions)
         {
             foreach (var key in reactions.Keys)
             {
                 var rec = reactions[key];
-
                 var rNeeds = rec.Reactants.Select(r => r.ToString());
                 yield return $"{string.Join(", ", rNeeds)} => {rec}";
             }
@@ -206,14 +268,14 @@ namespace AdventOfCode.CSharp.Year2019
 
         class Chemical
         {
-            public Chemical(string element, int amount)
+            public Chemical(string element, long amount)
             {
                 Name = element;
                 Quantity = amount;
             }
 
             public string Name { get; private set; }
-            public int Quantity { get; set; }
+            public long Quantity { get; set; }
 
             public override string ToString()
             {
