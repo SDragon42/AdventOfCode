@@ -12,6 +12,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day06 : PuzzleBase
     {
+        const int DAY = 6;
+
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 6: Universal Orbit Map";
@@ -63,8 +66,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 6;
-
             var result = new InputAnswer(
                 InputHelper.LoadInputFile(DAY, name).ToList(),
                 InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()

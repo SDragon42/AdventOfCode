@@ -22,6 +22,7 @@ namespace AdventOfCode.CSharp.Year2019
 
         const long TRILLION_ORE = 1000000000000;
 
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 14: Space Stoichiometry";

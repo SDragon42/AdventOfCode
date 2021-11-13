@@ -13,6 +13,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day05 : PuzzleBase
     {
+        const int DAY = 5;
+
+
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 5: Sunny with a Chance of Asteroids";
@@ -43,8 +46,6 @@ namespace AdventOfCode.CSharp.Year2019
         class InputAnswer : IntCodeInputAnswer<long?> { }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 5;
-
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name).ToList(),

@@ -14,6 +14,9 @@ namespace AdventOfCode.CSharp.Year2019
     /// </summary>
     class Day12 : PuzzleBase
     {
+        const int DAY = 12;
+
+        
         public override IEnumerable<string> SolvePuzzle()
         {
             yield return "Day 12: The N-Body Problem";
@@ -64,8 +67,6 @@ namespace AdventOfCode.CSharp.Year2019
         }
         InputAnswer GetPuzzleData(int part, string name)
         {
-            const int DAY = 12;
-
             var result = new InputAnswer()
             {
                 Input = InputHelper.LoadInputFile(DAY, name).ToList(),
