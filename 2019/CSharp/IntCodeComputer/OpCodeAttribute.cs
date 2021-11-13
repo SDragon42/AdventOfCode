@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
-namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+class OpCodeAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    class OpCodeAttribute : Attribute
+    public OpCodeAttribute(int opCode)
     {
-        public OpCodeAttribute(int opCode)
-        {
-            OpCode = opCode;
-        }
-
-        public int OpCode { get; private set; }
+        OpCode = opCode;
     }
+
+    public int OpCode { get; private set; }
 }
