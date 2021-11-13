@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
-namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
+class IntCodeOutputEventArgs : EventArgs
 {
-    class IntCodeOutputEventArgs : EventArgs
+    public IntCodeOutputEventArgs(long value) : base()
     {
-        public IntCodeOutputEventArgs(long value) : base()
-        {
-            OutputValue = value;
-        }
-        public long OutputValue { get; private set; }
+        OutputValue = value;
     }
+    public long OutputValue { get; private set; }
 }
