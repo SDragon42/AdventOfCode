@@ -43,8 +43,6 @@ namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
                 .Where(m => m.OpCodeAttribute != null)
                 .ToDictionary(k => k.OpCodeAttribute.OpCode, v => v.methodInfo);
 
-            //for (var i = 0; i < input.Length; i++)
-            //    memory.Add(i, input[i]);
             var i = 0;
             input.ForEach(v => memory.Add(i++, v));
 
