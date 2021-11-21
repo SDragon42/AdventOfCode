@@ -5,23 +5,17 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "CS-2019",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp2.1/AdventOfCode2019.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/bin/Debug/net6.0/AOC2019.dll",
+            "args": ["-be"],
+            "cwd": "${workspaceFolder}/bin/Debug/net6.0",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
         }
     ]
-}
+} 
