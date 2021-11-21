@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "CSharp.Common"
+		},
+		{
+			"path": "2019\\CSharp"
+		},
+		{
+			"path": "2019\\Input"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.vs": true,
+			"**/bin": true,
+			"**/obj": true
+		}
+	}
+}

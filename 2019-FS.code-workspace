@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "FSharp.Common"
+		},
+		{
+			"path": "2019\\FSharp"
+		},
+		{
+			"path": "2019\\Input"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.vs": true,
+			"**/bin": true,
+			"**/obj": true
+		}
+	}
+}
