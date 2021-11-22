@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -175,11 +174,12 @@ def run(title: str, input: List[str], correctResult: int, rules: Dict):
         numChanges = apply_rules_to_seats(seats, rules)
 
     result = count_occupied_seats(seats)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
-    print("---- Day 11: Seating System ----")
+    print("Day 11: Seating System")
+    print("")
 
     rules_part1 = {
         ".": rule_floor,
@@ -188,15 +188,15 @@ def solve():
     }
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(11, "example1"),
+    #     inputHelper.read_input_as_list(11, "example1"),
     #     37,
     #     rules_part1)
-    run("problem",
-        utils.read_input_as_list(11, "input"),
+    run("Part 1)",
+        inputHelper.read_input_as_list(11, "input"),
         2238,
         rules_part1)
 
-    print("---- part 2 ----")
+    print("")
 
     rules_part2 = {
         ".": rule_floor,
@@ -205,11 +205,11 @@ def solve():
     }
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(11, "example1"),
+    #     inputHelper.read_input_as_list(11, "example1"),
     #     26,
     #     rules_part2)
-    run("problem",
-        utils.read_input_as_list(11, "input"),
+    run("Part 2)",
+        inputHelper.read_input_as_list(11, "input"),
         2013,
         rules_part2)
 

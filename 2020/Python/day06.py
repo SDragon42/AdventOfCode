@@ -1,7 +1,6 @@
 # from typing import AnyStr, Callable
 import sys
 from typing import List, Callable
-import utils
 
 sys.path.append('../../Python.Common')
 import helper
@@ -41,7 +40,6 @@ def count_unique_unanimous_answers(lines: List[str]) -> int:
 
 def run(title: str, input: List[str], process: Callable[[List[str]], int], correctResult: int):
     result = 0
-
     groupStart = 0
     groupEnd = 0
     while groupStart < len(input):
@@ -55,29 +53,30 @@ def run(title: str, input: List[str], process: Callable[[List[str]], int], corre
 
         groupStart = groupEnd + 1
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
-    print("---- Day 6: Custom Customs ----")
+    print("Day 6: Custom Customs")
+    print("")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(6, "example1"),
+    #     inputHelper.read_input_as_list(6, "example1"),
     #     count_unique_answers,
     #     11)
-    run("Problem",
-        utils.read_input_as_list(6, "input"),
+    run("Part 1)",
+        inputHelper.read_input_as_list(6, "input"),
         count_unique_answers,
         6726)
 
-    print("---- part 2 ----")
+    print("")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(6, "example1"),
+    #     inputHelper.read_input_as_list(6, "example1"),
     #     count_unique_unanimous_answers,
     #     6)
-    run("Problem",
-        utils.read_input_as_list(6, "input"),
+    run("Part 2)",
+        inputHelper.read_input_as_list(6, "input"),
         count_unique_unanimous_answers,
         3316)
 

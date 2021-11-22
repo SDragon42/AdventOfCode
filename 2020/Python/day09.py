@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List
 
@@ -59,35 +58,36 @@ def find_weakness(input: List[int], invalidNum: int) -> int:
 
 def run_part1(title: str, input: List[int], windowSize: int, correctResult: int):
     result = scan_input(input, windowSize)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[int], windowSize: int, correctResult: int):
     invalidNum = scan_input(input, windowSize)
     result = find_weakness(input, invalidNum)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
-    print("---- Day 9: Encoding Error ----")
+    print("Day 9: Encoding Error")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_int_list(9, "example1"),
+    #     inputHelper.read_input_as_int_list(9, "example1"),
     #     5,
     #     127)
-    run_part1("problem",
-        utils.read_input_as_int_list(9, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_int_list(9, "input"),
         25,
         36845998)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_int_list(9, "example1"),
+    #     inputHelper.read_input_as_int_list(9, "example1"),
     #     5,
     #     62)
-    run_part2("problem",
-        utils.read_input_as_int_list(9, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_int_list(9, "input"),
         25,
         4830226)
 
