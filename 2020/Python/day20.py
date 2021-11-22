@@ -1,4 +1,3 @@
-import utils
 import sys
 import math
 from typing import Any, List
@@ -140,8 +139,8 @@ def run_part1(title: str, inputData: str, correctResult: int):
     result = 1
     for corner in cornerTiles:
         result *= corner.id
-        utils.dprint(f"tile id: {corner.id}")
-    utils.validate_result(title, result, correctResult)
+        helper.dprint(f"tile id: {corner.id}")
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, inputData: str, correctResult: int):
@@ -227,10 +226,9 @@ def run_part2(title: str, inputData: str, correctResult: int):
         transformFunc()
 
     image = "\n".join(["".join(x) for x in t.tile])
-    if utils.showDebug:
-        utils.dprint("--- IMAGE ---")
-        utils.dprint(image)
-        utils.dprint("")
+    helper.dprint("--- IMAGE ---")
+    helper.dprint(image)
+    helper.dprint("")
 
     result = 0
 
@@ -239,14 +237,14 @@ def run_part2(title: str, inputData: str, correctResult: int):
             if t.tile[row][x] == "#":
                 result += 1
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 def find_monster(image: str, idx: int, monsterIndexes: List[int]) -> bool:
     result = not any([image[idx + i] == '.' for i in monsterIndexes])
     return result
 
 def tag_monster(tile: TileData, idx: int, monsterIndexes: List[int]) -> None:
-    utils.dprint("monster found")
+    helper.dprint("monster found")
     for i in monsterIndexes:
         tIdx = idx + i
         r = (tIdx % tile.tileSize)
@@ -255,25 +253,25 @@ def tag_monster(tile: TileData, idx: int, monsterIndexes: List[int]) -> None:
         tile.tile[row][xidx] = "O"
 
 
-# utils.showDebug = True
 def solve():
     day = 20
-    print(f"---- Day {day}: Jurassic Jigsaw ----")
+    print(f"Day {day}: Jurassic Jigsaw")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input(day, "example1"),
+    #     inputHelper.read_input(day, "example1"),
     #     20899048083289)
-    run_part1("problem",
-        utils.read_input(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input(day, "input"),
         28057939502729)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input(day, "example1"),
+    #     inputHelper.read_input(day, "example1"),
     #     273)
-    run_part2("problem",
-        utils.read_input(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input(day, "input"),
         2489)
 
 

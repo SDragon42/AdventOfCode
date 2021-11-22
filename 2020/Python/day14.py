@@ -1,4 +1,3 @@
-import utils
 import sys
 import math
 from typing import List, Dict
@@ -119,7 +118,7 @@ def run_part1(title: str, input: List[str], correctResult: int):
         result += memory[key]
         pass
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -140,27 +139,28 @@ def run_part2(title: str, input: List[str], correctResult: int):
         result += memory[key]
         pass
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
     day = 14
-    print(f"---- Day {day}: Docking Data ----")
+    print(f"Day {day}: Docking Data")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     165)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         11327140210986)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example2"),
+    #     inputHelper.read_input_as_list(day, "example2"),
     #     208)
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         2308180581795)
 
 

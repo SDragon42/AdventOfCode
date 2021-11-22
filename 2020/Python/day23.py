@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -103,7 +102,7 @@ def run_part1(title: str, input: str, numMoves: int, correctResult: str):
     while game.perform_move():
         pass
     result = game.get_cups_after_1()
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: str, numMoves: int, correctResult: int):
@@ -117,12 +116,13 @@ def run_part2(title: str, input: str, numMoves: int, correctResult: int):
         pass
     values = game.get_cups_after_1b()
     result = values[0] * values[1]
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
     day = 23
-    print(f"---- Day {day}: Crab Cups ----")
+    print(f"Day {day}: Crab Cups")
+    print("")
 
     # run_part1("Test Case 1 (10 moves)",
     #     "389125467",
@@ -132,18 +132,18 @@ def solve():
     #     "389125467",
     #     100,
     #     "67384529")
-    run_part1("problem",
+    run_part1("Part 1)",
         "643719258",
         100,
         "54896723")
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1 (10,000,000 moves)",
     #     "389125467",
     #     10000000,
     #     149245887792)
-    run_part2("problem",
+    run_part2("Part 2)",
         "643719258",
         10000000,
         146304752384)

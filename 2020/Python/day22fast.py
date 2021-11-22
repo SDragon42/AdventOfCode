@@ -1,6 +1,6 @@
 import sys
+from typing import List
 from collections import deque
-import utils
 
 sys.path.append('../../Python.Common')
 import helper
@@ -27,7 +27,7 @@ def parse(lines):
     return deck1, deck2
 
 
-def part1(lines):
+def part1(title: str, lines: List[str], correctResult: int):#(lines):
     '''
     >>> part1(('Player 1:', '9', '2', '6', '3', '1', '',
     ...        'Player 2:', '5', '8', '4', '7', '10'))
@@ -44,10 +44,12 @@ def part1(lines):
             deck1.append(card1)
             deck1.append(card2)
     winner = deck1 or deck2
-    return sum((len(winner) - i) * x for i, x in enumerate(winner))
+
+    result = sum((len(winner) - i) * x for i, x in enumerate(winner))
+    helper.validate_result(title, result, correctResult)
 
 
-def part2(lines):
+def part2(title: str, lines: List[str], correctResult: int):#(lines):
     '''
     >>> part2(('Player 1:', '9', '2', '6', '3', '1', '',
     ...        'Player 2:', '5', '8', '4', '7', '10'))
@@ -56,7 +58,8 @@ def part2(lines):
     deck1, deck2 = parse(lines)
     go(deck1, deck2)
     winner = deck1 or deck2
-    return sum((len(winner) - i) * x for i, x in enumerate(winner))
+    result = sum((len(winner) - i) * x for i, x in enumerate(winner))
+    helper.validate_result(title, result, correctResult)
 
 
 def go(deck1, deck2):
@@ -79,15 +82,22 @@ def go(deck1, deck2):
     return not deck1
 
 
-parts = (part1, part2)
-
-
 def solve():
-    # lines = list(fileinput.input())
-    lines = utils.read_input_as_list(22, "input")
+    day = 22
+    print(f"Day {day}: Crab Combat")
+    print("")
 
-    print(part1(lines))
-    print(part2(lines))
+    lines = inputHelper.read_input_as_list(day, "input")
+
+    part1("Part 1)",
+        lines,
+        31314)
+
+    print("")
+
+    part2("Part 2)",
+        lines,
+        32760)
 
 
 if __name__ == "__main__":

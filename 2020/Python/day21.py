@@ -1,6 +1,5 @@
 import sys
 from typing import List, Dict
-import utils
 
 sys.path.append('../../Python.Common')
 import helper
@@ -57,7 +56,7 @@ def run_part1(title: str, inputList: List[str], correctResult: int):
     without_allergens = get_ingredients_without_allergens(allergen_ingredients, ingredient_counter)
     result = sum(ingredient_counter[ingredient] for ingredient in without_allergens)
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, inputList: List[str], correctResult: str):
@@ -84,28 +83,28 @@ def run_part2(title: str, inputList: List[str], correctResult: str):
     result.sort(key=lambda x: x[0])
     result = ",".join(x[1] for x in result)
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
-# utils.showDebug = True
 def solve():
     day = 21
-    print(f"---- Day {day}: Allergen Assessment ----")
+    print(f"Day {day}: Allergen Assessment")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     5)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         2262)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     "mxmxvkd,sqjhc,fvjkl")
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         "cxsvdm,glf,rsbxb,xbnmzr,txdmlzd,vlblq,mtnh,mptbpz")
 
 

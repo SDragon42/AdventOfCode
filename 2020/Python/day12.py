@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List
 
@@ -147,7 +146,7 @@ def run_part1(title: str, input: List[str], correctResult: int):
         currentPos = move_ship(currentPos, code, num, path)
 
     result = calc_manhattan_distance(currentPos.x, currentPos.y)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -164,7 +163,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
         path.append(currentPos)
 
     result = calc_manhattan_distance(currentPos.x, currentPos.y)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 cardinals = ["N", "E", "S", "W"]
@@ -190,22 +189,23 @@ actionsP2 = {
 
 def solve():
     day = 12
-    print(f"---- Day {day}: Rain Risk ----")
+    print(f"Day {day}: Rain Risk")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     25)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         1441)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     286)
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         61616)
 
 

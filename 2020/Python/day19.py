@@ -1,4 +1,3 @@
-import utils
 import sys
 import re
 from typing import List, Dict, Any, Optional
@@ -122,7 +121,7 @@ def count_valid_images(messages: List[str], regex: str):
         match = p.match(message)
         if match:
             count += 1
-            utils.dprint(message)
+            helper.dprint(message)
     return count
 
 
@@ -135,7 +134,7 @@ def run_part1(title: str, input: List[str], correctResult: int):
 
     regex = convert_to_regex(rules[0])
     result = count_valid_images(images, regex)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -161,31 +160,31 @@ def run_part2(title: str, input: List[str], correctResult: int):
 
     result = count_valid_images(images, regex)
     
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
-# utils.showDebug = True
 def solve():
     day = 19
-    print(f"---- Day {day}: Monster Messages ----")
+    print(f"Day {day}: Monster Messages")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     2)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         222)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part1("Test Case 2 - Pre rule change",
-    #     utils.read_input_as_list(day, "example2"),
+    #     inputHelper.read_input_as_list(day, "example2"),
     #     3)
     # run_part2("Test Case 2 - Post rule change",
-    #     utils.read_input_as_list(day, "example2"),
+    #     inputHelper.read_input_as_list(day, "example2"),
     #     12)
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         339)
 
 

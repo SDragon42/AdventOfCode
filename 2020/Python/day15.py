@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -42,30 +41,31 @@ def run(title: str, input: List[str], lastTurn: int, correctResult: int):
         history[ls.value] = turn
 
     result = int(ls.value)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
     day = 15
-    print(f"---- Day {day}: Rambunctious Recitation ----")
+    print(f"Day {day}: Rambunctious Recitation")
+    print("")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     10,
     #     0)
-    run("problem",
-        utils.read_input_as_list(day, "input"),
+    run("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         2020,
         276)
 
-    print("---- part 2 ----")
+    print("")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     30000000,
     #     175594)
-    run("problem",
-        utils.read_input_as_list(day, "input"),
+    run("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         30000000,
         31916)
 

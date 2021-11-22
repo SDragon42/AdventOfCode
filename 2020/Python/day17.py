@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -258,33 +257,34 @@ def run(title: str, inputList: List[str], numDimensions: int, numCycles: int, co
         cycle += 1
 
     result = cc.get_num_active_cubes()
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
     day = 17
-    print(f"---- Day {day}: Conway Cubes ----")
+    print(f"Day {day}: Conway Cubes")
+    print("")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     3,
     #     6,
     #     112)
-    run("problem",
-        utils.read_input_as_list(day, "input"),
+    run("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         3,
         6,
         362)
 
-    print("---- part 2 ----")
+    print("")
 
     # run("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     4,
     #     6,
     #     848)
-    run("problem",
-        utils.read_input_as_list(day, "input"),
+    run("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         4,
         6,
         1980)

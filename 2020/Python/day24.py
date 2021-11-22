@@ -1,4 +1,3 @@
-import utils
 import sys
 import collections
 from typing import List, Dict
@@ -179,46 +178,46 @@ def update_floor_tiles(tileFloor: TileDict):
 def run_part1(title: str, input: List[str], correctResult: int):
     tileFloor = build_tile_floor(input)
     result = count_black_tiles([x for x in tileFloor.values()])
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
     tileFloor = build_tile_floor(input)
     day = 0
     result = count_black_tiles([x for x in tileFloor.values()])
-    utils.dprint(f"Initial: {result} black tiles")
+    helper.dprint(f"Initial: {result} black tiles")
     while day < 100:
         day += 1
         update_floor_tiles(tileFloor)
         result = count_black_tiles([x for x in tileFloor.values()])
-        utils.dprint(f"Day {day}: {result}")
+        helper.dprint(f"Day {day}: {result}")
 
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
-# utils.showDebug = True
 def solve():
     day = 24
-    print(f"---- Day {day}: Lobby Layout ----")
+    print(f"Day {day}: Lobby Layout")
+    print("")
 
     # run_part1("Test Case 0",
     #     ['esew', 'nwwswee'],
     #     2)
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     10)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         339)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     2208)
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         3794)
 
 

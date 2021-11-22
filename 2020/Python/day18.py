@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List
 
@@ -105,7 +104,7 @@ def run_part1(title: str, input: List[str], correctResult: int):
         result += evaluate(line)
         # print(f"{total:-6} = {line}")
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -115,27 +114,28 @@ def run_part2(title: str, input: List[str], correctResult: int):
         result += total
         # print(f"{total:-6} = {line}")
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
     day = 18
-    print(f"---- Day {day}: Operation Order ----")
+    print(f"Day {day}: Operation Order")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     26457)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         75592527415659)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     694173)
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         360029542265462)
 
 
