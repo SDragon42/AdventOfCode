@@ -2,7 +2,7 @@ from typing import List
 
 
 def generate_filename(day: int, name: str) -> str:
-    filename = f".\\data\\day{day:02d}\\{name}.txt"
+    filename = f".\\..\\input\\day{day:02d}\\{name}.txt"
     return filename
 
 

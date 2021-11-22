@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -216,7 +215,7 @@ def run_part1(title: str, inputList: List[str], correctResult: int):
     invalidValues = get_invalid_ticket_values(otherTicketValuesList)
     result = sum(invalidValues)
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, inputList: List[str], correctResult: int):
@@ -240,24 +239,25 @@ def run_part2(title: str, inputList: List[str], correctResult: int):
     for i in indexes:
         result *= myTicketIntValues[i]
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
     day = 16
-    print(f"---- Day {day}: Ticket Translation ----")
+    print(f"Day {day}: Ticket Translation")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     71)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         23115)
 
-    print("---- part 2 ----")
+    print("")
 
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         239727793813)
 
 

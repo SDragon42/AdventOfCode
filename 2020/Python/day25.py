@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List
 
@@ -39,23 +38,23 @@ def run_part1(title: str, input: List[int], correctResult: int):
 
     cardLoopSize = find_loop_size(cardPublicKey)
     doorLoopSize = find_loop_size(doorPublicKey)
-    utils.dprint(f"card key: {cardPublicKey}   loop size: {cardLoopSize}")
-    utils.dprint(f"door key: {doorPublicKey}   loop size: {doorLoopSize}")
+    helper.dprint(f"card key: {cardPublicKey}   loop size: {cardLoopSize}")
+    helper.dprint(f"door key: {doorPublicKey}   loop size: {doorLoopSize}")
 
     result1 = calculate_encryption_key(cardPublicKey, doorLoopSize)
     result2 = calculate_encryption_key(doorPublicKey, cardLoopSize)
 
     if result1 == result2:
-        utils.dprint("    KEY MATCH")
-    utils.dprint(f"key: {result1} - {result2}")
+        helper.dprint("    KEY MATCH")
+    helper.dprint(f"key: {result1} - {result2}")
 
-    utils.validate_result(title, result1, correctResult)
+    helper.validate_result(title, result1, correctResult)
 
 
-utils.showDebug = True
 def solve():
     day = 25
-    print(f"---- Day {day}: Combo Breaker ----")
+    print(f"Day {day}: Combo Breaker")
+    print("")
 
 
     # run_part1("Test Case 1",

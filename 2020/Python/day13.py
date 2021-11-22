@@ -1,6 +1,5 @@
 import sys
 import math
-import utils
 from typing import List
 
 sys.path.append('../../Python.Common')
@@ -56,7 +55,7 @@ def run_part1(title: str, input: List[str], correctResult: int):
     buses = input[1].split(",")
     bus = get_soonest_bus(earliestTime, buses)
     result = (bus.departureTime - earliestTime) * bus.busId
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -74,42 +73,43 @@ def run_part2(title: str, input: List[str], correctResult: int):
             lcmValue = get_lcm(lcmValue, busId)
             increment = lcmValue
         i += 1
-    utils.validate_result(title, time, correctResult)
+    helper.validate_result(title, time, correctResult)
 
 
 def solve():
     day = 13
-    print(f"---- Day {day}: Title ----")
+    print(f"Day {day}: Shuttle Search")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     295)
-    run_part1("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(day, "input"),
         410)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(day, "example1"),
+    #     inputHelper.read_input_as_list(day, "example1"),
     #     1068781)
     # run_part2("Test Case 2",
-    #     utils.read_input_as_list(day, "example2"),
+    #     inputHelper.read_input_as_list(day, "example2"),
     #     3417)
     # run_part2("Test Case 3",
-    #     utils.read_input_as_list(day, "example3"),
+    #     inputHelper.read_input_as_list(day, "example3"),
     #     754018)
     # run_part2("Test Case 4",
-    #     utils.read_input_as_list(day, "example4"),
+    #     inputHelper.read_input_as_list(day, "example4"),
     #     779210)
     # run_part2("Test Case 5",
-    #     utils.read_input_as_list(day, "example5"),
+    #     inputHelper.read_input_as_list(day, "example5"),
     #     1261476)
     # run_part2("Test Case 6",
-    #     utils.read_input_as_list(day, "example6"),
+    #     inputHelper.read_input_as_list(day, "example6"),
     #     1202161486)
-    run_part2("problem",
-        utils.read_input_as_list(day, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(day, "input"),
         600691418730595)
 
 
