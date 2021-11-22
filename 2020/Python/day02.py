@@ -65,7 +65,7 @@ def solve():
     print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(2, "example1"),
+    #     inputHelper.read_input_as_list(2, "example1"),
     #     2)
     run_part1("Part 1)",
         inputHelper.read_input_as_list(2, "input"),
@@ -74,7 +74,7 @@ def solve():
     print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(2, "example1"),
+    #     inputHelper.read_input_as_list(2, "example1"),
     #     1)
     run_part2("Part 2)",
         inputHelper.read_input_as_list(2, "input"),

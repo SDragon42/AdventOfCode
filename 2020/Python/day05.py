@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List
 
@@ -36,7 +35,7 @@ def run_part1(title: str, input: List[str], correctResult: int):
         seatId = get_seat_id(bPass)
         if seatId > result:
             result = seatId
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -55,23 +54,24 @@ def run_part2(title: str, input: List[str], correctResult: int):
             result = x
             break
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
-    print("---- Day 5: Binary Boarding ----")
+    print("Day 5: Binary Boarding")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(5, "example1"),
+    #     inputHelper.read_input_as_list(5, "example1"),
     #     820)
-    run_part1("Problem",
-        utils.read_input_as_list(5, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(5, "input"),
         970)
 
-    print("---- part 2 ----")
+    print("")
 
-    run_part2("Problem",
-        utils.read_input_as_list(5, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(5, "input"),
         587)
 
 

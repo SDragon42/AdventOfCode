@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -79,35 +78,36 @@ def run_part1(title: str, input: List[str], correctResult: int):
     foundBags: List[str] = []
     count_bags_containing(rules, "shiny gold", foundBags)
     result = len(foundBags)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
     rules = parse_rules(input)
     result = count_bags_in(rules, "shiny gold")
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def solve():
-    print("---- Day 7: Handy Haversacks ----")
+    print("Day 7: Handy Haversacks")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(7, "example1"),
+    #     inputHelper.read_input_as_list(7, "example1"),
     #     4)
-    run_part1("problem",
-        utils.read_input_as_list(7, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(7, "input"),
         205)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(7, "example1"),
+    #     inputHelper.read_input_as_list(7, "example1"),
     #     32)
     # run_part2("Test Case 2",
-    #     utils.read_input_as_list(7, "example2"),
+    #     inputHelper.read_input_as_list(7, "example2"),
     #     126)
-    run_part2("problem",
-        utils.read_input_as_list(7, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(7, "input"),
         80902)
 
 

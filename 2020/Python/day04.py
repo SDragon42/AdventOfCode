@@ -1,4 +1,3 @@
-import utils
 import sys
 import re
 from typing import List
@@ -127,7 +126,7 @@ def count_valid_passorts(input: List[str], checkValues: bool) -> int:
 
 def run(title: str, checkValues: bool, input: List[str], correctResult: int):
     result = count_valid_passorts(input, checkValues)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 eyeColors = ["amb","blu","brn","gry","grn","hzl","oth"]
@@ -143,25 +142,26 @@ passportFieldDict = {
 
 
 def solve():
-    print("---- Day 4: Passport Processing ----")
+    print("Day 4: Passport Processing")
+    print("")
 
     # run("Test Case 1", False,
-    #     utils.read_input_as_list(4, "example1"),
+    #     inputHelper.read_input_as_list(4, "example1"),
     #     2)
-    run("problem", False,
-        utils.read_input_as_list(4, "input"),
+    run("Part 1)", False,
+        inputHelper.read_input_as_list(4, "input"),
         202)
 
-    print("---- part 2 ----")
+    print("")
 
     # run("invalid passports", True,
-    #     utils.read_input_as_list(4, "example-invalid-passports"),
+    #     inputHelper.read_input_as_list(4, "example-invalid-passports"),
     #     0)
     # run("valid passports", True,
-    #     utils.read_input_as_list(4, "example-valid-passports"),
+    #     inputHelper.read_input_as_list(4, "example-valid-passports"),
     #     4)
-    run("problem", True,
-        utils.read_input_as_list(4, "input"),
+    run("Part 2)", True,
+        inputHelper.read_input_as_list(4, "input"),
         137)
 
 

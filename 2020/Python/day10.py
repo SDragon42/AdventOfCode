@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import List, Dict
 
@@ -51,7 +50,7 @@ def run_part1(title: str, adapters: List[int], correctResult: int):
     diffCounts = get_jolt_differences(adapters)
     result = diffCounts[1] * diffCounts[3]
 
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, adapters: List[int], correctResult: int):
@@ -60,33 +59,34 @@ def run_part2(title: str, adapters: List[int], correctResult: int):
     
     result = count_adapterChains(0, adapters, chainsUnder)
     
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 
 def solve():
-    print("---- Day 10: Adapter Array ----")
+    print("Day 10: Adapter Array")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_int_list(10, "example1"),
+    #     inputHelper.read_input_as_int_list(10, "example1"),
     #     35)
     # run_part1("Test Case 2",
-    #     utils.read_input_as_int_list(10, "example2"),
+    #     inputHelper.read_input_as_int_list(10, "example2"),
     #     220)
-    run_part1("problem",
-        utils.read_input_as_int_list(10, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_int_list(10, "input"),
         2414)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_int_list(10, "example1"),
+    #     inputHelper.read_input_as_int_list(10, "example1"),
     #     8)
     # run_part2("Test Case 2",
-    #     utils.read_input_as_int_list(10, "example2"),
+    #     inputHelper.read_input_as_int_list(10, "example2"),
     #     19208)
-    run_part2("problem",
-        utils.read_input_as_int_list(10, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_int_list(10, "input"),
         21156911906816)
 
 

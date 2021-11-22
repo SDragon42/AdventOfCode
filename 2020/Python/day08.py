@@ -1,4 +1,3 @@
-import utils
 import sys
 from typing import Callable, List, Dict
 
@@ -75,7 +74,7 @@ def flip_instruction(instructionIdx: int, input: List[str]) -> List[str]:
 def run_part1(title: str, input: List[str], correctResult: int):
     comp = AccumulatorProcessor(input)
     comp.run()
-    utils.validate_result(title, comp.accValue, correctResult)
+    helper.validate_result(title, comp.accValue, correctResult)
 
 
 def run_part2(title: str, input: List[str], correctResult: int):
@@ -95,26 +94,27 @@ def run_part2(title: str, input: List[str], correctResult: int):
         if reachedEnd:
             break
 
-    utils.validate_result(title, comp.accValue, correctResult)
+    helper.validate_result(title, comp.accValue, correctResult)
 
 
 def solve():
-    print("---- Day 8: Handheld Halting ----")
+    print("Day 8: Handheld Halting")
+    print("")
 
     # run_part1("Test Case 1",
-    #     utils.read_input_as_list(8, "example1"),
+    #     inputHelper.read_input_as_list(8, "example1"),
     #     5)
-    run_part1("problem",
-        utils.read_input_as_list(8, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(8, "input"),
         1489)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
-    #     utils.read_input_as_list(8, "example1"),
+    #     inputHelper.read_input_as_list(8, "example1"),
     #     8)
-    run_part2("problem",
-        utils.read_input_as_list(8, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(8, "input"),
         1539)
 
 

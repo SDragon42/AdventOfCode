@@ -39,7 +39,7 @@ def solve():
 
     slopes = ["31"]
     # run("Test Case 1", 
-    #     utils.read_input_as_list(3, "example1"),
+    #     inputHelper.read_input_as_list(3, "example1"),
     #     slopes,
     #     7)
     run("Part 1)",
@@ -51,7 +51,7 @@ def solve():
 
     slopes = ["11","31","51","71","12"]
     # run("Test Case 1", 
-    #     utils.read_input_as_list(3, "example1"),
+    #     inputHelper.read_input_as_list(3, "example1"),
     #     slopes,
     #     336)
     run("Part 2)",

@@ -44,7 +44,7 @@ def solve():
     print("Day 1: Report Repair")
     print("")
     # run("Test case 1", 1,
-    #     utils.read_input_as_int_list(1,"example1"),
+    #     inputHelper.read_input_as_int_list(1,"example1"),
     #     514579)
     run("Part 1)", 1,
         inputHelper.read_input_as_int_list(1, "input"),
@@ -54,7 +54,7 @@ def solve():
     print("")
 
     # run("Test case 1", 2,
-    #     utils.read_input_as_int_list(1, "example1"),
+    #     inputHelper.read_input_as_int_list(1, "example1"),
     #     241861950)
     run("Part 2)", 2,
         inputHelper.read_input_as_int_list(1, "input"),
