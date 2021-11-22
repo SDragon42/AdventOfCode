@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def loop_transform(value: int, subjectNumber: int) -> int:
@@ -47,13 +52,8 @@ def run_part1(title: str, input: List[int], correctResult: int):
     utils.validate_result(title, result1, correctResult)
 
 
-def run_part2(title: str, input: List[str], correctResult: int):
-    result = 0
-    utils.validate_result(title, result, correctResult)
-
-
 utils.showDebug = True
-if __name__ == "__main__":
+def solve():
     day = 25
     print(f"---- Day {day}: Combo Breaker ----")
 
@@ -63,4 +63,8 @@ if __name__ == "__main__":
     #     14897079)
     run_part1("problem",
         [8458505,16050997],
-        0)
+        448851)
+
+
+if __name__ == "__main__":
+    solve()

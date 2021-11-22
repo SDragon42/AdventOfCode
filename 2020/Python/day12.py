@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 class WaypointPosition:
@@ -183,7 +188,7 @@ actionsP2 = {
     "F": full_steam_ahead
 }
 
-if __name__ == "__main__":
+def solve():
     day = 12
     print(f"---- Day {day}: Rain Risk ----")
 
@@ -202,3 +207,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         61616)
+
+
+if __name__ == "__main__":
+    solve()

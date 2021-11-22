@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 #-------------------------------------------------------------------------------
 
@@ -238,7 +243,7 @@ def run_part2(title: str, inputList: List[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 16
     print(f"---- Day {day}: Ticket Translation ----")
 
@@ -254,3 +259,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         239727793813)
+
+
+if __name__ == "__main__":
+    solve()

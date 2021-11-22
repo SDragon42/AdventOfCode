@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 # Assistence from:
 # https://topaz.github.io/paste/#XQAAAQBmBwAAAAAAAAA0m0pnuFI8c/fBNApcL1pmU7gQJ13v1+YhguIn3pR0zOaQ4v8vj0T0GZD91/Qbo2hM5nCqaFlDw+OBPRSF3ewxIy5NZrOqQbD9Kh7oFNwchmD9695r4vyj+mz1c4oXVWCGYHHwJ2VwiL3QE7OrbNzmf2w9+mDd+zLHFeykh3A6dHonmdmCrpyWv9HWuYGtqYmaTmo0XPFtAbhipfsM5QpMgmJca3QZDAyJ2VutU4lqC1zCBnqJPh81yJaW7+5A12miU2B58CiK3YmwFi5dt6gYyutT/6sW6nPhSpIu+04o47ZoEuRvPF+Sbc7OptvVIJAgPtQRSU7Urjnb3GxLnj61pTk3oc7o5G97Qx85tpA0/TA9LYq6QCARuEKSUn/kJJMujuDHGGRdjEU85SY5afeqaKlIGStnDCp26i4n0iX2z65LF8QUVap9GUamNLeelfLlqcXCKselRZJeC5eiDfWHe30MG/DuZ35NSh3Ui7qK2R5SXVIcz5ofmhI11FLhgCGdVvJ2CyHl/TEmEzTdZWK90OVTZkzygCuQf608vj3GpQeocemQvGNT98YWNdVwG+49RlCSluol1A8lkBd/mYu416rsFVQK+9TtOiummhnxTLo2SGEbgSdL0x0cEGq9cuka6BF2Sp1kyHTWPoQ3H3StqUB5y6jAC8h7oXJZqcseoUvhZUsVUgj9FQRcSASOvoxqgP+4urD4d1QeiStRA3qHB/nJBUcDkP7c7LkrJvYVz0jOUJiTPHDLbwob4ZxBtEj+/yok0WRApn6Txw9m7NBcVS2q/AqiItbrLa/qi01kFFsPqi2CesKmBkK95zUXYulQ3t95nY/y+xWiu+i6VBVZYNsUf/aAlTA8U2t8u95Mr2ssn6H0aRP2x2FAjG8wXz/4a2VfgI7sYWbLBRo5Mt/Z32LGpDWm/FR58ow/E6Ms/H7NklhKu4wm49uBjXGzXStI5404a0Tj1To1dLa9SQiFSdzxYGysBOJl7NuwCUDhayr86aIFcM46MntjuYy/6teQ0ea/ZmTmgapT+Mt3ZNgTJuCFUuwPGfE2hMQ3Sl1M11rDCocsaVFjpYUcGLP9TF//+h1+DFbV2vRMx4pSjl1JiaotagEb+iNVDgfDB+Or61U8Bp9hKk0Yhx3+1CuRTPuxynwKydwZ2u7cw9tJYluBIVJGQ1qg9qwiMfVfJVyQLv/8oErq
@@ -115,7 +120,7 @@ def run_part2(title: str, input: str, numMoves: int, correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 23
     print(f"---- Day {day}: Crab Cups ----")
 
@@ -142,3 +147,7 @@ if __name__ == "__main__":
         "643719258",
         10000000,
         146304752384)
+
+
+if __name__ == "__main__":
+    solve()

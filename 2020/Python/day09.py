@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def is_valid(value: int, input: List[int]) -> bool:
@@ -63,7 +68,7 @@ def run_part2(title: str, input: List[int], windowSize: int, correctResult: int)
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 9: Encoding Error ----")
 
     # run_part1("Test Case 1",
@@ -85,3 +90,7 @@ if __name__ == "__main__":
         utils.read_input_as_int_list(9, "input"),
         25,
         4830226)
+
+
+if __name__ == "__main__":
+    solve()

@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 class LastSaid:
     value: str = ""
@@ -40,7 +45,7 @@ def run(title: str, input: List[str], lastTurn: int, correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 15
     print(f"---- Day {day}: Rambunctious Recitation ----")
 
@@ -63,3 +68,7 @@ if __name__ == "__main__":
         utils.read_input_as_list(day, "input"),
         30000000,
         31916)
+
+
+if __name__ == "__main__":
+    solve()

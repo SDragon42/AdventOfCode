@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 CardList = List[int]
@@ -156,7 +161,7 @@ def run_part2(title: str, input: str, correctResult: int):
 
 
 # utils.showDebug = True
-if __name__ == "__main__":
+def solve():
     day = 22
     print(f"---- Day {day}: Crab Combat ----")
 
@@ -178,3 +183,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input(day, "input"),
         32760)
+
+
+if __name__ == "__main__":
+    solve()

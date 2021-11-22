@@ -1,5 +1,10 @@
-import utils
+# import utils
+import sys
 from typing import List, Any
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def check_password(entry: str) -> int:
@@ -45,31 +50,36 @@ def run_part1(title: str, input: List[Any], correctResult: int):
     result = 0
     for entry in input:
         result += check_password(entry)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
 def run_part2(title: str, input: List[Any], correctResult: int):
     result = 0
     for entry in input:
         result += check_password2(entry)
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
-    print("---- Day 2: Password Philosophy ----")
+def solve():
+    print("Day 2: Password Philosophy")
+    print("")
 
     # run_part1("Test Case 1",
     #     utils.read_input_as_list(2, "example1"),
     #     2)
-    run_part1("problem",
-        utils.read_input_as_list(2, "input"),
+    run_part1("Part 1)",
+        inputHelper.read_input_as_list(2, "input"),
         548)
 
-    print("---- part 2 ----")
+    print("")
 
     # run_part2("Test Case 1",
     #     utils.read_input_as_list(2, "example1"),
     #     1)
-    run_part2("problem",
-        utils.read_input_as_list(2, "input"),
+    run_part2("Part 2)",
+        inputHelper.read_input_as_list(2, "input"),
         502)
+
+
+if __name__ == "__main__":
+    solve()

@@ -1,6 +1,11 @@
+import sys
 import math
 import utils
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 class BusDepatureInfo:
     busId: int = 0
@@ -72,7 +77,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, time, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 13
     print(f"---- Day {day}: Title ----")
 
@@ -106,3 +111,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         600691418730595)
+
+
+if __name__ == "__main__":
+    solve()

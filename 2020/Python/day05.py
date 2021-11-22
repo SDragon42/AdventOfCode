@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def get_row(lowCode: str, highCode: str, lowStart: int, highStart: int, input: str) -> int:
@@ -53,7 +58,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 5: Binary Boarding ----")
 
     # run_part1("Test Case 1",
@@ -68,3 +73,7 @@ if __name__ == "__main__":
     run_part2("Problem",
         utils.read_input_as_list(5, "input"),
         587)
+
+
+if __name__ == "__main__":
+    solve()

@@ -1,6 +1,11 @@
 # from typing import AnyStr, Callable
+import sys
 from typing import List, Callable
 import utils
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def count_unique_answers(lines: List[str]) -> int:
@@ -53,7 +58,7 @@ def run(title: str, input: List[str], process: Callable[[List[str]], int], corre
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 6: Custom Customs ----")
 
     # run("Test Case 1",
@@ -75,3 +80,7 @@ if __name__ == "__main__":
         utils.read_input_as_list(6, "input"),
         count_unique_unanimous_answers,
         3316)
+
+
+if __name__ == "__main__":
+    solve()
