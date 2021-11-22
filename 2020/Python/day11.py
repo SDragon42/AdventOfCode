@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 # classes
 #--------------------------------------------------------------------------------
@@ -43,7 +48,7 @@ def clone_table(seats: table) -> table:
 def input_list_to_table(input: List[str]) -> table:
     seats: table = []
     for y in input:
-        seats.append(List(y))
+        seats.append(list(y))
     return seats
 
 
@@ -173,7 +178,7 @@ def run(title: str, input: List[str], correctResult: int, rules: Dict):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 11: Seating System ----")
 
     rules_part1 = {
@@ -207,3 +212,7 @@ if __name__ == "__main__":
         utils.read_input_as_list(11, "input"),
         2013,
         rules_part2)
+
+
+if __name__ == "__main__":
+    solve()

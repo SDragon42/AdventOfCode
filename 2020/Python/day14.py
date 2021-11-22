@@ -1,6 +1,11 @@
 import utils
+import sys
 import math
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 bitWidth: int = 36
 
@@ -9,7 +14,7 @@ mask: str = "".rjust(bitWidth, "X")
 
 
 def int_to_binary(value: int) -> List[str]:
-    ba = List(bin(value)[2:].rjust(bitWidth, "0"))
+    ba = list(bin(value)[2:].rjust(bitWidth, "0"))
     return ba
 
 
@@ -138,7 +143,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 14
     print(f"---- Day {day}: Docking Data ----")
 
@@ -157,3 +162,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         2308180581795)
+
+
+if __name__ == "__main__":
+    solve()

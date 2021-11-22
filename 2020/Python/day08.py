@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import Callable, List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 #---------------------------------------------------------------------
 class AccumulatorProcessor:
@@ -93,7 +98,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, comp.accValue, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 8: Handheld Halting ----")
 
     # run_part1("Test Case 1",
@@ -111,3 +116,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(8, "input"),
         1539)
+
+
+if __name__ == "__main__":
+    solve()

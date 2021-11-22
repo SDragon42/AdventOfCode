@@ -1,5 +1,10 @@
+import sys
 from typing import List, Dict
 import utils
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 # ref: https://github.com/BastiHz/Advent_of_Code/blob/main/2020/day_21.py
 
@@ -83,7 +88,7 @@ def run_part2(title: str, inputList: List[str], correctResult: str):
 
 
 # utils.showDebug = True
-if __name__ == "__main__":
+def solve():
     day = 21
     print(f"---- Day {day}: Allergen Assessment ----")
 
@@ -102,3 +107,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         "cxsvdm,glf,rsbxb,xbnmzr,txdmlzd,vlblq,mtnh,mptbpz")
+
+
+if __name__ == "__main__":
+    solve()

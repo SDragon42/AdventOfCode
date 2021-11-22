@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def get_jolt_differences(adapters: List[int]) -> Dict[int, int]:
@@ -59,7 +64,7 @@ def run_part2(title: str, adapters: List[int], correctResult: int):
 
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 10: Adapter Array ----")
 
     # run_part1("Test Case 1",
@@ -83,3 +88,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_int_list(10, "input"),
         21156911906816)
+
+
+if __name__ == "__main__":
+    solve()

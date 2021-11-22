@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 #-------------------------------------------------------------------------------
 
@@ -83,7 +88,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     print("---- Day 7: Handy Haversacks ----")
 
     # run_part1("Test Case 1",
@@ -104,3 +109,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(7, "input"),
         80902)
+
+
+if __name__ == "__main__":
+    solve()

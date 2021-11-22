@@ -1,0 +1,36 @@
+{
+	"folders": [
+		{
+			"path": "Python.Common"
+		},
+		{
+			"path": "2020\\Python"
+		},
+		{
+			"path": "2020\\Input"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/__pycache__": true
+		}
+	},
+	"extensions": {},
+	"launch": {
+		"configurations": [
+			{
+				"name": "AOC2020",
+				"type": "python",
+				"request": "launch",
+				"program": "main.py",
+				"args": ["3"],
+				"console": "integratedTerminal"
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": []
+	}
+}

@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 OPS = ["+","*"]
 
@@ -113,7 +118,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 18
     print(f"---- Day {day}: Operation Order ----")
 
@@ -132,3 +137,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         360029542265462)
+
+
+if __name__ == "__main__":
+    solve()

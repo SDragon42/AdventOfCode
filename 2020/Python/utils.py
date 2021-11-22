@@ -62,3 +62,10 @@ showDebug = False
 def dprint(x):
     if showDebug:
         print(x)
+
+
+# class PuzzleOptions:
+#     runExamples: bool = False
+
+#     def __init__(self) -> None:
+#         self.runExamples = False

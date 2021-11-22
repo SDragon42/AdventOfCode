@@ -1,5 +1,10 @@
 import utils
+import sys
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 class SpatialAddress:
     coordinates: List[int] = []
@@ -256,7 +261,7 @@ def run(title: str, inputList: List[str], numDimensions: int, numCycles: int, co
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 17
     print(f"---- Day {day}: Conway Cubes ----")
 
@@ -283,3 +288,7 @@ if __name__ == "__main__":
         4,
         6,
         1980)
+
+
+if __name__ == "__main__":
+    solve()

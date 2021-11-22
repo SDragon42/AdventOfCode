@@ -1,6 +1,11 @@
 import utils
+import sys
 import re
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 class KeyValuePair:
@@ -136,7 +141,8 @@ passportFieldDict = {
     "pid": validate_passport_id,
 }
 
-if __name__ == "__main__":
+
+def solve():
     print("---- Day 4: Passport Processing ----")
 
     # run("Test Case 1", False,
@@ -157,3 +163,7 @@ if __name__ == "__main__":
     run("problem", True,
         utils.read_input_as_list(4, "input"),
         137)
+
+
+if __name__ == "__main__":
+    solve()

@@ -1,6 +1,11 @@
 import utils
+import sys
 import collections
 from typing import List, Dict
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 BLACK = True
 WHITE = False
@@ -193,7 +198,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
 
 
 # utils.showDebug = True
-if __name__ == "__main__":
+def solve():
     day = 24
     print(f"---- Day {day}: Lobby Layout ----")
 
@@ -215,3 +220,7 @@ if __name__ == "__main__":
     run_part2("problem",
         utils.read_input_as_list(day, "input"),
         3794)
+
+
+if __name__ == "__main__":
+    solve()

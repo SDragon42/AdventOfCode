@@ -1,5 +1,10 @@
-import utils
+# import utils
+import sys
 from typing import List
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 
 def get_value(num_splits: int, testInput: List[int], testValues: List[int]) -> int:
@@ -28,24 +33,33 @@ def get_value(num_splits: int, testInput: List[int], testValues: List[int]) -> i
 
 def run(title: str, num_splits: int, input: List[int], correctResult: int):
     result = get_value(num_splits, input, [])
-    utils.validate_result(title, result, correctResult)
+    helper.validate_result(title, result, correctResult)
 
+# def run_example(o: utils.PuzzleOptions, title: str, num_splits: int, input: List[int], correctResult: int) -> None:
+#     if (o.runExamples):
+#         run(title, num_splits, input, correctResult)
 
-if __name__ == "__main__":
-    print("---- Day 1: Report Repair ----")
-
+# def solve(o: utils.PuzzleOptions):
+def solve():
+    print("Day 1: Report Repair")
+    print("")
     # run("Test case 1", 1,
     #     utils.read_input_as_int_list(1,"example1"),
     #     514579)
-    run("problem", 1,
-        utils.read_input_as_int_list(1, "input"),
+    run("Part 1)", 1,
+        inputHelper.read_input_as_int_list(1, "input"),
         969024)
 
-    print("---- part 2 ----")
+    # print("---- part 2 ----")
+    print("")
 
     # run("Test case 1", 2,
     #     utils.read_input_as_int_list(1, "example1"),
     #     241861950)
-    run("problem", 2,
-        utils.read_input_as_int_list(1, "input"),
+    run("Part 2)", 2,
+        inputHelper.read_input_as_int_list(1, "input"),
         230057040)
+
+
+if __name__ == "__main__":
+    solve()

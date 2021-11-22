@@ -1,5 +1,10 @@
+import sys
 from collections import deque
 import utils
+
+sys.path.append('../../Python.Common')
+import helper
+import inputHelper
 
 # from: https://github.com/ephemient/aoc2020/blob/main/py/src/aoc2020/day22.py
 
@@ -76,9 +81,14 @@ def go(deck1, deck2):
 
 parts = (part1, part2)
 
-if __name__ == '__main__':
+
+def solve():
     # lines = list(fileinput.input())
     lines = utils.read_input_as_list(22, "input")
 
     print(part1(lines))
     print(part2(lines))
+
+
+if __name__ == "__main__":
+    solve()

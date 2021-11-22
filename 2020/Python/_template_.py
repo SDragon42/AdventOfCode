@@ -12,7 +12,7 @@ def run_part2(title: str, input: List[str], correctResult: int):
     utils.validate_result(title, result, correctResult)
 
 
-if __name__ == "__main__":
+def solve():
     day = 0
     print(f"---- Day {day}: Title ----")
 
@@ -31,3 +31,7 @@ if __name__ == "__main__":
     # run_part2("problem",
     #     utils.read_input_as_list(day, "input"),
     #     0)
+
+
+if __name__ == "__main__":
+    solve()
