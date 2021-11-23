@@ -22,9 +22,10 @@
 				"name": "AOC2020",
 				"type": "python",
 				"request": "launch",
+				"cwd": "${workspaceFolder:Python}",
 				"program": "main.py",
 				"args": [""],
-				"console": "integratedTerminal"
+				"console": "integratedTerminal",
 			}
 		],
 		"compounds": []
