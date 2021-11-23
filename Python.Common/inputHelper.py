@@ -22,7 +22,7 @@ def read_input_as_int_list(day: int, name: str) -> List[int]:
 
 
 def read_input_as_list(day: int, name: str) -> List[str]:
-    """ Reads the input file as a List of ints """
+    """ Reads the input file as a List of strings """
     filename = generate_filename(day, name)
     data: List[str] = []
     with open(filename) as dataFile:
