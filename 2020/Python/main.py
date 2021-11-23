@@ -1,7 +1,6 @@
 import sys
 from typing import Callable, Dict
 
-sys.path.append('../../Python.Common')
 from puzzleRunner import PuzzleRunner, PuzzleRunner2
 from puzzleBase import PuzzleBase
 
