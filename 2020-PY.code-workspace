@@ -24,8 +24,11 @@
 				"request": "launch",
 				"cwd": "${workspaceFolder:Python}",
 				"program": "main.py",
-				"args": [""],
+				"args": ["-be", "1"],
 				"console": "integratedTerminal",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder:Python.Common}"
+				}
 			}
 		],
 		"compounds": []
