@@ -1,67 +1,62 @@
 import getopt
+from typing import Callable, Dict, List
 
 class PuzzleRunner:
-    titles: list[str] = []
-    maxTitleLength: int = 0
-    titleBorder: str = ''
-    separatorLine: str = ''.ljust(60, '-')
-    runAll: bool = False
-    indexes: list[int] = []
+    _titles: List[str] = []
+    _maxTitleLength: int = 0
+    _titleBorder: str = ''
+    _separatorLine: str = ''.ljust(60, '-')
+    _runAll: bool = False
+    _indexes: List[int] = []
 
 
-    def __init__(self, titles: list[str], argv: list[str]) -> None:
-        self.titles = titles
-        self.maxTitleLength = max(map(len, self.titles))
-        self.titleBorder = '+-' + ''.ljust(self.maxTitleLength, '-') + '-+'
+    def __init__(self, titles: List[str], argv: List[str]) -> None:
+        self._titles = titles
+        self._maxTitleLength = max(map(len, self._titles))
+        self._titleBorder = '+-' + ''.ljust(self._maxTitleLength, '-') + '-+'
 
         options, args = getopt.getopt(argv, 'a') #'bea')
-        self.indexes = [*map(int, args)]
+        
         for name, value in options:
             # if name == '-b':
             #     runBenchmarks = True
             # if name == '-e':
             #     runExamples = True
             if name == '-a':
-                self.runAll = True
+                self._runAll = True
+
+        self._indexes = [*map(int, args)]
 
     
-    def write_header(self) -> None:
-        print(self.titleBorder)
-        for line in self.titles:
-            print('| ' + line.ljust(self.maxTitleLength) + ' |')
-        print(self.titleBorder)
+    def __write_header(self) -> None:
+        print(self._titleBorder)
+        for line in self._titles:
+            print('| ' + line.ljust(self._maxTitleLength) + ' |')
+        print(self._titleBorder)
+        print('')
+
+    
+    def __write_section_seperator(self) -> None:
+        print('')
+        print(self._separatorLine)
         print('')
 
 
-    def get_puzzles(self, puzzleDict: dict) -> list:
-        """Get the list of puzzle functions to execute.
+    def __get_puzzles(self, puzzleDict: Dict[int, Callable[[], None]]) -> List[Callable[[], None]]:
+        if self._runAll:
+            return [*puzzleDict.values()]
 
-        Args:
-            puzzleDict (dict): The dictionary of day/puzzles.
+        if (len(self._indexes) > 0):
+            return [puzzleDict[i] for i in self._indexes]
 
-        Returns:
-            list: The list of puzzle functions to execute.
-        """
-        if self.runAll:
-            return list(puzzleDict.values())
-
-        if (len(self.indexes) > 0):
-            puzzleList = []
-            for i in self.indexes:
-                puzzleList.append(puzzleDict[i])
-            return puzzleList
-
-        v = [*puzzleDict.values()][-1]
-        puzzleList = [v]
-        return puzzleList
+        lastPuzzle = [*puzzleDict.values()][-1]
+        return [lastPuzzle]
 
 
-    def run(self, puzzleDict: dict) -> None:
-        self.write_header()
+    def run(self, puzzleDict: Dict[int, Callable[[], None]]) -> None:
+        self.__write_header()
 
-        puzzleToRun = self.get_puzzles(puzzleDict)
+        puzzleToRun = self.__get_puzzles(puzzleDict)
         for puzzle in puzzleToRun:
             puzzle()
-            print('')
-            print(self.separatorLine)
-            print('')
+            self.__write_section_seperator()

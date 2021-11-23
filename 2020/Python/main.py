@@ -1,4 +1,5 @@
 import sys
+from typing import Callable, Dict
 
 sys.path.append('../../Python.Common')
 from puzzleRunner import PuzzleRunner
@@ -8,7 +9,7 @@ import day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, \
        day21, day22, day23, day24, day25
 import day22fast
 
-puzzleDict = {
+puzzleDict: Dict[int, Callable[[], None]] = {
     1: day01.solve,
     2: day02.solve,
     3: day03.solve,
@@ -38,21 +39,11 @@ puzzleDict = {
 }
 
 
-def main():
+if __name__ == "__main__":
     titles = [
         'Advent of Code 2020',
         'https://adventofcode.com/2020',
         'By: SDragon'
         ]
-
-    # try:
     runner = PuzzleRunner(titles, sys.argv[1:])
     runner.run(puzzleDict)
-    # except:
-    #     ex = sys.exc_info()[0]
-    #     print('An exception occurred')
-    #     print(ex)
-    
-
-if __name__ == "__main__":
-    main()
