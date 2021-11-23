@@ -1,4 +1,3 @@
-import sys
 from typing import List
 
 import helper
@@ -7,6 +6,7 @@ from puzzleBase import PuzzleBase
 
 
 class Puzzle(PuzzleBase):
+    _DAY = 1
 
     def get_value(self, num_splits: int, testInput: List[int], testValues: List[int]) -> int:
         if num_splits == 0:
@@ -32,45 +32,52 @@ class Puzzle(PuzzleBase):
         return -1
 
 
-    def do_it(self, title: str, num_splits: int, input: List[int], correctResult: int) -> str:
-        result = self.get_value(num_splits, input, [])
-        return helper.validate_result2(title, result, correctResult)
+    def run_part1(self, input: List[int], correctResult: int) -> str:
+        result = self.get_value(1, input, [])
+        return helper.validate_result2('Product of the two entries?', result, correctResult)
 
-    # def run_example(o: utils.PuzzleOptions, title: str, num_splits: int, input: List[int], correctResult: int) -> None:
-    #     if (o.runExamples):
-    #         run(title, num_splits, input, correctResult)
 
-    def example1(self) -> str:
-        return self.do_it(" Ex. 1)", 1,
-            inputHelper.read_input_as_int_list(1,"example1"),
-            514579)
+    def run_part2(self, input: List[int], correctResult: int) -> str:
+        result = self.get_value(2, input, [])
+        return helper.validate_result2('Product of the three entries?', result, correctResult)
 
+
+    def load_input(self, name: str) -> List[int]:
+        lines = inputHelper.load_input_file(self._DAY, name)
+        return [int(l) for l in lines]
+
+    def load_answer(self, part: int, name: str) -> int:
+        lines = inputHelper.load_answer_file(self._DAY, part, name)
+        return int(lines[0]) if lines is not None else None
+        
+
+    def part1_ex1(self) -> str:
+        return "P1 Ex1) " + self.run_part1(
+            self.load_input('example1'),
+            self.load_answer(1, 'example1'))
     def part1(self) -> str:
-        return self.do_it("Part 1)", 1,
-            inputHelper.read_input_as_int_list(1, "input"),
-            969024)
+        return "Part 1) " + self.run_part1(
+            self.load_input('input'),
+            self.load_answer(1, 'input'))
 
-    def example2(self) -> str:
-        return self.do_it(" Ex. 2)", 2,
-            inputHelper.read_input_as_int_list(1, "example1"),
-            241861950)
+    def part2_ex1(self) -> str:
+        return "P2 Ex1) " + self.run_part2(
+            self.load_input('example1'),
+            self.load_answer(2, 'example1'))
     def part2(self) -> str:
-        return self.do_it("Part 2)", 2,
-            inputHelper.read_input_as_int_list(1, "input"),
-            230057040)
+        return "Part 2) " + self.run_part2(
+            self.load_input('input'),
+            self.load_answer(2, 'input'))
 
-    # def solve(o: utils.PuzzleOptions):
+
     def solve(self):
         print("Day 1: Report Repair")
         print("")
-
-        self.run_example(self.example1)
+        
+        self.run_example(self.part1_ex1)
         self.run(self.part1)
 
         print("")
 
-        # run("Test case 1", 2,
-        #     inputHelper.read_input_as_int_list(1, "example1"),
-        #     241861950)
-        self.run_example(self.example2)
-        self.run(self.part1)
+        self.run_example(self.part2_ex1)
+        self.run(self.part2)

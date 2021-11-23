@@ -1,6 +1,21 @@
 from typing import List
 
 
+def load_input_file(day: int, name: str) -> list[str]:
+    filename = f".\\..\\input\\day{day:02d}\\{name}.txt"
+    with open(filename) as dataFile:
+        return dataFile.readlines()
+
+
+def load_answer_file(day: int, part: int, name: str) -> list[str]:
+    filename = f".\\..\\input\\day{day:02d}\\{name}-answer{part}.txt"
+    try:
+        with open(filename) as dataFile:
+            return dataFile.readlines()
+    except OSError:
+        return None
+
+
 def generate_filename(day: int, name: str) -> str:
     filename = f".\\..\\input\\day{day:02d}\\{name}.txt"
     return filename
