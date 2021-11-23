@@ -50,7 +50,6 @@ def run_part1(title: str, input: List[int], correctResult: int):
 
     helper.validate_result(title, result1, correctResult)
 
-
 def solve():
     day = 25
     print(f"Day {day}: Combo Breaker")
@@ -60,7 +59,7 @@ def solve():
     # run_part1("Test Case 1",
     #     [5764801,17807724],
     #     14897079)
-    run_part1("problem",
+    run_part1("Part 1)",
         [8458505,16050997],
         448851)
 
