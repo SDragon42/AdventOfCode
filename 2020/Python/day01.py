@@ -1,7 +1,6 @@
 import sys
 from typing import List
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
 from puzzleBase import PuzzleBase

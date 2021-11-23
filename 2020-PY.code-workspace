@@ -11,6 +11,9 @@
 		}
 	],
 	"settings": {
+		"python.analysis.extraPaths": [
+			"../../Python.Common" // variable substitution is not supported (currently)
+		],
 		"files.exclude": {
 			"**/__pycache__": true
 		}
@@ -24,7 +27,7 @@
 				"request": "launch",
 				"cwd": "${workspaceFolder:Python}",
 				"program": "main.py",
-				"args": ["-be", "1"],
+				"args": ["-bea"],
 				"console": "integratedTerminal",
 				"env": {
 					"PYTHONPATH": "${workspaceFolder:Python.Common}"
