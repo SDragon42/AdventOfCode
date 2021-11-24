@@ -27,7 +27,7 @@
 				"request": "launch",
 				"cwd": "${workspaceFolder:Python}",
 				"program": "main.py",
-				"args": ["-bea"],
+				"args": ["-be", ""],
 				"console": "integratedTerminal",
 				"env": {
 					"PYTHONPATH": "${workspaceFolder:Python.Common}"
