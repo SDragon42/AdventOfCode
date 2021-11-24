@@ -1,4 +1,4 @@
-from typing import AnyStr, Callable, Type, List
+from typing import Callable
 import time
 
 class PuzzleBase:
@@ -13,7 +13,7 @@ class PuzzleBase:
         self.runExamples = runExamples
 
     
-    def run(self, puzzleFunction: Callable[[],str]) -> None:
+    def run_problem(self, puzzleFunction: Callable[[],str]) -> None:
         if self.runBenchmarks:
             print(self.__run_with_benchmarks(puzzleFunction))
         else:
@@ -22,7 +22,7 @@ class PuzzleBase:
 
     def run_example(self, puzzleFunction: Callable[[],str]) -> None:
         if self.runExamples:
-            self.run(puzzleFunction)
+            self.run_problem(puzzleFunction)
         
 
     
@@ -35,7 +35,8 @@ class PuzzleBase:
 
 
     def __run_without_benchmarks(self, puzzleFunction: Callable[[],str]) -> str:
-        return puzzleFunction()
+        text = puzzleFunction()
+        return text
 
 
     def solve(self) -> None:

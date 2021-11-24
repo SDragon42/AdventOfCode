@@ -1,85 +1,87 @@
-# import utils
-import sys
-from typing import List, Any
+from typing import List
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
 
 
-def check_password(entry: str) -> int:
-    entryParts = entry.split()
 
-    range = entryParts[0].split('-')
-    min = int(range[0])
-    max = int(range[1])
+class InputData:
+    input: List[str] = []
+    expectedAnswer: int = None
 
-    letter = entryParts[1].split(":")[0]
-
-    password = entryParts[2]
-
-    count = 0
-    for x in password:
-        if (x == letter):
-            count += 1
-
-    if (min <= count <= max):
-        return 1
-    return 0
+    def __init__(self, name: str, part: int) -> None:
+        day = 2
+        self.input = inputHelper.load_input_file(day, name)
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
 
 
-def check_password2(entry: str) -> int:
-    entryParts = entry.split()
-    
-    positions = entryParts[0].split('-')
-    letter = entryParts[1].split(":")[0]
-    password = entryParts[2]
 
-    matches = 0
-    for x in positions:
-        check = password[int(x) - 1]
-        if check == letter:
-            matches += 1
-    
-    if matches == 1:
-        return 1
-    return 0
+class Puzzle(PuzzleBase):
 
+    def check_password(self, entry: str) -> int:
+        entryParts = entry.split()
 
-def run_part1(title: str, input: List[Any], correctResult: int):
-    result = 0
-    for entry in input:
-        result += check_password(entry)
-    helper.validate_result(title, result, correctResult)
+        range = entryParts[0].split('-')
+        min = int(range[0])
+        max = int(range[1])
 
+        letter = entryParts[1].split(":")[0]
 
-def run_part2(title: str, input: List[Any], correctResult: int):
-    result = 0
-    for entry in input:
-        result += check_password2(entry)
-    helper.validate_result(title, result, correctResult)
+        password = entryParts[2]
+
+        count = 0
+        for x in password:
+            if (x == letter):
+                count += 1
+
+        if (min <= count <= max):
+            return 1
+        return 0
 
 
-def solve():
-    print("Day 2: Password Philosophy")
-    print("")
+    def check_password2(self, entry: str) -> int:
+        entryParts = entry.split()
+        
+        positions = entryParts[0].split('-')
+        letter = entryParts[1].split(":")[0]
+        password = entryParts[2]
 
-    # run_part1("Test Case 1",
-    #     inputHelper.read_input_as_list(2, "example1"),
-    #     2)
-    run_part1("Part 1)",
-        inputHelper.read_input_as_list(2, "input"),
-        548)
-
-    print("")
-
-    # run_part2("Test Case 1",
-    #     inputHelper.read_input_as_list(2, "example1"),
-    #     1)
-    run_part2("Part 2)",
-        inputHelper.read_input_as_list(2, "input"),
-        502)
+        matches = 0
+        for x in positions:
+            check = password[int(x) - 1]
+            if check == letter:
+                matches += 1
+        
+        if matches == 1:
+            return 1
+        return 0
 
 
-if __name__ == "__main__":
-    solve()
+    def run_part1(self, data: InputData) -> str:
+        result = 0
+        for entry in data.input:
+            result += self.check_password(entry)
+        return helper.validate_result2("How many passwords are valid?", result, data.expectedAnswer)
+
+
+    def run_part2(self, data: InputData) -> str:
+        result = 0
+        for entry in data.input:
+            result += self.check_password2(entry)
+        return helper.validate_result2("How many passwords are valid?", result, data.expectedAnswer)
+
+
+    def solve(self):
+        print("Day 2: Password Philosophy")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))

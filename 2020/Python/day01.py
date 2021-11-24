@@ -5,8 +5,22 @@ import inputHelper
 from puzzleBase import PuzzleBase
 
 
+
+class InputData:
+    input: List[int] = []
+    expectedAnswer: int = None
+
+    def __init__(self, name: str, part: int) -> None:
+        day = 1
+        lines = inputHelper.load_input_file(day, name)
+        self.input = [int(l) for l in lines]
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
+
+
+
 class Puzzle(PuzzleBase):
-    _DAY = 1
 
     def get_value(self, num_splits: int, testInput: List[int], testValues: List[int]) -> int:
         if num_splits == 0:
@@ -32,52 +46,24 @@ class Puzzle(PuzzleBase):
         return -1
 
 
-    def run_part1(self, input: List[int], correctResult: int) -> str:
-        result = self.get_value(1, input, [])
-        return helper.validate_result2('Product of the two entries?', result, correctResult)
+    def run_part1(self, data: InputData) -> str:
+        result = self.get_value(1, data.input, [])
+        return helper.validate_result2('Product of the two entries?', result, data.expectedAnswer)
 
 
-    def run_part2(self, input: List[int], correctResult: int) -> str:
-        result = self.get_value(2, input, [])
-        return helper.validate_result2('Product of the three entries?', result, correctResult)
-
-
-    def load_input(self, name: str) -> List[int]:
-        lines = inputHelper.load_input_file(self._DAY, name)
-        return [int(l) for l in lines]
-
-    def load_answer(self, part: int, name: str) -> int:
-        lines = inputHelper.load_answer_file(self._DAY, part, name)
-        return int(lines[0]) if lines is not None else None
-        
-
-    def part1_ex1(self) -> str:
-        return "P1 Ex1) " + self.run_part1(
-            self.load_input('example1'),
-            self.load_answer(1, 'example1'))
-    def part1(self) -> str:
-        return "Part 1) " + self.run_part1(
-            self.load_input('input'),
-            self.load_answer(1, 'input'))
-
-    def part2_ex1(self) -> str:
-        return "P2 Ex1) " + self.run_part2(
-            self.load_input('example1'),
-            self.load_answer(2, 'example1'))
-    def part2(self) -> str:
-        return "Part 2) " + self.run_part2(
-            self.load_input('input'),
-            self.load_answer(2, 'input'))
+    def run_part2(self, data: InputData) -> str:
+        result = self.get_value(2, data.input, [])
+        return helper.validate_result2('Product of the three entries?', result, data.expectedAnswer)
 
 
     def solve(self):
         print("Day 1: Report Repair")
         print("")
-        
-        self.run_example(self.part1_ex1)
-        self.run(self.part1)
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
 
         print("")
 
-        self.run_example(self.part2_ex1)
-        self.run(self.part2)
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
