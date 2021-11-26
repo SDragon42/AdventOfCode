@@ -2,26 +2,26 @@ from typing import Callable
 import time
 
 class PuzzleBase:
-    runBenchmarks = False
-    runExamples = False
+    _benchmarks = False
+    _examples = False
 
     def __init__(self) -> None:
         pass
 
     def set_options(self, runBenchmarks: bool, runExamples: bool):
-        self.runBenchmarks = runBenchmarks
-        self.runExamples = runExamples
+        self._benchmarks = runBenchmarks
+        self._examples = runExamples
 
     
     def run_problem(self, puzzleFunction: Callable[[],str]) -> None:
-        if self.runBenchmarks:
+        if self._benchmarks:
             print(self.__run_with_benchmarks(puzzleFunction))
         else:
             print(self.__run_without_benchmarks(puzzleFunction))
 
 
     def run_example(self, puzzleFunction: Callable[[],str]) -> None:
-        if self.runExamples:
+        if self._examples:
             self.run_problem(puzzleFunction)
         
 
