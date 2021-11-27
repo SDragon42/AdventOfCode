@@ -67,7 +67,7 @@ class Puzzle(PuzzleBase):
 
             groupStart = groupEnd + 1
 
-        return helper.validate_result2('', result, data.expectedAnswer)
+        return helper.validate_result2('What is the sum of those counts?', result, data.expectedAnswer)
 
 
     def solve(self):
