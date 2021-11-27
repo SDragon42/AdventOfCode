@@ -1,21 +1,33 @@
 from typing import List
 
 
-def validate_result(message: str, value, correct_value) -> None:
-    print(validate_result2(message, value, correct_value))
+def validate_result(aocQuestion: str, value, correct_value) -> str:
+    """Displays the results of the 'part', and if the answer was correct or wrong.
 
+    Args:
+        aocQuestion (str): This is the AOC question text.
+        value ([type]): The value that was found.
+        correct_value ([type]): This is the correct value.
 
-def validate_result2(message: str, value, correct_value) -> str:
-    success = 'WRONG'
+    Returns:
+        str: a composition of '{aocQuestion}    {value}    {check}'
+    """
+    check = 'WRONG'
     if correct_value is None:
-        success = '???'
+        check = '???'
     elif correct_value == value:
-        success = 'CORRECT'
-    return f"{message}    {value}    {success}"
+        check = 'CORRECT'
+    return f"{aocQuestion}    {value}    {check}"
+
 
 
 showDebug = False
 
 def dprint(x) -> None:
+    """A print() that only will run if the 'showDebug' value is set to True.
+
+    Args:
+        x ([type]): a value to print
+    """
     if showDebug:
         print(x)

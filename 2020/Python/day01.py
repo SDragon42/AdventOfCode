@@ -48,12 +48,12 @@ class Puzzle(PuzzleBase):
 
     def run_part1(self, data: InputData) -> str:
         result = self.get_value(1, data.input, [])
-        return helper.validate_result2('Product of the two entries?', result, data.expectedAnswer)
+        return helper.validate_result('Product of the two entries?', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
         result = self.get_value(2, data.input, [])
-        return helper.validate_result2('Product of the three entries?', result, data.expectedAnswer)
+        return helper.validate_result('Product of the three entries?', result, data.expectedAnswer)
 
 
     def solve(self):

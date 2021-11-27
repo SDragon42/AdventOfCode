@@ -49,7 +49,7 @@ class Puzzle(PuzzleBase):
         result = 1
         for sl in data.slopes:
             result *= self.count_trees(data.input, int(sl[0]), int(sl[1]))
-        return helper.validate_result2("how many trees would you encounter?", result, data.expectedAnswer)
+        return helper.validate_result("How many trees would you encounter?", result, data.expectedAnswer)
 
 
     def solve(self):

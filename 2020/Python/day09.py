@@ -76,13 +76,13 @@ class Puzzle(PuzzleBase):
 
     def run_part1(self, data: InputData) -> str:
         result = self.scan_input(data.input, data.windowSize)
-        return helper.validate_result2('The first number without this property:', result, data.expectedAnswer)
+        return helper.validate_result('The first number without this property:', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
         invalidNum = self.scan_input(data.input, data.windowSize)
         result = self.find_weakness(data.input, invalidNum)
-        return helper.validate_result2('The encryption weakness in your XMAS-encrypted list of numbers:', result, data.expectedAnswer)
+        return helper.validate_result('The encryption weakness in your XMAS-encrypted list of numbers:', result, data.expectedAnswer)
 
 
     def solve(self):
