@@ -1,96 +1,98 @@
-import sys
 from typing import List
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
 
 
-def is_valid(value: int, input: List[int]) -> bool:
-    if len(input) == 0:
-        return False
 
-    first = input[0]
-    rest = input[1:]
-    for x in rest:
-        if first + x == value:
-            return True
+class InputData:
+    input: List[int]
+    windowSize: int
+    expectedAnswer: int
 
-    return is_valid(value, rest)
+    def __init__(self, name: str, part: int) -> None:
+        day = 9
+        self.input = [int(l) for l in inputHelper.load_input_file(day, name)]
 
-
-def scan_input(input: List[int], windowSize: int) -> int:
-    lowIdx = 0
-    highIdx = lowIdx + windowSize
-    i = windowSize
-
-    while i < len(input):
-        if not is_valid(input[i], input[lowIdx:highIdx]):
-            return input[i]
-
-        lowIdx += 1
-        highIdx += 1
-        i += 1
-    return - 1
+        self.windowSize = int(inputHelper.load_input_file(day, name+'-windowsize')[0])
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
 
 
-def find_weakness(input: List[int], invalidNum: int) -> int:
-    start = 0
-    end = 1
 
-    while end < len(input):
-        testInput = input[start:end]
-        total = sum(testInput)
-        if total == invalidNum:
-            a = min(testInput)
-            b = max(testInput)
-            return a + b
+class Puzzle(PuzzleBase):
 
-        if total < invalidNum:
-            end += 1
-            continue
+    def is_valid(self, value: int, input: List[int]) -> bool:
+        if len(input) == 0:
+            return False
 
-        if total > invalidNum:
-            start += 1
-            continue
-    return -1
+        first = input[0]
+        rest = input[1:]
+        for x in rest:
+            if first + x == value:
+                return True
+
+        return self.is_valid(value, rest)
 
 
-def run_part1(title: str, input: List[int], windowSize: int, correctResult: int):
-    result = scan_input(input, windowSize)
-    helper.validate_result(title, result, correctResult)
+    def scan_input(self, input: List[int], windowSize: int) -> int:
+        lowIdx = 0
+        highIdx = lowIdx + windowSize
+        i = windowSize
+
+        while i < len(input):
+            if not self.is_valid(input[i], input[lowIdx:highIdx]):
+                return input[i]
+
+            lowIdx += 1
+            highIdx += 1
+            i += 1
+        return - 1
 
 
-def run_part2(title: str, input: List[int], windowSize: int, correctResult: int):
-    invalidNum = scan_input(input, windowSize)
-    result = find_weakness(input, invalidNum)
-    helper.validate_result(title, result, correctResult)
+    def find_weakness(self, input: List[int], invalidNum: int) -> int:
+        start = 0
+        end = 1
+
+        while end < len(input):
+            testInput = input[start:end]
+            total = sum(testInput)
+            if total == invalidNum:
+                a = min(testInput)
+                b = max(testInput)
+                return a + b
+
+            if total < invalidNum:
+                end += 1
+                continue
+
+            if total > invalidNum:
+                start += 1
+                continue
+        return -1
 
 
-def solve():
-    print("Day 9: Encoding Error")
-    print("")
-
-    # run_part1("Test Case 1",
-    #     inputHelper.read_input_as_int_list(9, "example1"),
-    #     5,
-    #     127)
-    run_part1("Part 1)",
-        inputHelper.read_input_as_int_list(9, "input"),
-        25,
-        36845998)
-
-    print("")
-
-    # run_part2("Test Case 1",
-    #     inputHelper.read_input_as_int_list(9, "example1"),
-    #     5,
-    #     62)
-    run_part2("Part 2)",
-        inputHelper.read_input_as_int_list(9, "input"),
-        25,
-        4830226)
+    def run_part1(self, data: InputData) -> str:
+        result = self.scan_input(data.input, data.windowSize)
+        return helper.validate_result2('The first number without this property:', result, data.expectedAnswer)
 
 
-if __name__ == "__main__":
-    solve()
+    def run_part2(self, data: InputData) -> str:
+        invalidNum = self.scan_input(data.input, data.windowSize)
+        result = self.find_weakness(data.input, invalidNum)
+        return helper.validate_result2('The encryption weakness in your XMAS-encrypted list of numbers:', result, data.expectedAnswer)
+
+
+    def solve(self):
+        print("Day 9: Encoding Error")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
