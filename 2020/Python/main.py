@@ -17,7 +17,7 @@ puzzleDict: Dict[int, PuzzleBase] = {
     5: day05.Puzzle,
     6: day06.Puzzle,
     7: day07.Puzzle,
-    # 8: day08.Puzzle,
+    8: day08.Puzzle,
     # 9: day09.Puzzle,
     # 10: day10.Puzzle,
     # 11: day11.Puzzle,
