@@ -7,8 +7,8 @@ from puzzleBase import PuzzleBase
 
 
 class InputData:
-    input: List[str] = []
-    expectedAnswer: int = None
+    input: List[str]
+    expectedAnswer: int
 
     def __init__(self, name: str, part: int) -> None:
         day = 2

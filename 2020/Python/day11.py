@@ -7,8 +7,8 @@ from puzzleBase import PuzzleBase
 
 
 class InputData:
-    input: List[str] = []
-    expectedAnswer: int = None
+    input: List[str]
+    expectedAnswer: int
 
     def __init__(self, name: str, part: int) -> None:
         day = 11
@@ -29,60 +29,52 @@ class Offsets:
 
 
 
-directionOffsets: List[Offsets] = [
-    Offsets(-1, -1),
-    Offsets(0, -1),
-    Offsets(1, -1),
-    Offsets(1, 0),
-    Offsets(1, 1),
-    Offsets(0, 1),
-    Offsets(-1, 1),
-    Offsets(-1, 0),
-]
-
-
-table = List[List[str]]
+Table = List[List[str]]
 
 
 
 class Puzzle(PuzzleBase):
 
+    directionOffsets: List[Offsets] = [
+        Offsets(-1, -1),
+        Offsets(0, -1),
+        Offsets(1, -1),
+        Offsets(1, 0),
+        Offsets(1, 1),
+        Offsets(0, 1),
+        Offsets(-1, 1),
+        Offsets(-1, 0),
+    ]
+
     # helper functions
     #--------------------------------------------------------------------------------
-    def clone_table(self, seats: table) -> table:
+    def clone_table(self, seats: Table) -> Table:
         cloned = [y.copy() for y in seats]
-        # cloned: table = []
-        # for y in seats:
-        #     cloned.append(y.copy())
         return cloned
 
 
-    def input_list_to_table(self, input: List[str]) -> table:
+    def input_list_to_table(self, input: List[str]) -> Table:
         seats = [list(y) for y in input] 
-        # seats: table = []
-        # for y in input:
-        #     seats.append(list(y))
         return seats
 
 
-    # def show_seat_map(self, seats: table, title: str):
-    #     print(title)
-    #     for y in seats:
-    #         print("".join(y))
-    #     print("")
+    def show_seat_map(self, seats: Table, title: str):
+        helper.dprint(title)
+        for y in seats:
+            helper.dprint("".join(y))
+        helper.dprint("")
 
 
-    def count_occupied_seats(self, seats: table) -> int:
-        total = sum([1 for y in seats for x in y if x == '#'])
-        # total = 0
-        # for y in seats:
-        #     for x in y:
-        #         if x == "#":
-        #             total += 1
+    def count_occupied_seats(self, seats: Table) -> int:
+        total = 0
+        for y in seats:
+            for x in y:
+                if x == "#":
+                    total += 1
         return total
 
 
-    def is_inbounds(self, x: int, y: int, seats: table) -> bool:
+    def is_inbounds(self, x: int, y: int, seats: Table) -> bool:
         if x < 0 or y < 0:
             return False
         if y >= len(seats):
@@ -91,7 +83,7 @@ class Puzzle(PuzzleBase):
             return False
         return True
 
-    def get_seat_in_path(self, x: int, y: int, seats: table, offset: Offsets) -> str:
+    def get_seat_in_path(self, x: int, y: int, seats: Table, offset: Offsets) -> str:
         x += offset.x
         y += offset.y
         if not self.is_inbounds(x, y, seats):
@@ -99,7 +91,7 @@ class Puzzle(PuzzleBase):
         return seats[y][x]
         
 
-    def get_first_seat_in_path(self, x: int, y: int, seats: table, offset: Offsets) -> str:
+    def get_first_seat_in_path(self, x: int, y: int, seats: Table, offset: Offsets) -> str:
         found = self.get_seat_in_path(x, y, seats, offset)
         if found == "":
             return "."
@@ -110,22 +102,22 @@ class Puzzle(PuzzleBase):
 
     # common rules
     #--------------------------------------------------------------------------------
-    def rule_floor(self, x: int, y: int, seats: table) -> str:
+    def rule_floor(self, x: int, y: int, seats: Table) -> str:
         return seats[y][x]
 
 
     # rules for Part 1
     #--------------------------------------------------------------------------------
-    def rule_empty_seat_part1(self, x: int, y: int, seats: table) -> str:
-        for offset in directionOffsets:
+    def rule_empty_seat_part1(self, x: int, y: int, seats: Table) -> str:
+        for offset in self.directionOffsets:
             if self.get_seat_in_path(x, y, seats, offset) == "#":
                 return seats[y][x]
         return "#"
 
 
-    def rule_occupied_seat_part1(self, x: int, y: int, seats: table) -> str:
+    def rule_occupied_seat_part1(self, x: int, y: int, seats: Table) -> str:
         numOccupied = 0
-        for offset in directionOffsets:
+        for offset in self.directionOffsets:
             if self.get_seat_in_path(x, y, seats, offset) == "#":
                 numOccupied += 1
         if numOccupied >= 4:
@@ -135,16 +127,16 @@ class Puzzle(PuzzleBase):
 
     # rules for Part 2
     #--------------------------------------------------------------------------------
-    def rule_empty_seat_part2(self, x: int, y: int, seats: table) -> str:
-        for offset in directionOffsets:
+    def rule_empty_seat_part2(self, x: int, y: int, seats: Table) -> str:
+        for offset in self.directionOffsets:
             if self.get_first_seat_in_path(x, y, seats, offset) == "#":
                 return seats[y][x]
         return "#"
 
 
-    def rule_occupied_seat_part2(self, x: int, y: int, seats: table) -> str:
+    def rule_occupied_seat_part2(self, x: int, y: int, seats: Table) -> str:
         numOccupied = 0
-        for offset in directionOffsets:
+        for offset in self.directionOffsets:
             if self.get_first_seat_in_path(x, y, seats, offset) == "#":
                 numOccupied += 1
         if numOccupied >= 5:
@@ -154,7 +146,7 @@ class Puzzle(PuzzleBase):
 
     # Common
     #--------------------------------------------------------------------------------
-    def apply_rules_to_seats(self, seats: table, rules: Dict) -> int:
+    def apply_rules_to_seats(self, seats: Table, rules: Dict) -> int:
         numChanges = 0
         y = 0
 
