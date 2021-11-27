@@ -1,11 +1,24 @@
-import sys
 from typing import Callable, List, Dict
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
 
-#---------------------------------------------------------------------
+
+
+class InputData:
+    input: List[str] = []
+    expectedAnswer: int = None
+
+    def __init__(self, name: str, part: int) -> None:
+        day = 8
+        self.input = inputHelper.load_input_file(day, name)
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
+
+
+
 class AccumulatorProcessor:
 
     idx: int
@@ -60,63 +73,52 @@ class AccumulatorProcessor:
         finished = (self.idx >= len(self.code))
         return finished
         
-#---------------------------------------------------------------------
 
 
-def flip_instruction(instructionIdx: int, input: List[str]) -> List[str]:
-    if input[instructionIdx].startswith("nop"):
-        input[instructionIdx] = input[instructionIdx].replace("nop", "jmp")
-    else:
-        input[instructionIdx] = input[instructionIdx].replace("jmp", "nop")
-    return input
+class Puzzle(PuzzleBase):
+
+    def flip_instruction(self, instructionIdx: int, input: List[str]) -> List[str]:
+        if input[instructionIdx].startswith("nop"):
+            input[instructionIdx] = input[instructionIdx].replace("nop", "jmp")
+        else:
+            input[instructionIdx] = input[instructionIdx].replace("jmp", "nop")
+        return input
 
 
-def run_part1(title: str, input: List[str], correctResult: int):
-    comp = AccumulatorProcessor(input)
-    comp.run()
-    helper.validate_result(title, comp.accValue, correctResult)
+    def run_part1(self, data: InputData) -> str:
+        comp = AccumulatorProcessor(data.input)
+        comp.run()
+        return helper.validate_result2('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
 
 
-def run_part2(title: str, input: List[str], correctResult: int):
-    comp = AccumulatorProcessor(input)
-    comp.run()
+    def run_part2(self, data: InputData) -> str:
+        comp = AccumulatorProcessor(data.input)
+        comp.run()
 
-    firstCallStack = comp.callStack.copy()
-    while len(firstCallStack) > 0:
-        lastIdx = firstCallStack.pop()
-        if input[lastIdx].startswith("acc"):
-            continue
+        firstCallStack = comp.callStack.copy()
+        while len(firstCallStack) > 0:
+            lastIdx = firstCallStack.pop()
+            if data.input[lastIdx].startswith("acc"):
+                continue
 
-        newInput = flip_instruction(lastIdx, input.copy())
+            newInput = self.flip_instruction(lastIdx, data.input.copy())
 
-        comp = AccumulatorProcessor(newInput)
-        reachedEnd = comp.run()
-        if reachedEnd:
-            break
+            comp = AccumulatorProcessor(newInput)
+            reachedEnd = comp.run()
+            if reachedEnd:
+                break
 
-    helper.validate_result(title, comp.accValue, correctResult)
-
-
-def solve():
-    print("Day 8: Handheld Halting")
-    print("")
-
-    # run_part1("Test Case 1",
-    #     inputHelper.read_input_as_list(8, "example1"),
-    #     5)
-    run_part1("Part 1)",
-        inputHelper.read_input_as_list(8, "input"),
-        1489)
-
-    print("")
-
-    # run_part2("Test Case 1",
-    #     inputHelper.read_input_as_list(8, "example1"),
-    #     8)
-    run_part2("Part 2)",
-        inputHelper.read_input_as_list(8, "input"),
-        1539)
+        return helper.validate_result2('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
 
 
-if __name__ == "__main__":
-    solve()
+    def solve(self):
+        print("Day 8: Handheld Halting")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
