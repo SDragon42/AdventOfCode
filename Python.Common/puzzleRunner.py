@@ -66,14 +66,14 @@ class PuzzleRunner:
 ##########################################################################################
 
 class PuzzleRunner2:
-    _titles: list[str] = []
-    _maxTitleLength: int = 0
-    _titleBorder: str = ''
+    _titles: list[str]
+    _maxTitleLength: int
+    _titleBorder: str
     _separatorLine: str = ''.ljust(60, '-')
     _runAll: bool = False
     _runExamples: bool = False
     _runBenchmarks: bool = False
-    _indexes: list[int] = []
+    _indexes: list[int]
 
 
     def __init__(self, titles: List[str], argv: List[str]) -> None:
@@ -82,7 +82,11 @@ class PuzzleRunner2:
         self._titleBorder = '+-' + ''.ljust(self._maxTitleLength, '-') + '-+'
 
         options, args = getopt.getopt(argv, 'bea')
-        self._indexes = [*map(int, args)]
+
+        self._indexes = []
+        for a in args:
+            self.__process_puzzle_nums(a)
+
         for name, value in options:
             if name == '-b':
                 self._runBenchmarks = True
@@ -90,6 +94,18 @@ class PuzzleRunner2:
                 self._runExamples = True
             if name == '-a':
                 self._runAll = True
+
+    def __process_puzzle_nums(self, arg: str) -> None:
+        argParts = arg.split(',')
+        if len(argParts) == 1:
+            try:
+                self._indexes.append(int(arg))
+            except:
+                print(f'Bad argument: {arg}')
+        else:
+            for part in argParts:
+                self.__process_puzzle_nums(part)
+
 
     
     def __write_header(self) -> None:

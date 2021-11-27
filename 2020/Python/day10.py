@@ -65,7 +65,7 @@ class Puzzle(PuzzleBase):
         diffCounts = self.get_jolt_differences(adapters)
         result = diffCounts[1] * diffCounts[3]
 
-        return helper.validate_result2('What is the number of 1-jolt differences multiplied by the number of 3-jolt differences?', result, data.expectedAnswer)
+        return helper.validate_result('What is the number of 1-jolt differences multiplied by the number of 3-jolt differences?', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
@@ -74,7 +74,7 @@ class Puzzle(PuzzleBase):
         
         result = self.count_adapterChains(0, adapters, chainsUnder)
         
-        return helper.validate_result2('What is the total number of distinct ways you can arrange the adapters to connect the charging outlet to your device?', result, data.expectedAnswer)
+        return helper.validate_result('What is the total number of distinct ways you can arrange the adapters to connect the charging outlet to your device?', result, data.expectedAnswer)
 
 
 

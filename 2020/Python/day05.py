@@ -50,7 +50,7 @@ class Puzzle(PuzzleBase):
             seatId = self.get_seat_id(bPass)
             if seatId > result:
                 result = seatId
-        return helper.validate_result2('What is the highest seat ID on a boarding pass?', result, data.expectedAnswer)
+        return helper.validate_result('What is the highest seat ID on a boarding pass?', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
@@ -69,7 +69,7 @@ class Puzzle(PuzzleBase):
                 result = x
                 break
 
-        return helper.validate_result2('What is the ID of your seat?', result, data.expectedAnswer)
+        return helper.validate_result('What is the ID of your seat?', result, data.expectedAnswer)
 
 
     def solve(self):

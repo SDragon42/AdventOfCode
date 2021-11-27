@@ -64,14 +64,14 @@ class Puzzle(PuzzleBase):
         result = 0
         for entry in data.input:
             result += self.check_password(entry)
-        return helper.validate_result2("How many passwords are valid?", result, data.expectedAnswer)
+        return helper.validate_result("How many passwords are valid?", result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
         result = 0
         for entry in data.input:
             result += self.check_password2(entry)
-        return helper.validate_result2("How many passwords are valid?", result, data.expectedAnswer)
+        return helper.validate_result("How many passwords are valid?", result, data.expectedAnswer)
 
 
     def solve(self):

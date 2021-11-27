@@ -92,13 +92,13 @@ class Puzzle(PuzzleBase):
         foundBags: List[str] = []
         self.count_bags_containing(rules, "shiny gold", foundBags)
         result = len(foundBags)
-        return helper.validate_result2('How many bag colors can eventually contain at least one shiny gold bag?', result, data.expectedAnswer)
+        return helper.validate_result('How many bag colors can eventually contain at least one shiny gold bag?', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
         rules = self.parse_rules(data.input)
         result = self.count_bags_in(rules, "shiny gold")
-        return helper.validate_result2('How many individual bags are required inside your single shiny gold bag?', result, data.expectedAnswer)
+        return helper.validate_result('How many individual bags are required inside your single shiny gold bag?', result, data.expectedAnswer)
 
 
     def solve(self):

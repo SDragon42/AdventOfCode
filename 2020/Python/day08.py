@@ -88,7 +88,7 @@ class Puzzle(PuzzleBase):
     def run_part1(self, data: InputData) -> str:
         comp = AccumulatorProcessor(data.input)
         comp.run()
-        return helper.validate_result2('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
+        return helper.validate_result('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
@@ -108,7 +108,7 @@ class Puzzle(PuzzleBase):
             if reachedEnd:
                 break
 
-        return helper.validate_result2('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
+        return helper.validate_result('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
 
 
     def solve(self):

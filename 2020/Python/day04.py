@@ -155,7 +155,7 @@ class Puzzle(PuzzleBase):
 
     def run_part(self, data: InputData) -> str:
         result = self.count_valid_passorts(data.input, data.checkValues)
-        return helper.validate_result2('how many passports are valid?', result, data.expectedAnswer)
+        return helper.validate_result('How many passports are valid?', result, data.expectedAnswer)
 
 
     def solve(self):
