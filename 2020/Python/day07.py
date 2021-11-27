@@ -84,11 +84,9 @@ class Puzzle(PuzzleBase):
             contents = rules[bag]
             for contentBag in contents:
                 result += contentBag.count + (contentBag.count * self.count_bags_in(rules, contentBag.bag))
-
         return result
 
 
-    # def run_part1(self, title: str, input: List[str], correctResult: int):
     def run_part1(self, data: InputData) -> str:
         rules = self.parse_rules(data.input)
         foundBags: List[str] = []
@@ -97,7 +95,6 @@ class Puzzle(PuzzleBase):
         return helper.validate_result2('How many bag colors can eventually contain at least one shiny gold bag?', result, data.expectedAnswer)
 
 
-    # def run_part2(self, title: str, input: List[str], correctResult: int):
     def run_part2(self, data: InputData) -> str:
         rules = self.parse_rules(data.input)
         result = self.count_bags_in(rules, "shiny gold")
@@ -110,24 +107,9 @@ class Puzzle(PuzzleBase):
 
         self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
         self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
-        # self.run_part1("Test Case 1",
-        #     inputHelper.read_input_as_list(7, "example1"),
-        #     4)
-        # self.run_part1("Part 1)",
-        #     inputHelper.read_input_as_list(7, "input"),
-        #     205)
 
         print("")
 
         self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
         self.run_example(lambda: "P2 Ex2) " + self.run_part2(InputData('example2', 2)))
         self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
-        # self.run_part2("Test Case 1",
-        #     inputHelper.read_input_as_list(7, "example1"),
-        #     32)
-        # self.run_part2("Test Case 2",
-        #     inputHelper.read_input_as_list(7, "example2"),
-        #     126)
-        # self.run_part2("Part 2)",
-        #     inputHelper.read_input_as_list(7, "input"),
-        #     80902)
