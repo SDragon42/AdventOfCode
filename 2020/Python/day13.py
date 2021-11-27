@@ -1,117 +1,107 @@
-import sys
-import math
 from typing import List
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
 
+from puzzleBase import PuzzleBase
+
+
+
+class InputData:
+    input: List[str]
+    expectedAnswer: int
+
+    def __init__(self, name: str, part: int) -> None:
+        day = 13
+        self.input = inputHelper.load_input_file(day, name)
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
+
+
+
 class BusDepatureInfo:
-    busId: int = 0
-    departureTime: int = 0
+    busId: int
+    departureTime: int
 
     def __init__(self, busId: int, departureTime: int):
         self.busId = busId
         self.departureTime = departureTime
 
-#-------------------------------------------------------------------------------
-
-def get_next_time(currentTime: int, busId: int) -> int:
-    while currentTime % busId != 0:
-        currentTime += 1
-    return currentTime
-
-def get_soonest_bus(earliestTime: int, buses: List[str]) -> BusDepatureInfo:
-    nextDepartures: List[BusDepatureInfo] = []
-
-    for x in buses:
-        if x == "x":
-            continue
-        busId = int(x)
-        time = get_next_time(earliestTime, busId)
-        nextDepartures.append(BusDepatureInfo(busId, time))
-
-    result = BusDepatureInfo(-1, 0)
-    for z in nextDepartures:
-        if z.departureTime < result.departureTime or result.busId < 0:
-            result = z
-
-    return result
-
-def get_lcm(a: int, b: int) -> int:
-    """Gets the Least Common Multiple of two numbers"""
-    return abs(a * b) // math.gcd(a, b)
 
 
-def get_next_matching_time(time: int, busId: int, increment: int, offset: int) -> int:
-    time += increment
-    while (time + offset) % busId != 0:
+class Puzzle(PuzzleBase):
+
+    def get_next_time(self, currentTime: int, busId: int) -> int:
+        while currentTime % busId != 0:
+            currentTime += 1
+        return currentTime
+
+
+    def get_soonest_bus(self, earliestTime: int, buses: List[str]) -> BusDepatureInfo:
+        nextDepartures: List[BusDepatureInfo] = []
+
+        for x in buses:
+            if x == "x":
+                continue
+            busId = int(x)
+            time = self.get_next_time(earliestTime, busId)
+            nextDepartures.append(BusDepatureInfo(busId, time))
+
+        result = BusDepatureInfo(-1, 0)
+        for z in nextDepartures:
+            if z.departureTime < result.departureTime or result.busId < 0:
+                result = z
+
+        return result
+
+
+    def get_next_matching_time(self, time: int, busId: int, increment: int, offset: int) -> int:
         time += increment
-    return time
+        while (time + offset) % busId != 0:
+            time += increment
+        return time
 
 
-def run_part1(title: str, input: List[str], correctResult: int):
-    earliestTime = int(input[0])
-    buses = input[1].split(",")
-    bus = get_soonest_bus(earliestTime, buses)
-    result = (bus.departureTime - earliestTime) * bus.busId
-    helper.validate_result(title, result, correctResult)
+    def run_part1(self, data: InputData) -> str:
+        earliestTime = int(data.input[0])
+        buses = data.input[1].split(",")
+        bus = self.get_soonest_bus(earliestTime, buses)
+        result = (bus.departureTime - earliestTime) * bus.busId
+        return helper.validate_result("What is the ID of the earliest bus you can take to the airport multiplied by the number of minutes you'll need to wait for that bus?", result, data.expectedAnswer)
 
 
-def run_part2(title: str, input: List[str], correctResult: int):
-    buses = input[1].split(",")
-    increment = 0
-    lcmValue = 1
-    time = 0
-    i = 0
-    while i < len(buses):
-        if buses[i] != "x":
-            busId = int(buses[i])
-            if increment == 0:
-                increment = 1
-            time = get_next_matching_time(time, busId, increment, i)
-            lcmValue = get_lcm(lcmValue, busId)
-            increment = lcmValue
-        i += 1
-    helper.validate_result(title, time, correctResult)
+    def run_part2(self, data: InputData) -> str:
+        buses = data.input[1].split(",")
+        increment = 0
+        lcmValue = 1
+        time = 0
+        i = 0
+        while i < len(buses):
+            if buses[i] != "x":
+                busId = int(buses[i])
+                if increment == 0:
+                    increment = 1
+                time = self.get_next_matching_time(time, busId, increment, i)
+                lcmValue = helper.get_lcm(lcmValue, busId)
+                increment = lcmValue
+            i += 1
+        return helper.validate_result("What is the earliest timestamp such that all of the listed bus IDs depart at offsets matching their positions in the list?", time, data.expectedAnswer)
 
 
-def solve():
-    day = 13
-    print(f"Day {day}: Shuttle Search")
-    print("")
+    def solve(self):
+        print("Day 13: Shuttle Search")
+        print("")
 
-    # run_part1("Test Case 1",
-    #     inputHelper.read_input_as_list(day, "example1"),
-    #     295)
-    run_part1("Part 1)",
-        inputHelper.read_input_as_list(day, "input"),
-        410)
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
 
-    print("")
+        print("")
 
-    # run_part2("Test Case 1",
-    #     inputHelper.read_input_as_list(day, "example1"),
-    #     1068781)
-    # run_part2("Test Case 2",
-    #     inputHelper.read_input_as_list(day, "example2"),
-    #     3417)
-    # run_part2("Test Case 3",
-    #     inputHelper.read_input_as_list(day, "example3"),
-    #     754018)
-    # run_part2("Test Case 4",
-    #     inputHelper.read_input_as_list(day, "example4"),
-    #     779210)
-    # run_part2("Test Case 5",
-    #     inputHelper.read_input_as_list(day, "example5"),
-    #     1261476)
-    # run_part2("Test Case 6",
-    #     inputHelper.read_input_as_list(day, "example6"),
-    #     1202161486)
-    run_part2("Part 2)",
-        inputHelper.read_input_as_list(day, "input"),
-        600691418730595)
-
-
-if __name__ == "__main__":
-    solve()
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_example(lambda: "P2 Ex2) " + self.run_part2(InputData('example2', 2)))
+        self.run_example(lambda: "P2 Ex3) " + self.run_part2(InputData('example3', 2)))
+        self.run_example(lambda: "P2 Ex4) " + self.run_part2(InputData('example4', 2)))
+        self.run_example(lambda: "P2 Ex5) " + self.run_part2(InputData('example5', 2)))
+        self.run_example(lambda: "P2 Ex6) " + self.run_part2(InputData('example6', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
