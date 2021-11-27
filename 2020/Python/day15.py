@@ -1,74 +1,83 @@
-import sys
 from typing import List, Dict
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
+
+
+
+class InputData:
+    input: List[str]
+    lastTurn: int
+    expectedAnswer: int
+
+    def __init__(self, name: str, part: int) -> None:
+        day = 15
+        self.input = inputHelper.load_input_file(day, name)
+
+        lines = inputHelper.load_input_file(day, name+f'-lastturn{part}')
+        self.lastTurn = int(lines[0])
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
+
+
 
 class LastSaid:
-    value: str = ""
-    onTurn: int = 0
-    prevTurn: int = 0
+    value: str
+    onTurn: int
+    prevTurn: int
+
+    def __init__(self) -> None:
+        self.value = ''
+        self.onTurn = 0
+        self.prevTurn = 0
 
 
-def run(title: str, input: List[str], lastTurn: int, correctResult: int):
-    history: Dict[str, int] = {}
-    turn = 0
-    ls = LastSaid()
-    initialSeq = input[0].split(",")
-    for x in initialSeq:
-        turn += 1
-        history[x] = turn
-        ls.value = x
-        ls.onTurn = turn
-    
-    while turn < lastTurn:
-        turn += 1
+
+class Puzzle(PuzzleBase):
+
+    def run_part(self, data: InputData) -> str:
+        history: Dict[str, int] = {}
+        turn = 0
+        ls = LastSaid()
+        initialSeq = data.input[0].split(",")
+        for x in initialSeq:
+            turn += 1
+            history[x] = turn
+            ls.value = x
+            ls.onTurn = turn
         
-        if ls.prevTurn == 0:
-            ls.value = "0"
-            ls.onTurn = turn
-        else:
-            diff = ls.onTurn - ls.prevTurn
-            ls.value = str(diff)
-            ls.onTurn = turn
+        while turn < data.lastTurn:
+            turn += 1
+            
+            if ls.prevTurn == 0:
+                ls.value = "0"
+                ls.onTurn = turn
+            else:
+                diff = ls.onTurn - ls.prevTurn
+                ls.value = str(diff)
+                ls.onTurn = turn
 
-        if ls.value in history:
-            ls.prevTurn = history[ls.value]
-        else:
-            ls.prevTurn = 0
+            if ls.value in history:
+                ls.prevTurn = history[ls.value]
+            else:
+                ls.prevTurn = 0
 
-        history[ls.value] = turn
+            history[ls.value] = turn
 
-    result = int(ls.value)
-    helper.validate_result(title, result, correctResult)
-
-
-def solve():
-    day = 15
-    print(f"Day {day}: Rambunctious Recitation")
-    print("")
-
-    # run("Test Case 1",
-    #     inputHelper.read_input_as_list(day, "example1"),
-    #     10,
-    #     0)
-    run("Part 1)",
-        inputHelper.read_input_as_list(day, "input"),
-        2020,
-        276)
-
-    print("")
-
-    # run("Test Case 1",
-    #     inputHelper.read_input_as_list(day, "example1"),
-    #     30000000,
-    #     175594)
-    run("Part 2)",
-        inputHelper.read_input_as_list(day, "input"),
-        30000000,
-        31916)
+        result = int(ls.value)
+        return helper.validate_result(f'what will be the {data.lastTurn}th number spoken?', result, data.expectedAnswer)
 
 
-if __name__ == "__main__":
-    solve()
+    def solve(self):
+        print("Day 15: Rambunctious Recitation")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part(InputData('input', 2)))
