@@ -1,85 +1,83 @@
-# from typing import AnyStr, Callable
-import sys
 from typing import List, Callable
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
 
 
-def count_unique_answers(lines: List[str]) -> int:
-    answers = []
 
-    for line in lines:
-        for c in line:
-            if answers.count(c) == 0:
-                answers.append(c)
-    
-    return len(answers)
+class InputData:
+    input: List[str] = []
+    expectedAnswer: int = None
 
-
-def count_unique_unanimous_answers(lines: List[str]) -> int:
-    answers = {}
-    pCount = 0
-
-    for line in lines:
-        pCount += 1
-        for c in line:
-            if c in answers:
-                answers[c] = answers[c] + 1
-            else:
-                answers[c] = 1
-
-    result = 0
-    for a in answers:
-        if answers[a] == pCount:
-            result += 1
-    
-    return result
+    def __init__(self, name: str, part: int) -> None:
+        day = 6
+        self.input = inputHelper.load_input_file(day, name)
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
 
 
-def run(title: str, input: List[str], process: Callable[[List[str]], int], correctResult: int):
-    result = 0
-    groupStart = 0
-    groupEnd = 0
-    while groupStart < len(input):
-        try:
-            groupEnd = input.index("", groupStart)
-        except:
-            groupEnd = len(input)
 
-        lines = input[groupStart:groupEnd]
-        result += process(lines)
+class Puzzle(PuzzleBase):
 
-        groupStart = groupEnd + 1
+    def count_unique_answers(self, lines: List[str]) -> int:
+        answers = []
 
-    helper.validate_result(title, result, correctResult)
+        for line in lines:
+            for c in line:
+                if answers.count(c) == 0:
+                    answers.append(c)
+        
+        return len(answers)
 
 
-def solve():
-    print("Day 6: Custom Customs")
-    print("")
+    def count_unique_unanimous_answers(self, lines: List[str]) -> int:
+        answers = {}
+        pCount = 0
 
-    # run("Test Case 1",
-    #     inputHelper.read_input_as_list(6, "example1"),
-    #     count_unique_answers,
-    #     11)
-    run("Part 1)",
-        inputHelper.read_input_as_list(6, "input"),
-        count_unique_answers,
-        6726)
+        for line in lines:
+            pCount += 1
+            for c in line:
+                if c in answers:
+                    answers[c] = answers[c] + 1
+                else:
+                    answers[c] = 1
 
-    print("")
-
-    # run("Test Case 1",
-    #     inputHelper.read_input_as_list(6, "example1"),
-    #     count_unique_unanimous_answers,
-    #     6)
-    run("Part 2)",
-        inputHelper.read_input_as_list(6, "input"),
-        count_unique_unanimous_answers,
-        3316)
+        result = 0
+        for a in answers:
+            if answers[a] == pCount:
+                result += 1
+        
+        return result
 
 
-if __name__ == "__main__":
-    solve()
+    def run_part(self, data: InputData, process: Callable[[List[str]], int]) -> str:
+        result = 0
+        groupStart = 0
+        groupEnd = 0
+        while groupStart < len(data.input):
+            try:
+                groupEnd = data.input.index("", groupStart)
+            except:
+                groupEnd = len(data.input)
+
+            lines = data.input[groupStart:groupEnd]
+            result += process(lines)
+
+            groupStart = groupEnd + 1
+
+        return helper.validate_result2('', result, data.expectedAnswer)
+
+
+    def solve(self):
+        print("Day 6: Custom Customs")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part(InputData('example1', 1), self.count_unique_answers))
+        self.run_problem(lambda: "Part 1) " + self.run_part(InputData('input', 1), self.count_unique_answers))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part(InputData('example1', 2), self.count_unique_unanimous_answers))
+        self.run_problem(lambda: "Part 2) " + self.run_part(InputData('input', 2), self.count_unique_unanimous_answers))
