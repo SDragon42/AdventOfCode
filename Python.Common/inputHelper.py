@@ -1,19 +1,25 @@
 from typing import List
 
 
-def load_input_file(day: int, name: str) -> list[str]:
+def load_file(day: int, name: str) -> str:
     filename = f".\\..\\input\\day{day:02d}\\{name}.txt"
-    with open(filename) as dataFile:
-        return dataFile.read().splitlines()
+    try:
+        with open(filename) as dataFile:
+            return dataFile.read()
+    except OSError:
+        return None
+
+
+def load_input_file(day: int, name: str) -> list[str]:
+    data = load_file(day, name)
+    return data.splitlines() if data is not None else None
 
 
 def load_answer_file(day: int, part: int, name: str) -> list[str]:
-    filename = f".\\..\\input\\day{day:02d}\\{name}-answer{part}.txt"
-    try:
-        with open(filename) as dataFile:
-            return dataFile.read().splitlines()
-    except OSError:
-        return None
+    name = f'{name}-answer{part}'
+    data = load_file(day, name)
+    return data.splitlines() if data is not None else None
+
 
 
 # def generate_filename(day: int, name: str) -> str:
