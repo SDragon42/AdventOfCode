@@ -1,9 +1,31 @@
-import sys
 from typing import List, Dict
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
+
+
+
+class InputData:
+    input: List[str]
+    expectedAnswer: int
+    numDimensions: int
+    numCycles: int
+
+    def __init__(self, name: str, part: int) -> None:
+        day = 17
+        self.input = inputHelper.load_input_file(day, name)
+
+        lines = inputHelper.load_input_file(day, name + f'-dimensions{part}')
+        self.numDimensions = int(lines[0])
+
+        lines = inputHelper.load_input_file(day, name + f'-cycles{part}')
+        self.numCycles = int(lines[0])
+        
+        lines = inputHelper.load_answer_file(day, part, name)
+        self.expectedAnswer = int(lines[0]) if lines is not None else None
+
+
 
 class SpatialAddress:
     coordinates: List[int] = []
@@ -26,7 +48,7 @@ class SpatialAddress:
         newLocation.shift(offset)
         return newLocation
 
-#-------------------------------------------------------------------------------
+
 
 class ConwayCube:
 
@@ -243,52 +265,32 @@ class ConwayCube:
                 result += 1
         return result
 
-#-------------------------------------------------------------------------------
 
 
-def run(title: str, inputList: List[str], numDimensions: int, numCycles: int, correctResult: int):
-    cc = ConwayCube(inputList, numDimensions)
-    # cc.show_cube_space("Before any cycles:")
+class Puzzle(PuzzleBase):
 
-    cycle = 1
-    while cycle <= numCycles:
-        cc.apply_rules()
-        # cc.show_cube_space(f"After {cycle} cycle:")
-        cycle += 1
+    def run_part(self, data: InputData) -> str:
+        cc = ConwayCube(data.input, data.numDimensions)
+        # cc.show_cube_space("Before any cycles:")
 
-    result = cc.get_num_active_cubes()
-    helper.validate_result(title, result, correctResult)
+        cycle = 1
+        while cycle <= data.numCycles:
+            cc.apply_rules()
+            # cc.show_cube_space(f"After {cycle} cycle:")
+            cycle += 1
 
-
-def solve():
-    day = 17
-    print(f"Day {day}: Conway Cubes")
-    print("")
-
-    # run("Test Case 1",
-    #     inputHelper.read_input_as_list(day, "example1"),
-    #     3,
-    #     6,
-    #     112)
-    run("Part 1)",
-        inputHelper.read_input_as_list(day, "input"),
-        3,
-        6,
-        362)
-
-    print("")
-
-    # run("Test Case 1",
-    #     inputHelper.read_input_as_list(day, "example1"),
-    #     4,
-    #     6,
-    #     848)
-    run("Part 2)",
-        inputHelper.read_input_as_list(day, "input"),
-        4,
-        6,
-        1980)
+        result = cc.get_num_active_cubes()
+        return helper.validate_result('', result, data.expectedAnswer)
 
 
-if __name__ == "__main__":
-    solve()
+    def solve(self):
+        print("Day 17: Conway Cubes")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part(InputData('input', 2)))
