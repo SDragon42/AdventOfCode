@@ -10,7 +10,6 @@ class InputData:
     input: List[str]
     expectedAnswer: int
     numDimensions: int
-    numCycles: int
 
     def __init__(self, name: str, part: int) -> None:
         day = 17
@@ -19,9 +18,6 @@ class InputData:
         lines = inputHelper.load_input_file(day, f'dimensions{part}')
         self.numDimensions = int(lines[0])
 
-        lines = inputHelper.load_input_file(day, f'cycles{part}')
-        self.numCycles = int(lines[0])
-        
         lines = inputHelper.load_answer_file(day, part, name)
         self.expectedAnswer = int(lines[0]) if lines is not None else None
 
@@ -160,39 +156,6 @@ class ConwayCube:
         indexes.append(indexes[len(indexes) - 1] + 1)
 
 
-    # def show_cube_space(self, title: str):
-    #     print(title)
-    #     print()
-    #     # zList = self.get_z_range()
-    #     # yList = self.get_y_range()
-    #     # xList = self.get_x_range()
-
-    #     allRanges = []
-    #     i = 0
-    #     while i < self.numDimensions:
-    #         allRanges.append(self.get_range(i))
-    #         i += 1
-
-    #     # yList.reverse()
-    #     allRanges[1].reverse
-
-    #     nonDisplayRanges = allRanges[2:]
-    #     displayRanges = allRanges[:2]
-
-    #     for
-
-    #     for z in zList:
-    #         print(f"z={z}")
-    #         for y in yList:
-    #             line = ""
-    #             for x in xList:
-    #                 addr = SpatialAddress([x, y, z])
-    #                 line += self.get_cube(addr, self.cubeSpace)
-    #             print(line)
-    #         print()
-    #     print()
-
-
     def rule_active_cube(self, addr: SpatialAddress, cubes: Dict[str, str]):
         """
         If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active.
@@ -271,16 +234,14 @@ class Puzzle(PuzzleBase):
 
     def run_part(self, data: InputData) -> str:
         cc = ConwayCube(data.input, data.numDimensions)
-        # cc.show_cube_space("Before any cycles:")
 
         cycle = 1
-        while cycle <= data.numCycles:
+        while cycle <= 6:
             cc.apply_rules()
-            # cc.show_cube_space(f"After {cycle} cycle:")
             cycle += 1
 
         result = cc.get_num_active_cubes()
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result('How many cubes are left in the active state after the sixth cycle?', result, data.expectedAnswer)
 
 
     def solve(self):
