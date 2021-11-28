@@ -1,7 +1,7 @@
 import sys
 from typing import Dict
 
-from puzzleRunner import PuzzleRunner2
+from puzzleRunner import PuzzleRunner
 from puzzleBase import PuzzleBase
 
 import day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, \
@@ -25,7 +25,7 @@ puzzleDict: Dict[int, PuzzleBase] = {
     13: day13.Puzzle,
     14: day14.Puzzle,
     15: day15.Puzzle,
-    # 16: day16.Puzzle,
+    16: day16.Puzzle,
     # 17: day17.Puzzle,
     # 18: day18.Puzzle,
     # 19: day19.Puzzle,
@@ -44,5 +44,5 @@ if __name__ == "__main__":
         'https://adventofcode.com/2020',
         'By: SDragon'
         ]
-    runner = PuzzleRunner2(titles, sys.argv[1:])
+    runner = PuzzleRunner(titles, sys.argv[1:])
     runner.run(puzzleDict)
