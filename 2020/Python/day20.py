@@ -1,15 +1,26 @@
-import sys
 import math
 from typing import Any, List
 
-sys.path.append('../../Python.Common')
 import helper
 import inputHelper
+from puzzleBase import PuzzleBase
 
-# part 2 assistence from:
-# https://nopaste.ml/#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
+
+
+class InputData:
+    input: str
+    expectedAnswer: int
+
+    def __init__(self, name: str, part: int) -> None:
+        day = 20
+        self.input = inputHelper.load_file(day, name)
+        self.expectedAnswer = int(inputHelper.load_file(day, f"{name}-answer{part}"))
+
+
 
 TileGrid = List[List[str]]
+
+
 
 class TileData:
     id: int
@@ -88,192 +99,185 @@ class TileData:
         actionList = ([self.rotate_tile] * 3) + [self.flip_tile] + ([self.rotate_tile] * 4)
         return actionList
 
-#-------------------------------------------------------------------------------
-
-def create_tile(data: str) -> TileData:
-    lines = data.split("\n")
-    tmp = lines[0]
-    id = int(tmp[5:tmp.index(":")])
-    tile = TileData(id, lines[1:])
-    return tile
 
 
-def create_all_tiles(inputData: str) -> List[TileData]:
-    puzzleData = inputData.split("\n\n")
-    tileList = [create_tile(p) for p in puzzleData]
-    return tileList
+# part 2 assistence from:
+# https://nopaste.ml/#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
+class Puzzle(PuzzleBase):
 
-def find_matching_tiles(tileList: List[TileData], edge: str) -> List[TileData]:
-    return [
-        tile
-        for tile in tileList
-        if edge in tile.allPossibleTileSides]
-
-
-def does_edge_match(tileList: List[TileData], edge: str) -> bool:
-    for t in tileList:
-        if edge in t.allPossibleTileSides:
-            return True
-    return False
+    def create_tile(self, data: str) -> TileData:
+        lines = data.split("\n")
+        tmp = lines[0]
+        id = int(tmp[5:tmp.index(":")])
+        tile = TileData(id, lines[1:])
+        return tile
 
 
-def get_open_side_tiles(tileList: List[TileData], numOpenSides: int) -> List[TileData]:
-    openTiles: List[TileData] = []
-    for tile in tileList:
-        otherTiles = tileList.copy()
-        otherTiles.remove(tile)
+    def create_all_tiles(self, inputData: str) -> List[TileData]:
+        puzzleData = inputData.split("\n\n")
+        tileList = [self.create_tile(p) for p in puzzleData]
+        return tileList
 
-        num = 0
-        for edge in tile.tileSides:
-            if not does_edge_match(otherTiles, edge):
-                num += 1
-                continue
-        if num == numOpenSides:
-            openTiles.append(tile)
-    return openTiles
+    def find_matching_tiles(self, tileList: List[TileData], edge: str) -> List[TileData]:
+        return [
+            tile
+            for tile in tileList
+            if edge in tile.allPossibleTileSides]
 
 
-def run_part1(title: str, inputData: str, correctResult: int):
-    tileList = create_all_tiles(inputData)
-    cornerTiles = get_open_side_tiles(tileList, 2)
-    result = 1
-    for corner in cornerTiles:
-        result *= corner.id
-        helper.dprint(f"tile id: {corner.id}")
-    helper.validate_result(title, result, correctResult)
+    def does_edge_match(self, tileList: List[TileData], edge: str) -> bool:
+        for t in tileList:
+            if edge in t.allPossibleTileSides:
+                return True
+        return False
 
 
-def run_part2(title: str, inputData: str, correctResult: int):
-    tileList = create_all_tiles(inputData)
+    def get_open_side_tiles(self, tileList: List[TileData], numOpenSides: int) -> List[TileData]:
+        openTiles: List[TileData] = []
+        for tile in tileList:
+            otherTiles = tileList.copy()
+            otherTiles.remove(tile)
 
-    sideSize = int(math.sqrt(len(tileList)))
+            num = 0
+            for edge in tile.tileSides:
+                if not self.does_edge_match(otherTiles, edge):
+                    num += 1
+                    continue
+            if num == numOpenSides:
+                openTiles.append(tile)
+        return openTiles
 
-    grid: List[List[Any]] = [[None for x in range(sideSize)] for y in range(sideSize)]
 
-    cornerTiles = get_open_side_tiles(tileList, 2)
+    def find_monster(self, image: str, idx: int, monsterIndexes: List[int]) -> bool:
+        result = not any([image[idx + i] == '.' for i in monsterIndexes])
+        return result
 
-    t = cornerTiles[0]
-    grid[0][0] = t
 
-    # starting corner
-    for transformFunc in t.get_rotate_flip_actions():
-        bottomMatches = find_matching_tiles(tileList, t.get_edge_bottom())
-        leftMatches = find_matching_tiles(tileList, t.get_edge_left())
-        if len(bottomMatches) == 1 and len(leftMatches) == 1:
-            break
-        transformFunc()
+    def tag_monster(self, tile: TileData, idx: int, monsterIndexes: List[int]) -> None:
+        helper.dprint("monster found")
+        for i in monsterIndexes:
+            tIdx = idx + i
+            r = (tIdx % tile.tileSize)
+            row = (tIdx - r) // tile.tileSize
+            xidx = tIdx - (row * tile.tileSize)
+            tile.tile[row][xidx] = "O"
 
-    # bottom row
-    for x in range(1, sideSize):
-        edge = grid[0][x-1].get_edge_right()
-        rtList = find_matching_tiles(tileList, edge)
-        rtList.remove(grid[0][x-1])
-        assert(len(rtList) == 1)
-        rt = rtList[0]
-        for transformFunc in rt.get_rotate_flip_actions():
-            if rt.get_edge_left() == edge:
-                grid[0][x] = rt
+
+    def run_part1(self, data: InputData) -> str:
+        tileList = self.create_all_tiles(data.input)
+        cornerTiles = self.get_open_side_tiles(tileList, 2)
+        result = 1
+        for corner in cornerTiles:
+            result *= corner.id
+            helper.dprint(f"tile id: {corner.id}")
+        return helper.validate_result('', result, data.expectedAnswer)
+
+
+    def run_part2(self, data: InputData) -> str:
+        tileList = self.create_all_tiles(data.input)
+
+        sideSize = int(math.sqrt(len(tileList)))
+
+        grid: List[List[TileData]] = [[None for x in range(sideSize)] for y in range(sideSize)]
+
+        cornerTiles = self.get_open_side_tiles(tileList, 2)
+
+        t = cornerTiles[0]
+        grid[0][0] = t
+
+        # starting corner
+        for transformFunc in t.get_rotate_flip_actions():
+            bottomMatches = self.find_matching_tiles(tileList, t.get_edge_bottom())
+            leftMatches = self.find_matching_tiles(tileList, t.get_edge_left())
+            if len(bottomMatches) == 1 and len(leftMatches) == 1:
                 break
             transformFunc()
 
-    # each column
-    for x in range(sideSize):
-        for y in range(1, sideSize):
-            edge = grid[y-1][x].get_edge_top()
-            ntList = find_matching_tiles(tileList, edge)
-            ntList.remove(grid[y-1][x])
-            assert(len(ntList) == 1)
-            nt = ntList[0]
-            for transformFunc in nt.get_rotate_flip_actions():
-                if nt.get_edge_bottom() == edge:
-                    grid[y][x] = nt
+        # bottom row
+        for x in range(1, sideSize):
+            edge = grid[0][x-1].get_edge_right()
+            rtList = self.find_matching_tiles(tileList, edge)
+            rtList.remove(grid[0][x-1])
+            assert(len(rtList) == 1)
+            rt = rtList[0]
+            for transformFunc in rt.get_rotate_flip_actions():
+                if rt.get_edge_left() == edge:
+                    grid[0][x] = rt
                     break
                 transformFunc()
 
-    # remove all edges
-    for y in range(sideSize):
+        # each column
         for x in range(sideSize):
-            grid[y][x].remove_edges()
+            for y in range(1, sideSize):
+                edge = grid[y-1][x].get_edge_top()
+                ntList = self.find_matching_tiles(tileList, edge)
+                ntList.remove(grid[y-1][x])
+                assert(len(ntList) == 1)
+                nt = ntList[0]
+                for transformFunc in nt.get_rotate_flip_actions():
+                    if nt.get_edge_bottom() == edge:
+                        grid[y][x] = nt
+                        break
+                    transformFunc()
 
-    # consolidate image
-    imageList: List[str] = []
+        # remove all edges
+        for y in range(sideSize):
+            for x in range(sideSize):
+                grid[y][x].remove_edges()
 
-    for y in range(sideSize - 1, -1, -1): #top down (each tile)
-        for i in range(grid[0][0].tileSize):
-            lineParts = ["".join(grid[y][x].tile[i]) for x in range(sideSize)]
+        # consolidate image
+        imageList: List[str] = []
 
-            line = "".join(lineParts)
-            imageList.append(line)
+        for y in range(sideSize - 1, -1, -1): #top down (each tile)
+            for i in range(grid[0][0].tileSize):
+                lineParts = ["".join(grid[y][x].tile[i]) for x in range(sideSize)]
 
-    t = TileData(0, imageList)
+                line = "".join(lineParts)
+                imageList.append(line)
 
-    monsterLengh = 20
-    spaces = " "*(t.tileSize - monsterLengh)
-    monsterimage = f"                  # {spaces}#    ##    ##    ###{spaces} #  #  #  #  #  #   "
-    monsterIndexes = [i for i,c in enumerate(monsterimage) if c == '#']
+        t = TileData(0, imageList)
 
-    monstersFound = False
-    for transformFunc in t.get_rotate_flip_actions():
-        image = "".join(["".join(x) for x in t.tile])
-        for row in range(t.tileSize - 2):
-            for i in range(t.tileSize - monsterLengh):
-                start = (row * (t.tileSize)) + i
-                if find_monster(image, start, monsterIndexes):
-                    monstersFound = True
-                    tag_monster(t, start, monsterIndexes)
-        if monstersFound:
-            break
-        transformFunc()
+        monsterLengh = 20
+        spaces = " "*(t.tileSize - monsterLengh)
+        monsterimage = f"                  # {spaces}#    ##    ##    ###{spaces} #  #  #  #  #  #   "
+        monsterIndexes = [i for i,c in enumerate(monsterimage) if c == '#']
 
-    image = "\n".join(["".join(x) for x in t.tile])
-    helper.dprint("--- IMAGE ---")
-    helper.dprint(image)
-    helper.dprint("")
+        monstersFound = False
+        for transformFunc in t.get_rotate_flip_actions():
+            image = "".join(["".join(x) for x in t.tile])
+            for row in range(t.tileSize - 2):
+                for i in range(t.tileSize - monsterLengh):
+                    start = (row * (t.tileSize)) + i
+                    if self.find_monster(image, start, monsterIndexes):
+                        monstersFound = True
+                        self.tag_monster(t, start, monsterIndexes)
+            if monstersFound:
+                break
+            transformFunc()
 
-    result = 0
+        image = "\n".join(["".join(x) for x in t.tile])
+        helper.dprint("--- IMAGE ---")
+        helper.dprint(image)
+        helper.dprint("")
 
-    for row in range(t.tileSize):
-        for x in range(t.tileSize):
-            if t.tile[row][x] == "#":
-                result += 1
+        result = 0
 
-    helper.validate_result(title, result, correctResult)
+        for row in range(t.tileSize):
+            for x in range(t.tileSize):
+                if t.tile[row][x] == "#":
+                    result += 1
 
-def find_monster(image: str, idx: int, monsterIndexes: List[int]) -> bool:
-    result = not any([image[idx + i] == '.' for i in monsterIndexes])
-    return result
-
-def tag_monster(tile: TileData, idx: int, monsterIndexes: List[int]) -> None:
-    helper.dprint("monster found")
-    for i in monsterIndexes:
-        tIdx = idx + i
-        r = (tIdx % tile.tileSize)
-        row = (tIdx - r) // tile.tileSize
-        xidx = tIdx - (row * tile.tileSize)
-        tile.tile[row][xidx] = "O"
-
-
-def solve():
-    day = 20
-    print(f"Day {day}: Jurassic Jigsaw")
-    print("")
-
-    # run_part1("Test Case 1",
-    #     inputHelper.read_input(day, "example1"),
-    #     20899048083289)
-    run_part1("Part 1)",
-        inputHelper.read_input(day, "input"),
-        28057939502729)
-
-    print("")
-
-    # run_part2("Test Case 1",
-    #     inputHelper.read_input(day, "example1"),
-    #     273)
-    run_part2("Part 2)",
-        inputHelper.read_input(day, "input"),
-        2489)
+        return helper.validate_result('', result, data.expectedAnswer)
 
 
-if __name__ == "__main__":
-    solve()
+    def solve(self):
+        print("Day 20: Jurassic Jigsaw")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
