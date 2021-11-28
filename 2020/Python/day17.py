@@ -16,10 +16,10 @@ class InputData:
         day = 17
         self.input = inputHelper.load_input_file(day, name)
 
-        lines = inputHelper.load_input_file(day, name + f'-dimensions{part}')
+        lines = inputHelper.load_input_file(day, f'dimensions{part}')
         self.numDimensions = int(lines[0])
 
-        lines = inputHelper.load_input_file(day, name + f'-cycles{part}')
+        lines = inputHelper.load_input_file(day, f'cycles{part}')
         self.numCycles = int(lines[0])
         
         lines = inputHelper.load_answer_file(day, part, name)
