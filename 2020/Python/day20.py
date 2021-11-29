@@ -17,7 +17,9 @@ class InputData:
     def __init__(self, name: str, part: int) -> None:
         day = 20
         self.input = inputHelper.load_file(day, name)
-        self.expectedAnswer = int(inputHelper.load_file(day, f"{name}-answer{part}"))
+
+        answer = inputHelper.load_file(day, f"{name}-answer{part}")
+        self.expectedAnswer = int(answer) if answer is not None else None
 
 
 

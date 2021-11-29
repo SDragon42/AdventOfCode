@@ -19,8 +19,11 @@ class InputData:
 
         text = inputHelper.load_file(day, name)
         self.input = [int(c) for c in text]
+
         self.numMoves = int(inputHelper.load_file(day, f"{name}-moves{part}"))
-        self.expectedAnswer = int(inputHelper.load_file(day, f"{name}-answer{part}"))
+
+        answer = inputHelper.load_file(day, f"{name}-answer{part}")
+        self.expectedAnswer = int(answer) if answer is not None else None
 
 
 
