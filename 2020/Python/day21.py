@@ -4,7 +4,6 @@ from typing import List, Dict, Set, Tuple
 
 import helper
 import inputHelper
-
 from puzzleBase import PuzzleBase
 
 
