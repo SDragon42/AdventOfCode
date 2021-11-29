@@ -14,10 +14,10 @@ def validate_result(aocQuestion: str, value, correct_value) -> str:
     """
     check = 'WRONG'
     if correct_value is None:
-        check = '???'
+        check = ''
     elif correct_value == value:
         check = 'CORRECT'
-    return f"{aocQuestion}    {value}    {check}"
+    return f"{aocQuestion}    {value}    {check}".rstrip()
 
 
 
