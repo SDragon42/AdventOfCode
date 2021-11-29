@@ -16,5 +16,44 @@
 			"**/bin": true,
 			"**/obj": true
 		}
+	},
+	"extensions": {},
+	"launch": {
+		"configurations": [
+			{
+				"name": "AOC2019",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "build",
+				"program": "${workspaceFolder:FSharp}/bin/Debug/net6.0/AOC2019.exe",
+				"args": ["-be", ""],
+				"cwd": "${workspaceFolder:FSharp}/bin/Debug/net6.0",
+				"stopAtEntry": false,
+				"console": "internalConsole"
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "build",
+				"command": "dotnet",
+				"type": "shell",
+				"args": [
+					"build",
+					// Ask dotnet build to generate full paths for file names.
+					"/property:GenerateFullPaths=true",
+					// Do not generate summary otherwise it leads to duplicate errors in Problems panel
+					"/consoleloggerparameters:NoSummary"
+				],
+				"group": "build",
+				"presentation": {
+					"reveal": "silent"
+				},
+				"problemMatcher": "$msCompile"
+			}
+		]
 	}
 }
