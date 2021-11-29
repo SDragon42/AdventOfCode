@@ -6,8 +6,8 @@ open System
 open System.Linq
 
 
-type private Day01PuzzleInput(input: int[], expectedAnswer: Nullable<int>) = 
-    inherit InputAnswer<int [], Nullable<int>>(input, expectedAnswer)
+type private Day01PuzzleInput(input: int[], expectedAnswer: int option) = 
+    inherit InputAnswer<int [], int option>(input, expectedAnswer)
 
 
 type Day01 (runBenchmarks, runExamples) =
@@ -17,8 +17,16 @@ type Day01 (runBenchmarks, runExamples) =
 
 
     member private this.GetPuzzleInput (part: int, name: string) =
-        let input = InputHelper.LoadInputFile(DAY, name) |> Seq.map int |> Seq.toArray
-        let answer = InputHelper.LoadAnswerFile(DAY, part, name).FirstOrDefault() |> int
+        let input = InputHelper.LoadInputFile(DAY, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toArray
+        
+        let GetAnswer(name: string) =
+            let text = InputHelper.LoadInputFile(DAY, $"%s{name}-answer%i{part}")
+            try
+                text |> int |> Some
+            with
+                | ex -> None
+        let answer = GetAnswer(name)
+        
         new Day01PuzzleInput(input, answer)
 
 
@@ -37,7 +45,7 @@ type Day01 (runBenchmarks, runExamples) =
         //    0
 
 
-    member private this.ShowResult (value: int, expected: Nullable<int>) =
+    member private this.ShowResult (value: int, expected: int option) =
         Helper.GetPuzzleResultText($"Total Fuel needed {value}", value, expected)
 
 
