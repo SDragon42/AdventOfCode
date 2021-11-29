@@ -76,7 +76,7 @@ class Puzzle(PuzzleBase):
 
         result = sum((len(winner) - i) * x for i, x in enumerate(winner))
 
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result("What is the winning player's score?", result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
@@ -84,7 +84,7 @@ class Puzzle(PuzzleBase):
         winner = data.player1Deck or data.player2Deck
         result = sum((len(winner) - i) * x for i, x in enumerate(winner))
         
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result("What is the winning player's score?", result, data.expectedAnswer)
 
 
     def solve(self):
