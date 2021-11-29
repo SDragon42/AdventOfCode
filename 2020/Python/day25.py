@@ -15,7 +15,9 @@ class InputData:
 
         lines = inputHelper.load_file(day, name).splitlines()
         self.input = [int(l) for l in lines]
-        self.expectedAnswer = int(inputHelper.load_file(day, f"{name}-answer{part}"))
+
+        answer = inputHelper.load_file(day, f"{name}-answer{part}")
+        self.expectedAnswer = int(answer) if answer is not None else None
 
 
 

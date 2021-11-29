@@ -13,13 +13,12 @@ class InputData:
 
     def __init__(self, name: str, part: int) -> None:
         day = 17
-        self.input = inputHelper.load_input_file(day, name)
+        self.input = inputHelper.load_file(day, name).splitlines()
 
-        lines = inputHelper.load_input_file(day, f'dimensions{part}')
-        self.numDimensions = int(lines[0])
+        self.numDimensions = int(inputHelper.load_file(day, f'dimensions{part}'))
 
-        lines = inputHelper.load_answer_file(day, part, name)
-        self.expectedAnswer = int(lines[0]) if lines is not None else None
+        answer = inputHelper.load_file(day, f"{name}-answer{part}")
+        self.expectedAnswer = int(answer) if answer is not None else None
 
 
 

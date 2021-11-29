@@ -33,7 +33,8 @@ class InputData:
         self.player1Deck = decks[Const_Player1]
         self.player2Deck = decks[Const_Player2]
 
-        self.expectedAnswer = int(inputHelper.load_file(day, f"{name}-answer{part}"))
+        answer = inputHelper.load_file(day, f"{name}-answer{part}")
+        self.expectedAnswer = int(answer) if answer is not None else None
 
 
 
