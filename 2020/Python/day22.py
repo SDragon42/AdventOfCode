@@ -83,7 +83,7 @@ class Puzzle(PuzzleBase):
         return True
 
 
-    def play_recursive_combat(self, p1Deck: CardList, p2Deck: CardList, history: List[str]) -> tuple[str, CardList]:
+    def play_recursive_combat(self, p1Deck: CardList, p2Deck: CardList, history: List[str]) -> Tuple[str, CardList]:
         game = self.nextGame
         self.nextGame += 1
 
