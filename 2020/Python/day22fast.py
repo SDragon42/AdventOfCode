@@ -1,104 +1,101 @@
-import sys
-from typing import List
-from collections import deque
-
-sys.path.append('../../Python.Common')
-import helper
-import inputHelper
-
 # from: https://github.com/ephemient/aoc2020/blob/main/py/src/aoc2020/day22.py
 
-def parse(lines):
-    it = iter(lines)
-    line = next(it)
-    assert line.rstrip() == 'Player 1:'
-    deck1 = deque()
-    while (line := next(it)).rstrip():
-        deck1.append(int(line))
-    line = next(it)
-    assert line.rstrip() == 'Player 2:'
-    deck2 = deque()
-    while True:
-        try:
-            line = next(it)
-        except StopIteration:
-            break
-        deck2.append(int(line))
-    return deck1, deck2
+from typing import List, Tuple
+from collections import deque
+
+import helper
+import inputHelper
+from puzzleBase import PuzzleBase
 
 
-def part1(title: str, lines: List[str], correctResult: int):#(lines):
-    '''
-    >>> part1(('Player 1:', '9', '2', '6', '3', '1', '',
-    ...        'Player 2:', '5', '8', '4', '7', '10'))
-    306
-    '''
-    deck1, deck2 = parse(lines)
-    while deck1 and deck2:
-        card1 = deck1.popleft()
-        card2 = deck2.popleft()
-        if card1 < card2:
-            deck2.append(card2)
-            deck2.append(card1)
-        else:
-            deck1.append(card1)
-            deck1.append(card2)
-    winner = deck1 or deck2
 
-    result = sum((len(winner) - i) * x for i, x in enumerate(winner))
-    helper.validate_result(title, result, correctResult)
+class InputData:
+    player1Deck: deque
+    player2Deck: deque
+    expectedAnswer: int
 
-
-def part2(title: str, lines: List[str], correctResult: int):#(lines):
-    '''
-    >>> part2(('Player 1:', '9', '2', '6', '3', '1', '',
-    ...        'Player 2:', '5', '8', '4', '7', '10'))
-    291
-    '''
-    deck1, deck2 = parse(lines)
-    go(deck1, deck2)
-    winner = deck1 or deck2
-    result = sum((len(winner) - i) * x for i, x in enumerate(winner))
-    helper.validate_result(title, result, correctResult)
+    def __init__(self, name: str, part: int) -> None:
+        day = 22
+        
+        lines = inputHelper.load_file(day, name).splitlines()
+        it = iter(lines)
+        line = next(it)
+        
+        assert line.rstrip() == 'Player 1:'
+        self.player1Deck = deque()
+        while (line := next(it)).rstrip():
+            self.player1Deck.append(int(line))
+        line = next(it)
+        
+        assert line.rstrip() == 'Player 2:'
+        self.player2Deck = deque()
+        while True:
+            try:
+                line = next(it)
+            except StopIteration:
+                break
+            self.player2Deck.append(int(line))
+        
+        self.expectedAnswer = int(inputHelper.load_file(day, f"{name}-answer{part}"))
 
 
-def go(deck1, deck2):
-    seen = set()
-    while deck1 and deck2:
-        state = tuple(deck1), tuple(deck2)
-        if state in seen:
-            return False
-        seen.add(state)
-        card1 = deck1.popleft()
-        card2 = deck2.popleft()
-        if (go(deque(list(deck1)[:card1]), deque(list(deck2)[:card2]))
-                if card1 <= len(deck1) and card2 <= len(deck2) else
-                card1 < card2):
-            deck2.append(card2)
-            deck2.append(card1)
-        else:
-            deck1.append(card1)
-            deck1.append(card2)
-    return not deck1
+
+class Puzzle(PuzzleBase):
+
+    def go(self, deck1: deque, deck2: deque) -> bool:
+        seen = set()
+        while deck1 and deck2:
+            state = tuple(deck1), tuple(deck2)
+            if state in seen:
+                return False
+            seen.add(state)
+            card1 = deck1.popleft()
+            card2 = deck2.popleft()
+            if (self.go(deque(list(deck1)[:card1]), deque(list(deck2)[:card2]))
+                    if card1 <= len(deck1) and card2 <= len(deck2) else
+                    card1 < card2):
+                deck2.append(card2)
+                deck2.append(card1)
+            else:
+                deck1.append(card1)
+                deck1.append(card2)
+        return not deck1
 
 
-def solve():
-    day = 22
-    print(f"Day {day}: Crab Combat")
-    print("")
+    def run_part1(self, data: InputData) -> str:
+        while data.player1Deck and data.player2Deck:
+            card1 = data.player1Deck.popleft()
+            card2 = data.player2Deck.popleft()
+            if card1 < card2:
+                data.player2Deck.append(card2)
+                data.player2Deck.append(card1)
+            else:
+                data.player1Deck.append(card1)
+                data.player1Deck.append(card2)
+        winner = data.player1Deck or data.player2Deck
 
-    lines = inputHelper.read_input_as_list(day, "input")
+        result = sum((len(winner) - i) * x for i, x in enumerate(winner))
 
-    part1("Part 1)",
-        lines,
-        31314)
-
-    print("")
-
-    part2("Part 2)",
-        lines,
-        32760)
+        return helper.validate_result('', result, data.expectedAnswer)
 
 
-if __name__ == "__main__":
-    solve()
+    def run_part2(self, data: InputData) -> str:
+        self.go(data.player1Deck, data.player2Deck)
+        winner = data.player1Deck or data.player2Deck
+        result = sum((len(winner) - i) * x for i, x in enumerate(winner))
+        
+        return helper.validate_result('', result, data.expectedAnswer)
+
+
+    def solve(self):
+        print("Day 22: Crab Combat")
+        print("")
+
+        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
+        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
+
+        print("")
+
+        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
+        self.run_example(lambda: "P2 Ex2) " + self.run_part2(InputData('example2', 2)))
+        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
