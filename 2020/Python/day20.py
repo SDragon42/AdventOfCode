@@ -171,7 +171,7 @@ class Puzzle(PuzzleBase):
         for corner in cornerTiles:
             result *= corner.id
             helper.dprint(f"tile id: {corner.id}")
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result('What do you get if you multiply together the IDs of the four corner tiles?', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
@@ -268,7 +268,7 @@ class Puzzle(PuzzleBase):
                 if t.tile[row][x] == "#":
                     result += 1
 
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result('How many # are not part of a sea monster?', result, data.expectedAnswer)
 
 
     def solve(self):

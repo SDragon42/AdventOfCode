@@ -119,7 +119,7 @@ class Puzzle(PuzzleBase):
         while game.perform_move():
             pass
         result = game.get_cups_after_1()
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result('What are the labels on the cups after cup 1?', result, data.expectedAnswer)
 
 
     def run_part2(self, data: InputData) -> str:
@@ -132,7 +132,7 @@ class Puzzle(PuzzleBase):
             pass
         values = game.get_cups_after_1b()
         result = values[0] * values[1]
-        return helper.validate_result('', result, data.expectedAnswer)
+        return helper.validate_result('What do you get if you multiply their labels together?', result, data.expectedAnswer)
 
 
     def solve(self):
