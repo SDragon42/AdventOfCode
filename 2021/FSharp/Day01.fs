@@ -30,23 +30,31 @@ type Day01 (runBenchmarks, runExamples) =
         new Day01PuzzleInput(input, answer)
 
 
+    member private this.CheckMeasurement (windowSize: int, last: int, remaining: int[]) =
+        if remaining.Length < windowSize then
+            0
+        else
+            let next = remaining[..windowSize - 1] |> Array.sum
+            let value = if next > last && last > 0 then 1 else 0
+            value + this.CheckMeasurement(windowSize, next, remaining[1..])
+
 
     member private this.RunPart1 (puzzleData: Day01PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText("", result, puzzleData.ExpectedAnswer)
+        let result = this.CheckMeasurement(1, 0, puzzleData.Input)
+        Helper.GetPuzzleResultText("How many measurements are larger than the previous measurement?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: Day01PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText("", result, puzzleData.ExpectedAnswer)
+        let result = this.CheckMeasurement(3, 0, puzzleData.Input)
+        Helper.GetPuzzleResultText("How many sums are larger than the previous sum?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
-        yield "Day 1: "
+        yield "Day 1: Sonar Sweep"
         yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
         yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
 
         yield ""
-        yield this.RunExample(fun _ -> " Ex. 2) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
+        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
         yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
         }

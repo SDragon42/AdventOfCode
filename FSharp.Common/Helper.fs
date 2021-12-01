@@ -24,8 +24,6 @@ module Helper =
         let answerCheckText = 
             match expectedAnswer with
             | None -> String.Empty
-            | _ when foundAnswer.Equals(expectedAnswer.Value) -> "    CORRECT"
-            | _ -> "    WRONG"
-            //| _ when foundAnswer.Equals(Some(expectedAnswer)) = false -> "    WRONG"
-            //| _ -> String.Empty
-        message + answerCheckText
+            | _ when foundAnswer.Equals(expectedAnswer.Value) -> "CORRECT"
+            | _ -> "WRONG"
+        $"{message}    {foundAnswer}    {answerCheckText}".TrimEnd()
