@@ -30,7 +30,7 @@ type PuzzleBase (runBenchmarks:bool, runExamples:bool) =
 
     
 
-    member this.Run (method : unit -> string) =
+    member this.RunProblem (method : unit -> string) =
         if benchmark then
             this.RunWithBenchmarks(method)
         else
@@ -40,7 +40,7 @@ type PuzzleBase (runBenchmarks:bool, runExamples:bool) =
 
     member this.RunExample (method : unit -> string) =
         if (runExamples) then
-            this.Run(method)
+            this.RunProblem(method)
         else
             this.RunDoNothing(method)
             
