@@ -1,0 +1,61 @@
+{
+	"folders": [
+		{
+			"path": "2021\\FSharp"
+		},
+		{
+			"path": "FSharp.Common"
+		},
+		{
+			"path": "2021\\Input"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.vs": true,
+			"**/bin": true,
+			"**/obj": true,
+			"**/.ionide": true,
+			"*.fsproj.user": true
+			// "*.sln": true
+		}
+	},
+	"extensions": {},
+	"launch": {
+		"configurations": [
+			{
+				"name": "AOC2021",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "build",
+				"program": "${workspaceFolder:FSharp}/bin/Debug/net6.0/AOC2021.exe",
+				"args": ["-be", ""],
+				"cwd": "${workspaceFolder:FSharp}/bin/Debug/net6.0",
+				"stopAtEntry": false,
+				"console": "internalConsole"
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "build",
+				"command": "dotnet",
+				"type": "shell",
+				"args": [
+					"build",
+					"${workspaceFolder:FSharp}/Advent Of Code 2021 FS.fsproj",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary"
+				],
+				"group": "build",
+				"presentation": {
+					"reveal": "silent"
+				},
+				"problemMatcher": "$msCompile"
+			}
+		]
+	}
+}
