@@ -46,7 +46,7 @@ type Day01 (runBenchmarks, runExamples) =
 
 
     member private this.ShowResult (value: int, expected: int option) =
-        Helper.GetPuzzleResultText($"Total Fuel needed {value}", value, expected)
+        Helper.GetPuzzleResultText($"What is the sum of the fuel requirements?", value, expected)
 
 
     member private this.RunPart1 (puzzleData: Day01PuzzleInput) =
