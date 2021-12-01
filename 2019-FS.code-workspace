@@ -14,7 +14,10 @@
 		"files.exclude": {
 			"**/.vs": true,
 			"**/bin": true,
-			"**/obj": true
+			"**/obj": true,
+			"**/.ionide": true,
+			"*.fsproj.user": true
+			// "*.sln": true
 		}
 	},
 	"extensions": {},
