@@ -13,14 +13,14 @@ type private Day01PuzzleInput(input: int[], expectedAnswer: int option) =
 type Day01 (runBenchmarks, runExamples) =
     inherit PuzzleBase(runBenchmarks, runExamples)
 
-    let DAY = 1
-
 
     member private this.GetPuzzleInput (part: int, name: string) =
-        let input = InputHelper.LoadInputFile(DAY, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toArray
+        let day = 1
+
+        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toArray
         
         let GetAnswer(name: string) =
-            let text = InputHelper.LoadInputFile(DAY, $"%s{name}-answer%i{part}")
+            let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
             try
                 text |> int |> Some
             with
