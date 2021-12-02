@@ -9,11 +9,12 @@
   <ItemGroup>
     <Compile Include="Day02.fs" />
     <Compile Include="Day01.fs" />
-    <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="..\Input\**\*.*" CopyToOutputDirectory="PreserveNewest" Link="Input\%(RecursiveDir)\%(Filename)%(Extension)" />
+    <Compile Include="template.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
