@@ -8,16 +8,16 @@ open CommandLine
 type PuzzleRunner (titles: string []) =
     let titleLines = titles
 
-    member private this.WriteHeader = 
-        let titleWidth = 
-            titleLines 
-            |> Array.map(fun(t) -> t.Length) 
+    member private this.WriteHeader =
+        let titleWidth =
+            titleLines
+            |> Array.map(fun(t) -> t.Length)
             |> Array.max
-        
+
         let titleBorder = "+-" + String.Empty.PadRight(titleWidth, '-') + "-+"
         printfn "%s" titleBorder
-        titleLines 
-            |> Array.map(fun t -> printfn "%s" $"| {t.PadRight(titleWidth)} |") 
+        titleLines
+            |> Array.map(fun t -> printfn "%s" $"| {t.PadRight(titleWidth)} |")
             |> ignore
         printfn "%s" titleBorder
         printfn ""
@@ -30,16 +30,18 @@ type PuzzleRunner (titles: string []) =
 
 
     member private this.GetPuzzleTypes (options: CmdLineOptions) =
-        let puzzleTypes = Assembly.GetEntryAssembly().GetTypes().Where(fun t -> typeof<PuzzleBase>.IsAssignableFrom(t))
+        let puzzleTypes =
+            Assembly.GetEntryAssembly().GetTypes()
+            |> Seq.where (fun t -> typeof<PuzzleBase>.IsAssignableFrom(t))
+            |> Seq.where (fun t -> t.Name.StartsWith("Day"))
+
         let FindMatches =
             match options with
-            | _ when options.RunAll -> 
+            | _ when options.RunAll ->
                     puzzleTypes
             | _ when options.PuzzleDays.Count() = 0 ->
-                    puzzleTypes.OrderByDescending(fun(t) -> t.Name)
-                        |> Seq.where (fun i -> i.Name.StartsWith("Day"))
-                        |> Seq.take(1)
-            | _ -> 
+                    puzzleTypes.OrderByDescending(fun(t) -> t.Name) |> Seq.take(1)
+            | _ ->
                     let puzzleNames = options.PuzzleDays |> Seq.map(fun i -> $"Day%02i{i}")
                     puzzleTypes.Where(fun t -> puzzleNames.Any(fun n -> t.Name.StartsWith(n)))
 
@@ -62,4 +64,3 @@ type PuzzleRunner (titles: string []) =
         this.WriteHeader
         Parser.Default.ParseArguments<CmdLineOptions>(args).WithParsed(fun o -> this.SolvePuzzles(o))
             |> ignore
-    
