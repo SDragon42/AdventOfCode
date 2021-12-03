@@ -65,50 +65,25 @@ type Day03 (runBenchmarks, runExamples) =
         doIt(value.Length - 1)
 
 
-    member private this.CalculateGammaRate(input: string[]) =
+    member private this.CalcPowerRatingPart(input: string[], func) =
         let count = input[0].Length
         let rec doIt(i: int) =
             if i < 0 then
                 ""
             else
                 let bits = this.GetdigitsAt(i, input)
-                let x = this.MostCommonBit(bits).ToString()
-                doIt(i - 1) + x
-        doIt(count - 1)
-        
-
-    member private this.CalculateEpsilonRate(input: string[]) =
-        let count = input[0].Length
-        let rec doIt(i: int) =
-            if i < 0 then
-                ""
-            else
-                let bits = this.GetdigitsAt(i, input)
-                let x = this.LeastCommonBit(bits).ToString()
+                let x = bits |> func |> string
                 doIt(i - 1) + x
         doIt(count - 1)
 
 
-    member private this.FindO2GeneratorRating(input: string[]) =
+    member private this.FindLifeSupportRatingPart(input: string[], func) =
         let rec doIt(i: int, data: string[]) = 
             if data.Length = 1 then
                 data[0]
             else
                 let bits = this.GetdigitsAt(i, data)
-                let x = this.MostCommonBit(bits)
-
-                let filteredData = data |> Seq.where (fun item -> item[i] = x) |> Seq.toArray
-                doIt(i + 1, filteredData)
-        doIt(0, input)
-
-
-    member private this.FindCO2ScrubberRating(input: string[]) =
-        let rec doIt(i: int, data: string[]) = 
-            if data.Length = 1 then
-                data[0]
-            else
-                let bits = this.GetdigitsAt(i, data)
-                let x = this.LeastCommonBit(bits)
+                let x = bits |> func
 
                 let filteredData = data |> Seq.where (fun item -> item[i] = x) |> Seq.toArray
                 doIt(i + 1, filteredData)
@@ -116,16 +91,16 @@ type Day03 (runBenchmarks, runExamples) =
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let gammaRate = this.CalculateGammaRate(puzzleData.Input) |> this.BinToInt
-        let epsilonRate = this.CalculateEpsilonRate(puzzleData.Input) |> this.BinToInt
+        let gammaRate = this.CalcPowerRatingPart(puzzleData.Input, this.MostCommonBit) |> this.BinToInt
+        let epsilonRate = this.CalcPowerRatingPart(puzzleData.Input, this.LeastCommonBit) |> this.BinToInt
 
         let result = gammaRate * epsilonRate
         Helper.GetPuzzleResultText("What is the power consumption of the submarine?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let o2GeneratorRating = this.FindO2GeneratorRating(puzzleData.Input) |> this.BinToInt
-        let co2ScrubberRating = this.FindCO2ScrubberRating(puzzleData.Input) |> this.BinToInt
+        let o2GeneratorRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.MostCommonBit) |> this.BinToInt
+        let co2ScrubberRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.LeastCommonBit) |> this.BinToInt
 
         let result = o2GeneratorRating * co2ScrubberRating
         Helper.GetPuzzleResultText("What is the life support rating of the submarine?", result, puzzleData.ExpectedAnswer)
