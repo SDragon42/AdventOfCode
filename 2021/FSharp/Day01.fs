@@ -6,8 +6,8 @@ open System
 open System.Linq
 
 
-type private PuzzleInput(input: int[], expectedAnswer: int option) = 
-    inherit InputAnswer<int [], int option>(input, expectedAnswer)
+type private PuzzleInput(input: List<int>, expectedAnswer: int option) =
+    inherit InputAnswer<List<int>, int option>(input, expectedAnswer)
 
 
 type Day01 (runBenchmarks, runExamples) =
@@ -17,8 +17,8 @@ type Day01 (runBenchmarks, runExamples) =
     member private this.GetPuzzleInput (part: int, name: string) =
         let day = 1
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toArray
-        
+        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toList
+
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
             try
@@ -26,26 +26,39 @@ type Day01 (runBenchmarks, runExamples) =
             with
                 | ex -> None
         let answer = GetAnswer(name)
-        
+
         new PuzzleInput(input, answer)
 
 
-    member private this.CheckMeasurement (windowSize: int, last: int, remaining: int[]) =
-        if remaining.Length < windowSize then
-            0
-        else
-            let next = remaining[..windowSize - 1] |> Array.sum
-            let value = if next > last && last > 0 then 1 else 0
-            value + this.CheckMeasurement(windowSize, next, remaining[1..])
+    // member private this.CheckMeasurement (windowSize: int, last: int, remaining: List<int>) =
+    //     if remaining.Length < windowSize then
+    //         0
+    //     else
+    //         let next = remaining[..windowSize - 1] |> List.sum
+    //         let value = if next > last && last > 0 then 1 else 0
+    //         value + this.CheckMeasurement(windowSize, next, remaining[1..])
+
+
+    member private this.CountIncreases (input: List<int>) =
+        input
+            |> List.pairwise
+            |> List.where (fun (a,b) -> a < b)
+            |> List.length
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let result = this.CheckMeasurement(1, 0, puzzleData.Input)
+        // let result = this.CheckMeasurement(1, 0, puzzleData.Input)
+        let result = puzzleData.Input |> this.CountIncreases
         Helper.GetPuzzleResultText("How many measurements are larger than the previous measurement?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = this.CheckMeasurement(3, 0, puzzleData.Input)
+        // let result = this.CheckMeasurement(3, 0, puzzleData.Input)
+        let result =
+            puzzleData.Input
+            |> List.windowed(3)
+            |> List.map (fun t -> t.Sum())
+            |> this.CountIncreases
         Helper.GetPuzzleResultText("How many sums are larger than the previous sum?", result, puzzleData.ExpectedAnswer)
 
 
