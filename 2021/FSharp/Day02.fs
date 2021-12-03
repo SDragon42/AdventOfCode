@@ -12,10 +12,10 @@ type private PilotAction =
     val Amount: int
 
     new(direction, amount) = { Direction = direction; Amount = amount}
-    
 
 
-type private PuzzleInput(input: PilotAction[], expectedAnswer: int option) = 
+
+type private PuzzleInput(input: PilotAction[], expectedAnswer: int option) =
     inherit InputAnswer<PilotAction [], int option>(input, expectedAnswer)
 
 
@@ -31,7 +31,7 @@ type Day02 (runBenchmarks, runExamples) =
             new PilotAction(parts[0], parts[1] |> int)
 
         let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map makePilotAction |> Seq.toArray
-        
+
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
             try
@@ -39,40 +39,70 @@ type Day02 (runBenchmarks, runExamples) =
             with
                 | ex -> None
         let answer = GetAnswer(name)
-        
+
         new PuzzleInput(input, answer)
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let mutable horizontal = 0
-        let mutable depth = 0
+    member private this.CalculateSubPosition_Flawed(input: PilotAction[], (position, depth): int * int) =
+        if (input.Length = 0) then
+            (position, depth)
+        else
+            let next = input[0]
+            let remaining = input[1..]
 
-        for a in puzzleData.Input do
-            match a.Direction with
-            | "forward" -> horizontal <- horizontal + a.Amount
-            | "down" -> depth <- depth + a.Amount
-            | "up" -> depth <- depth - a.Amount
-            | _ -> failwith $"invalid input key {a.Direction} {a.Amount}"
-        
+            let values =
+                match next.Direction with
+                | "forward" -> (
+                    position + next.Amount,
+                    depth)
+                | "down" -> (
+                    position,
+                    depth + next.Amount)
+                | "up" -> (
+                    position,
+                    depth - next.Amount)
+                | _ -> (position, depth)
+
+            this.CalculateSubPosition_Flawed(remaining, values)
+
+
+    member private this.CalculateSubPosition(input: PilotAction[], (position, depth, aim): int * int * int) =
+        if (input.Length = 0) then
+            (position, depth, aim)
+        else
+            let next = input[0]
+            let remaining = input[1..]
+
+            let values =
+                match next.Direction with
+                | "forward" -> (
+                    position + next.Amount,
+                    depth + (aim * next.Amount),
+                    aim)
+                | "down" -> (
+                    position,
+                    depth,
+                    aim + next.Amount)
+                | "up" -> (
+                    position,
+                    depth,
+                    aim - next.Amount)
+                | _ -> (position, depth, aim)
+
+            this.CalculateSubPosition(remaining, values)
+
+
+    member private this.RunPart1 (puzzleData: PuzzleInput) =
+        let horizontal, depth = this.CalculateSubPosition_Flawed(puzzleData.Input, (0, 0))
+
         let result = horizontal * depth
 
         Helper.GetPuzzleResultText("What do you get if you multiply your final horizontal position by your final depth?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let mutable horizontal = 0
-        let mutable depth = 0
-        let mutable aim = 0
+        let horizontal, depth, _ = this.CalculateSubPosition(puzzleData.Input, (0, 0, 0))
 
-        for a in puzzleData.Input do
-            match a.Direction with
-            | "forward" -> 
-                    horizontal <- horizontal + a.Amount
-                    depth <- depth + (aim * a.Amount)
-            | "down" -> aim <- aim + a.Amount
-            | "up" -> aim <- aim - a.Amount
-            | _ -> failwith $"invalid input key {a.Direction} {a.Amount}"
-        
         let result = horizontal * depth
 
         Helper.GetPuzzleResultText("What do you get if you multiply your final horizontal position by your final depth?", result, puzzleData.ExpectedAnswer)
