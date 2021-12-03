@@ -36,7 +36,9 @@ type PuzzleRunner (titles: string []) =
             | _ when options.RunAll -> 
                     puzzleTypes
             | _ when options.PuzzleDays.Count() = 0 ->
-                    puzzleTypes.OrderByDescending(fun(t) -> t.Name).Take(1)
+                    puzzleTypes.OrderByDescending(fun(t) -> t.Name)
+                        |> Seq.where (fun i -> i.Name.StartsWith("Day"))
+                        |> Seq.take(1)
             | _ -> 
                     let puzzleNames = options.PuzzleDays |> Seq.map(fun i -> $"Day%02i{i}")
                     puzzleTypes.Where(fun t -> puzzleNames.Any(fun n -> t.Name.StartsWith(n)))
