@@ -6,7 +6,7 @@ open System
 open System.Linq
 
 
-type private PuzzleInput(input: List<int>, expectedAnswer: int option) =
+type private PuzzleInput(input, expectedAnswer) = 
     inherit InputAnswer<List<int>, int option>(input, expectedAnswer)
 
 
