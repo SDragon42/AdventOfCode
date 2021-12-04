@@ -6,7 +6,7 @@ open System
 open System.Linq
 
 
-type private PuzzleInput(input, expectedAnswer) = 
+type private PuzzleInput(input, expectedAnswer) =
     inherit InputAnswer<List<string>, int option>(input, expectedAnswer)
 
 
@@ -18,7 +18,7 @@ type Template (runBenchmarks, runExamples) =
         let day = 0
 
         let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Array.toList
-        
+
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
             try
@@ -26,11 +26,11 @@ type Template (runBenchmarks, runExamples) =
             with
                 | ex -> None
         let answer = GetAnswer(name)
-        
+
         new PuzzleInput(input, answer)
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =    
+    member private this.RunPart1 (puzzleData: PuzzleInput) =
         let result = 0
         Helper.GetPuzzleResultText("", result, puzzleData.ExpectedAnswer)
 
