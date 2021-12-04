@@ -6,8 +6,8 @@ open System
 open System.Linq
 
 
-type private PuzzleInput(input: string[], expectedAnswer: int option) = 
-    inherit InputAnswer<string [], int option>(input, expectedAnswer)
+type private PuzzleInput(input, expectedAnswer) = 
+    inherit InputAnswer<List<string>, int option>(input, expectedAnswer)
 
 
 type Day03 (runBenchmarks, runExamples) =
@@ -17,7 +17,7 @@ type Day03 (runBenchmarks, runExamples) =
     member private this.GetPuzzleInput (part: int, name: string) =
         let day = 3
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) //|> Seq.map int |> Seq.toArray
+        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Array.toList
         
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
@@ -30,26 +30,26 @@ type Day03 (runBenchmarks, runExamples) =
         new PuzzleInput(input, answer)
 
 
-    member private this.GetdigitsAt(position: int, input: string[]) =
+    member private this.GetdigitsAt(position: int, input: List<string>) =
         let GetDigitAt(value: string) =
             value[position]
-        input |> Array.map GetDigitAt
+        input |> List.map GetDigitAt
 
 
-    member private this.MostCommonBit(bits: char[]) =
+    member private this.MostCommonBit(bits: List<char>) =
         let a = this.CountChars(bits, '0')
         let b = this.CountChars(bits, '1')
         if a = b then '1' elif a < b then '1' else '0'
 
 
-    member private this.LeastCommonBit(bits: char[]) =
+    member private this.LeastCommonBit(bits: List<char>) =
         let a = this.CountChars(bits, '0')
         let b = this.CountChars(bits, '1')
         if a = b then '0' elif a < b then '0' else '1'
 
 
-    member private this.CountChars(bits: char[], value: char) =
-        let result = bits |> Seq.where (fun x -> x = value) |> Seq.toArray
+    member private this.CountChars(bits: List<char>, value: char) =
+        let result = bits |> Seq.where (fun x -> x = value) |> Seq.toList
         result.Length
 
 
@@ -65,7 +65,7 @@ type Day03 (runBenchmarks, runExamples) =
         doIt(value.Length - 1)
 
 
-    member private this.CalcPowerRatingPart(input: string[], func) =
+    member private this.CalcPowerRatingPart(input: List<string>, func) =
         let count = input[0].Length
         let rec doIt(i: int) =
             if i < 0 then
@@ -77,15 +77,15 @@ type Day03 (runBenchmarks, runExamples) =
         doIt(count - 1)
 
 
-    member private this.FindLifeSupportRatingPart(input: string[], func) =
-        let rec doIt(i: int, data: string[]) = 
+    member private this.FindLifeSupportRatingPart(input: List<string>, func) =
+        let rec doIt(i: int, data: List<string>) = 
             if data.Length = 1 then
                 data[0]
             else
                 let bits = this.GetdigitsAt(i, data)
                 let x = bits |> func
 
-                let filteredData = data |> Seq.where (fun item -> item[i] = x) |> Seq.toArray
+                let filteredData = data |> Seq.where (fun item -> item[i] = x) |> Seq.toList
                 doIt(i + 1, filteredData)
         doIt(0, input)
 

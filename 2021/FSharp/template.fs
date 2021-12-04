@@ -6,8 +6,8 @@ open System
 open System.Linq
 
 
-type private PuzzleInput(input: string[], expectedAnswer: int option) = 
-    inherit InputAnswer<string [], int option>(input, expectedAnswer)
+type private PuzzleInput(input, expectedAnswer) = 
+    inherit InputAnswer<List<string>, int option>(input, expectedAnswer)
 
 
 type Template (runBenchmarks, runExamples) =
@@ -17,7 +17,7 @@ type Template (runBenchmarks, runExamples) =
     member private this.GetPuzzleInput (part: int, name: string) =
         let day = 0
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) //|> Seq.map int |> Seq.toArray
+        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Array.toList
         
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
@@ -32,7 +32,6 @@ type Template (runBenchmarks, runExamples) =
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =    
         let result = 0
-        //puzzleData.Input |> Array.map Console.WriteLine |> ignore
         Helper.GetPuzzleResultText("", result, puzzleData.ExpectedAnswer)
 
 

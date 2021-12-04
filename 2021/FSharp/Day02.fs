@@ -15,8 +15,8 @@ type private PilotAction =
 
 
 
-type private PuzzleInput(input: PilotAction[], expectedAnswer: int option) =
-    inherit InputAnswer<PilotAction [], int option>(input, expectedAnswer)
+type private PuzzleInput(input, expectedAnswer) =
+    inherit InputAnswer<List<PilotAction>, int option>(input, expectedAnswer)
 
 
 
@@ -30,7 +30,7 @@ type Day02 (runBenchmarks, runExamples) =
             let parts = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             new PilotAction(parts[0], parts[1] |> int)
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map makePilotAction |> Seq.toArray
+        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map makePilotAction |> Seq.toList
 
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
@@ -43,7 +43,7 @@ type Day02 (runBenchmarks, runExamples) =
         new PuzzleInput(input, answer)
 
 
-    member private this.CalculateSubPosition_Flawed(input: PilotAction[], (position, depth): int * int) =
+    member private this.CalculateSubPosition_Flawed(input: List<PilotAction>, (position, depth): int * int) =
         if (input.Length = 0) then
             (position, depth)
         else
@@ -66,7 +66,7 @@ type Day02 (runBenchmarks, runExamples) =
             this.CalculateSubPosition_Flawed(remaining, values)
 
 
-    member private this.CalculateSubPosition(input: PilotAction[], (position, depth, aim): int * int * int) =
+    member private this.CalculateSubPosition(input: List<PilotAction>, (position, depth, aim): int * int * int) =
         if (input.Length = 0) then
             (position, depth, aim)
         else
