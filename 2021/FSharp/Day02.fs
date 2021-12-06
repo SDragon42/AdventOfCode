@@ -1,10 +1,7 @@
 ﻿module Day02
 
 open FSharp.Common
-open Microsoft.FSharp.Linq
 open System
-open System.Linq
-
 
 
 type private PilotAction =
@@ -30,13 +27,14 @@ type Day02 (runBenchmarks, runExamples) =
             let parts = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             new PilotAction(parts[0], parts[1] |> int)
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map makePilotAction |> Seq.toList
+        let input = 
+            InputHelper.LoadLines(day, name)
+            |> Seq.map makePilotAction
+            |> Seq.toList
 
-        let GetAnswer(name: string) =
-            let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
-            try text |> int |> Some
-            with | ex -> None
-        let answer = GetAnswer(name)
+        let answer = 
+            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
 
         new PuzzleInput(input, answer)
 

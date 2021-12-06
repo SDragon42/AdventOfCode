@@ -1,9 +1,7 @@
 ﻿module Day01
 
 open FSharp.Common
-open Microsoft.FSharp.Linq
 open System
-open System.Linq
 
 
 type private PuzzleInput(input, expectedAnswer) = 
@@ -17,14 +15,15 @@ type Day01 (runBenchmarks, runExamples) =
     member private this.GetPuzzleInput (part: int, name: string) =
         let day = 1
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toList
+        let input = 
+            InputHelper.LoadLines(day, name)
+            |> Seq.map int
+            |> Seq.toList
 
-        let GetAnswer(name: string) =
-            let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
-            try text |> int |> Some
-            with | ex -> None
-        let answer = GetAnswer(name)
-
+        let answer = 
+            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
+        
         new PuzzleInput(input, answer)
 
 
@@ -55,7 +54,7 @@ type Day01 (runBenchmarks, runExamples) =
         let result =
             puzzleData.Input
             |> List.windowed(3)
-            |> List.map (fun t -> t.Sum())
+            |> List.map (fun t -> t |> List.sum)
             |> this.CountIncreases
         Helper.GetPuzzleResultText("How many sums are larger than the previous sum?", result, puzzleData.ExpectedAnswer)
 

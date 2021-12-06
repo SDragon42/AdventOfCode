@@ -1,9 +1,6 @@
 ﻿module Day06
 
 open FSharp.Common
-open Microsoft.FSharp.Linq
-open System
-open System.Linq
 
 
 type private PuzzleInput(input, expectedAnswer) =
@@ -17,13 +14,14 @@ type Day06 (runBenchmarks, runExamples) =
     member private this.GetPuzzleInput (part: int, name: string) =
         let day = 6
 
-        let input = InputHelper.LoadInputFile(day, name).Split(',') |> Array.toList |> List.map int
+        let input =
+            InputHelper.LoadText(day, name).Split(',')
+            |> Array.toList
+            |> List.map int
 
-        let GetAnswer(name: string) =
-            let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
-            try text |> uint64 |> Some
-            with | ex -> None
-        let answer = GetAnswer(name)
+        let answer = 
+            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsUInt64
 
         new PuzzleInput(input, answer)
 
