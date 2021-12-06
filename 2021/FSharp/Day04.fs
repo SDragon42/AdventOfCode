@@ -6,11 +6,11 @@ open System
 open System.Linq
 
 
-type BingoBoard (data: List<string>) =
+type BingoBoard (data: string list) =
     [<Literal>]
     let MARK = "X"
 
-    let mutable boardData: List<string> = data
+    let mutable boardData: string list = data
 
     let mutable excluded: bool = false
 
@@ -24,12 +24,12 @@ type BingoBoard (data: List<string>) =
         excluded
 
     member this.CheckIfWon() =
-        let GetdigitsAt(position: int, theRows: List<List<string>>) =
-            let GetDigitAt(value: List<string>) =
+        let GetdigitsAt(position: int, theRows: string list list) =
+            let GetDigitAt(value: string list) =
                 value[position]
             theRows |> List.map GetDigitAt
 
-        let HasLineWon(line: List<string>) =
+        let HasLineWon(line: string list) =
             line |> List.forall (fun v -> v = MARK)
 
         let size = Math.Sqrt(boardData.Length) |> int
@@ -44,8 +44,8 @@ type BingoBoard (data: List<string>) =
                 
 
 
-type private PuzzleInput(input, expectedAnswer, boards: List<BingoBoard>) = 
-    inherit InputAnswer<List<string>, int option>(input, expectedAnswer)
+type private PuzzleInput(input, expectedAnswer, boards: BingoBoard list) = 
+    inherit InputAnswer<string list, int option>(input, expectedAnswer)
 
     member this.Boards = boards
 
@@ -78,7 +78,7 @@ type Day04 (runBenchmarks, runExamples) =
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let rec Play(numberDraw: string, remaining: List<string>) =
+        let rec Play(numberDraw: string, remaining: string list) =
             puzzleData.Boards |> List.map (fun b -> b.MarkTile(numberDraw)) |> ignore
 
             let winningBoards =
@@ -96,7 +96,7 @@ type Day04 (runBenchmarks, runExamples) =
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let rec Play(numberDraw: string, remaining: List<string>) =
+        let rec Play(numberDraw: string, remaining: string list) =
             let numWonBoards = 
                 puzzleData.Boards 
                 |> List.where (fun b -> b.IsExcluded())

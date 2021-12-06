@@ -1,6 +1,5 @@
 ﻿namespace FSharp.Common
 
-open System.Collections.Generic
 open CommandLine
 
 type CmdLineOptions() =
@@ -19,4 +18,4 @@ type CmdLineOptions() =
 
     [<Value(0)>]
     //member this.PuzzleDays: IEnumerable<int> = null
-    member val PuzzleDays: IEnumerable<int> = null with get, set
+    member val PuzzleDays: int seq = null with get, set

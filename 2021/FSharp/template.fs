@@ -7,7 +7,7 @@ open System.Linq
 
 
 type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<List<string>, int option>(input, expectedAnswer)
+    inherit InputAnswer<string list, int option>(input, expectedAnswer)
 
 
 type Template (runBenchmarks, runExamples) =
