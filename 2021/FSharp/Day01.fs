@@ -7,7 +7,7 @@ open System.Linq
 
 
 type private PuzzleInput(input, expectedAnswer) = 
-    inherit InputAnswer<List<int>, int option>(input, expectedAnswer)
+    inherit InputAnswer<int list, int option>(input, expectedAnswer)
 
 
 type Day01 (runBenchmarks, runExamples) =
@@ -28,7 +28,7 @@ type Day01 (runBenchmarks, runExamples) =
         new PuzzleInput(input, answer)
 
 
-    // member private this.CheckMeasurement (windowSize: int, last: int, remaining: List<int>) =
+    // member private this.CheckMeasurement (windowSize: int, last: int, remaining: int list) =
     //     if remaining.Length < windowSize then
     //         0
     //     else
@@ -37,7 +37,7 @@ type Day01 (runBenchmarks, runExamples) =
     //         value + this.CheckMeasurement(windowSize, next, remaining[1..])
 
 
-    member private this.CountIncreases (input: List<int>) =
+    member private this.CountIncreases (input: int list) =
         input
             |> List.pairwise
             |> List.where (fun (a,b) -> a < b)

@@ -16,7 +16,7 @@ type private PilotAction =
 
 
 type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<List<PilotAction>, int option>(input, expectedAnswer)
+    inherit InputAnswer<PilotAction list, int option>(input, expectedAnswer)
 
 
 
@@ -41,7 +41,7 @@ type Day02 (runBenchmarks, runExamples) =
         new PuzzleInput(input, answer)
 
 
-    member private this.CalculateSubPosition_Flawed(input: List<PilotAction>, (position, depth): int * int) =
+    member private this.CalculateSubPosition_Flawed(input: PilotAction list, (position, depth): int * int) =
         if (input.Length = 0) then
             (position, depth)
         else
@@ -64,7 +64,7 @@ type Day02 (runBenchmarks, runExamples) =
             this.CalculateSubPosition_Flawed(remaining, values)
 
 
-    member private this.CalculateSubPosition(input: List<PilotAction>, (position, depth, aim): int * int * int) =
+    member private this.CalculateSubPosition(input: PilotAction list, (position, depth, aim): int * int * int) =
         if (input.Length = 0) then
             (position, depth, aim)
         else

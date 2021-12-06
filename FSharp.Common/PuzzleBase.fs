@@ -1,10 +1,6 @@
 ﻿namespace FSharp.Common
 
-open System
-open System.Collections.Generic
 open System.Diagnostics
-open System.Linq
-open System.Reflection
 
 [<AbstractClass>]
 type PuzzleBase (runBenchmarks:bool, runExamples:bool) =
@@ -60,4 +56,4 @@ type PuzzleBase (runBenchmarks:bool, runExamples:bool) =
             this.RunDoNothing(method)
             
 
-    abstract member SolvePuzzle: _ -> IEnumerable<String>
+    abstract member SolvePuzzle: _ -> string seq
