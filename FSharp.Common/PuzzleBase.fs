@@ -22,7 +22,22 @@ type PuzzleBase (runBenchmarks:bool, runExamples:bool) =
         benchmark.Start()
         let text = method()
         benchmark.Stop()
-        text + $" - {benchmark.ElapsedMilliseconds} ms"
+
+        let rec GetTime(time:double, units: string) =
+            match units with
+            | "ms" ->
+                    if time < 1000
+                    then $"%.0f{time}", units
+                    else GetTime(time / 1000.0, "sec")
+            | "sec" ->
+                    if time < 60
+                    then $"%.1f{time}", units
+                    else GetTime(time / 60.0, "min  :(")
+            | _ ->
+                    $"%.1f{time}", units
+
+        let time, units = GetTime(benchmark.ElapsedMilliseconds |> double, "ms")
+        text + $"   {time} {units}"
 
 
     member this.RunDoNothing (method : unit -> string) =
