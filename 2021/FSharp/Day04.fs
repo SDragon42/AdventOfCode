@@ -1,9 +1,7 @@
 ﻿module Day04
 
 open FSharp.Common
-open Microsoft.FSharp.Linq
 open System
-open System.Linq
 
 
 type BingoBoard (data: string list) =
@@ -58,23 +56,25 @@ type Day04 (runBenchmarks, runExamples) =
     member private this.GetPuzzleInput (part: int, name: string) =
         let day = 4
 
-        let input = InputHelper.LoadInputFile(day, name).Split(Environment.NewLine+Environment.NewLine) |> Array.toList
+        let tempInput =
+            InputHelper.LoadText(day, name).Split(Environment.NewLine+Environment.NewLine)
+            |> Array.toList
 
-        let numberDraw = input[0].Split(',') |> Seq.toList //|> List.map int
+        let input =
+            tempInput[0].Split(',')
+            |> Seq.toList
 
-        let splitValue = [Environment.NewLine; " "] |> List.toArray
+        let splitValue = [|Environment.NewLine; " "|]
         let boardsData = 
-            input[1..]
+            tempInput[1..]
             |> List.map (fun b -> b.Split(splitValue, StringSplitOptions.RemoveEmptyEntries) |> Array.toList)
             |> List.map (fun b -> new BingoBoard(b))
 
-        let GetAnswer(name: string) =
-            let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
-            try text |> int |> Some
-            with | ex -> None
-        let answer = GetAnswer(name)
+        let answer = 
+            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
         
-        new PuzzleInput(numberDraw, answer, boardsData)
+        new PuzzleInput(input, answer, boardsData)
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
