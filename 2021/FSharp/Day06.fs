@@ -21,10 +21,8 @@ type Day06 (runBenchmarks, runExamples) =
 
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
-            try
-                text |> uint64 |> Some
-            with
-                | ex -> None
+            try text |> uint64 |> Some
+            with | ex -> None
         let answer = GetAnswer(name)
 
         new PuzzleInput(input, answer)
@@ -35,38 +33,49 @@ type Day06 (runBenchmarks, runExamples) =
 
 
     member private this.SumInitialFishGroups (fishGroup: int * int list) =
-        let fish, fishList = fishGroup
-        fish, fishList.Length |> uint64
+        let group, fishList = fishGroup
+        group, fishList.Length |> uint64
+
 
     member private this.DecrementFishSpawningTimer (fishGroup: int * uint64) =
-        let group, number = fishGroup
+        let group, count = fishGroup
         if (group > 0)
-            then group - 1, number
-            else this.FishSpawnTimer, number
+            then group - 1, count
+            else this.FishSpawnTimer, count
+
 
     member private this.IsSpawningFishGroup (fishGroup: int * uint64) =
         let group, _ = fishGroup
         group = 0
 
+
     member private this.NewSpawningFishGroup (fishGroup: int * uint64) =
         let _, number = fishGroup
         this.NewFishSpawnTimer, number
+
 
     member private this.GetFishGroup (fishGroup: int * uint64) =
         let group, _ = fishGroup
         group
 
-    member private this.SumFishGroups (fishGroup: int * (int * uint64) list) =
-        let getFishNum (f: int * uint64) =
-            let _, numFish = f
-            numFish
 
+    member private this.GetFishCount (fishGroup: int * uint64) =
+        let _, count = fishGroup
+        count
+
+
+    member private this.SumFishGroups (fishGroup: int * (int * uint64) list) =
         let group, oldGroupList = fishGroup
         let count = 
             oldGroupList 
-            |> List.map getFishNum
+            |> List.map this.GetFishCount
             |> List.sum
         group, count
+
+
+    member private this.GetTotals (fishGroup: int * uint64) =
+        let _, number = fishGroup
+        number
 
 
     member private this.RunSimulation(input: int list, maxNumDays: int) =
@@ -96,12 +105,7 @@ type Day06 (runBenchmarks, runExamples) =
                 DoIt (day + 1, newLanternFish)
         
         let lanternFish = DoIt(0, newPuzzleData)
-
-        let GetTotals (fishGroup: int * uint64) =
-            let _, number = fishGroup
-            number
-            
-        lanternFish |> List.map GetTotals |> List.sum
+        lanternFish |> List.map this.GetTotals |> List.sum
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
