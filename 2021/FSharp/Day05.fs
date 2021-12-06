@@ -22,10 +22,8 @@ type Day05 (runBenchmarks, runExamples) =
 
         let GetAnswer(name: string) =
             let text = InputHelper.LoadInputFile(day, $"%s{name}-answer%i{part}")
-            try
-                text |> int |> Some
-            with
-                | ex -> None
+            try text |> int |> Some
+            with | ex -> None
         let answer = GetAnswer(name)
 
         new PuzzleInput(input, answer)
