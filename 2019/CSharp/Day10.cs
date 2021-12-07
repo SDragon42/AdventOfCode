@@ -19,11 +19,11 @@ class Day10 : PuzzleBase
         yield return RunExample(Example4);
         yield return RunExample(Example5);
         var baseLocation = default(Point);
-        yield return Run(() => Part1(out baseLocation));
+        yield return RunProblem(() => Part1(out baseLocation));
 
         yield return string.Empty;
         yield return RunExample(Example5P2);
-        yield return Run(() => Part2(baseLocation));
+        yield return RunProblem(() => Part2(baseLocation));
     }
 
     string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"), out _);

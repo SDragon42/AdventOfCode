@@ -13,10 +13,10 @@ class Day15 : PuzzleBase
         yield return "Day 15: Oxygen System";
 
         yield return string.Empty;
-        yield return Run(Part1);
+        yield return RunProblem(Part1);
 
         yield return string.Empty;
-        yield return Run(Part2);
+        yield return RunProblem(Part2);
     }
 
     string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
