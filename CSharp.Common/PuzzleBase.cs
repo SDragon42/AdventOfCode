@@ -4,17 +4,17 @@ public abstract class PuzzleBase
 {
     public PuzzleBase()
     {
-        Run = RunWithoutBenchmarks;
+        RunProblem = RunWithoutBenchmarks;
         RunExample = Run_DoNothing;
     }
 
     public void SetOptions(bool benchmarks, bool examples)
     {
         if (benchmarks)
-            Run = RunWithBenchmarks;
+            RunProblem = RunWithBenchmarks;
 
         if (examples)
-            RunExample = Run;
+            RunExample = RunProblem;
     }
 
 
@@ -36,7 +36,7 @@ public abstract class PuzzleBase
     }
     private string Run_DoNothing(Func<string> method) => null;
 
-    protected Func<Func<string>, string> Run = (f) => null;
+    protected Func<Func<string>, string> RunProblem = (f) => null;
     protected Func<Func<string>, string> RunExample = (f) => null;
 
 }

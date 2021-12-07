@@ -14,11 +14,11 @@ class Day06 : PuzzleBase
 
         yield return string.Empty;
         yield return RunExample(Example1);
-        yield return Run(Part1);
+        yield return RunProblem(Part1);
 
         yield return string.Empty;
         yield return RunExample(Example2);
-        yield return Run(Part2);
+        yield return RunProblem(Part2);
     }
 
     string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
