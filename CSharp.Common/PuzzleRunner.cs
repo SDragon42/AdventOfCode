@@ -51,7 +51,8 @@ public class PuzzleRunner
     {
         var puzzleTypes = Assembly.GetEntryAssembly()
             .GetTypes()
-            .Where(t => typeof(PuzzleBase).IsAssignableFrom(t));
+            .Where(t => typeof(PuzzleBase).IsAssignableFrom(t))
+            .Where(t => t.Name.StartsWith("Day"));
 
         // All puzzles?
         if (options.RunAll)
