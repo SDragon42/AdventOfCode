@@ -44,9 +44,8 @@ type Day07 (runBenchmarks, runExamples) =
     
     member private this.CalcMeans (data: int list) =
         let sum = data |> List.sum
-        let mean1 = sum / data.Length
-        let mean2 = float(sum) / float(data.Length) |> Math.Round |> int
-        [mean1..mean2]
+        let mean = sum / data.Length
+        [mean - 1; mean; mean + 1]
 
     
     member private this.CalcFuel1(position: int, target: int) =
