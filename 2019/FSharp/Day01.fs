@@ -6,26 +6,24 @@ open System
 open System.Linq
 
 
-type private Day01PuzzleInput(input: int[], expectedAnswer: int option) = 
-    inherit InputAnswer<int [], int option>(input, expectedAnswer)
+type private Day01PuzzleInput(input, expectedAnswer) = 
+    inherit InputAnswer<int list, int option>(input, expectedAnswer)
 
 
 type Day01 (runBenchmarks, runExamples) =
     inherit PuzzleBase(runBenchmarks, runExamples)
 
-    let DAY = 1
-
 
     member private this.GetPuzzleInput (part: int, name: string) =
-        let input = InputHelper.LoadInputFile(DAY, name).Split(Environment.NewLine) |> Seq.map int |> Seq.toArray
+        let day = 1
+        let input = 
+            InputHelper.LoadLines(day, name)
+            |> Seq.map int
+            |> Seq.toList
         
-        let GetAnswer(name: string) =
-            let text = InputHelper.LoadInputFile(DAY, $"%s{name}-answer%i{part}")
-            try
-                text |> int |> Some
-            with
-                | ex -> None
-        let answer = GetAnswer(name)
+        let answer =
+            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
         
         new Day01PuzzleInput(input, answer)
 
@@ -35,7 +33,7 @@ type Day01 (runBenchmarks, runExamples) =
 
 
     member private this.CalcFuelCorrectly mass : int =
-        let fuelMass = (mass / 3) - 2
+        let fuelMass = this.CalcFuel(mass)
         match fuelMass with
         | _ when fuelMass > 0 -> fuelMass + this.CalcFuelCorrectly(fuelMass)
         | _ -> 0
@@ -45,18 +43,14 @@ type Day01 (runBenchmarks, runExamples) =
         //    0
 
 
-    member private this.ShowResult (value: int, expected: int option) =
-        Helper.GetPuzzleResultText($"What is the sum of the fuel requirements?", value, expected)
-
-
     member private this.RunPart1 (puzzleData: Day01PuzzleInput) =
-        let totalFuel = puzzleData.Input |> Array.sumBy this.CalcFuel
-        this.ShowResult(totalFuel, puzzleData.ExpectedAnswer)
+        let totalFuel = puzzleData.Input |> List.sumBy this.CalcFuel
+        Helper.GetPuzzleResultText($"What is the sum of the fuel requirements?", totalFuel, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: Day01PuzzleInput) =
-        let totalFuel = puzzleData.Input |> Array.sumBy this.CalcFuelCorrectly
-        this.ShowResult(totalFuel, puzzleData.ExpectedAnswer)
+        let totalFuel = puzzleData.Input |> List.sumBy this.CalcFuelCorrectly
+        Helper.GetPuzzleResultText($"What is the sum of the fuel requirements?", totalFuel, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
