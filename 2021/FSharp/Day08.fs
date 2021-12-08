@@ -78,9 +78,11 @@ type Day08 (runBenchmarks, runExamples) =
     override this.SolvePuzzle _ = seq {
         yield "Day 8: Seven Segment Search"
         yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
+        yield this.RunExample(fun _ -> " Ex. 2) " + this.RunPart1(this.GetPuzzleInput(1, "example2")))
         yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
 
-        //yield ""
-        //yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
+        yield ""
+        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
+        //yield this.RunExample(fun _ -> " Ex. 2) " + this.RunPart2(this.GetPuzzleInput(2, "example2")))
         //yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
         }
