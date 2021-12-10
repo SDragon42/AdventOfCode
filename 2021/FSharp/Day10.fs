@@ -4,12 +4,12 @@ open FSharp.Common
 open System
 
 
-type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<string list, int64 option>(input, expectedAnswer)
+type private PuzzleInput (input, expectedAnswer) =
+    inherit InputAnswer<string list, int64 option> (input, expectedAnswer)
 
 
 type Day10 (runBenchmarks, runExamples) =
-    inherit PuzzleBase(runBenchmarks, runExamples)
+    inherit PuzzleBase (runBenchmarks, runExamples)
 
     [<DefaultValue>]
     val mutable TagStack: char list
@@ -19,17 +19,17 @@ type Day10 (runBenchmarks, runExamples) =
         let day = 10
 
         let input =
-            InputHelper.LoadLines(day, name)
+            InputHelper.LoadLines (day, name)
             |> Seq.toList
 
         let answer = 
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt64
 
-        new PuzzleInput(input, answer)
+        new PuzzleInput (input, answer)
 
 
-    member private this.IsOpener(value: char) =
+    member private this.IsOpener (value: char) =
         match value with
         | '(' -> true
         | '[' -> true
@@ -38,7 +38,7 @@ type Day10 (runBenchmarks, runExamples) =
         | _ -> false
 
     
-    member private this.GetClosingTag(opening: char) =
+    member private this.GetClosingTag (opening: char) =
         match opening with
         | '(' -> ')'
         | '[' -> ']'
@@ -47,12 +47,12 @@ type Day10 (runBenchmarks, runExamples) =
         | _ -> ' '
 
 
-    member private this.IsCloserFor(last: char, next: char) =
-        let expectedNext = this.GetClosingTag(last)
+    member private this.IsCloserFor (last: char, next: char) =
+        let expectedNext = this.GetClosingTag last
         next = expectedNext
 
 
-    member private this.FindSyntaxError(line: char list) =
+    member private this.FindSyntaxError (line: char list) =
         if line.Length = 0 then
             // Incomplete line
             this.TagStack <- [] // clear the stack
@@ -78,7 +78,7 @@ type Day10 (runBenchmarks, runExamples) =
                     string next
 
 
-    member private this.CompleteLine(line: char list) =
+    member private this.CompleteLine (line: char list) =
         if line.Length = 0 then
             // Incomplete line
             let result = this.TagStack
@@ -123,11 +123,11 @@ type Day10 (runBenchmarks, runExamples) =
         | _ -> 0L
 
 
-    member private this.CalcSyntaxCompletionScore(codes: char list, currentScore: int64) =
+    member private this.CalcSyntaxCompletionScore (codes: char list, currentScore: int64) =
         if codes.Length = 0 then
             currentScore
         else
-            let value = this.GetClosingTag(codes[0])
+            let value = this.GetClosingTag codes[0]
             let score = (currentScore * 5L) + (this.SyntaxCompletionScore value)
             this.CalcSyntaxCompletionScore (codes[1..], score)
 
@@ -145,7 +145,7 @@ type Day10 (runBenchmarks, runExamples) =
             syntaxErrors
             |> List.map this.SyntaxErrorScore
             |> List.sum
-        Helper.GetPuzzleResultText("What is the total syntax error score for those errors?", result, puzzleData.ExpectedAnswer)
+        Helper.GetPuzzleResultText ("What is the total syntax error score for those errors?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
@@ -163,15 +163,15 @@ type Day10 (runBenchmarks, runExamples) =
         let idx = result.Length / 2
 
         let result = result[idx]
-        Helper.GetPuzzleResultText("What is the middle score?", result, puzzleData.ExpectedAnswer)
+        Helper.GetPuzzleResultText ("What is the middle score?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
         yield "Day 10: Syntax Scoring"
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
-        yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
-
-        yield ""
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
-        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput (1, "example1") ) )
+        yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput (1, "input") ) )
+                                                                                        
+        yield ""                                                                        
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput (2, "example1") ) )
+        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
         }
