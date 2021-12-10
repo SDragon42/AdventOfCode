@@ -22,7 +22,7 @@ type Day10 (runBenchmarks, runExamples) =
             InputHelper.LoadLines (day, name)
             |> Seq.toList
 
-        let answer = 
+        let answer =
             InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt64
 
@@ -37,7 +37,7 @@ type Day10 (runBenchmarks, runExamples) =
         | '<' -> true
         | _ -> false
 
-    
+
     member private this.GetClosingTag (opening: char) =
         match opening with
         | '(' -> ')'
@@ -170,8 +170,8 @@ type Day10 (runBenchmarks, runExamples) =
         yield "Day 10: Syntax Scoring"
         yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput (1, "example1") ) )
         yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput (1, "input") ) )
-                                                                                        
-        yield ""                                                                        
+
+        yield ""
         yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput (2, "example1") ) )
         yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
         }
