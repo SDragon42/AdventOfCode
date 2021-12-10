@@ -5,7 +5,7 @@ open System
 
 
 type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<string list, int option>(input, expectedAnswer)
+    inherit InputAnswer<string list, int64 option>(input, expectedAnswer)
 
 
 type Day10 (runBenchmarks, runExamples) =
@@ -24,7 +24,7 @@ type Day10 (runBenchmarks, runExamples) =
 
         let answer = 
             InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
-            |> InputHelper.AsInt
+            |> InputHelper.AsInt64
 
         new PuzzleInput(input, answer)
 
@@ -54,6 +54,8 @@ type Day10 (runBenchmarks, runExamples) =
 
     member private this.FindSyntaxError(line: char list) =
         if line.Length = 0 then
+            // Incomplete line
+            this.TagStack <- [] // clear the stack
             ""
         else
             let next = line[0]
@@ -71,16 +73,63 @@ type Day10 (runBenchmarks, runExamples) =
                     this.TagStack <- [next] @ this.TagStack // PUSH
                     this.FindSyntaxError remaining
                 else
+                    // Syntax Error line
+                    this.TagStack <- [] // clear the stack
                     string next
 
 
-    member private this.TotalSyntaxErrorScore (data: char) =
+    member private this.CompleteLine(line: char list) =
+        if line.Length = 0 then
+            // Incomplete line
+            let result = this.TagStack
+            this.TagStack <- [] // clear the stack
+            result
+        else
+            let next = line[0]
+            let remaining = line[1..]
+
+            if this.TagStack.Length = 0 then
+                this.TagStack <- [next]
+                this.CompleteLine remaining
+            else
+                let last = this.TagStack[0]
+                if this.IsCloserFor (last, next) then
+                    this.TagStack <- this.TagStack[1..] // POP
+                    this.CompleteLine remaining
+                elif this.IsOpener next then
+                    this.TagStack <- [next] @ this.TagStack // PUSH
+                    this.CompleteLine remaining
+                else
+                    // Syntax Error line
+                    this.TagStack <- [] // clear the stack
+                    []
+
+
+    member private this.SyntaxErrorScore (data: char) =
         match data with
-        | ')' -> 3
-        | ']' -> 57
-        | '}' -> 1197
-        | '>' -> 25137
-        | _ -> 0
+        | ')' -> 3L
+        | ']' -> 57L
+        | '}' -> 1197L
+        | '>' -> 25137L
+        | _ -> 0L
+
+
+    member private this.SyntaxCompletionScore (data: char) =
+        match data with
+        | ')' -> 1L
+        | ']' -> 2L
+        | '}' -> 3L
+        | '>' -> 4L
+        | _ -> 0L
+
+
+    member private this.CalcSyntaxCompletionScore(codes: char list, currentScore: int64) =
+        if codes.Length = 0 then
+            currentScore
+        else
+            let value = this.GetClosingTag(codes[0])
+            let score = (currentScore * 5L) + (this.SyntaxCompletionScore value)
+            this.CalcSyntaxCompletionScore (codes[1..], score)
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
@@ -94,14 +143,27 @@ type Day10 (runBenchmarks, runExamples) =
 
         let result =
             syntaxErrors
-            |> List.map this.TotalSyntaxErrorScore
+            |> List.map this.SyntaxErrorScore
             |> List.sum
         Helper.GetPuzzleResultText("What is the total syntax error score for those errors?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText("", result, puzzleData.ExpectedAnswer)
+        this.TagStack <- []
+        let incompleteLines =
+            puzzleData.Input
+            |> List.map (fun l -> this.CompleteLine (l |> Seq.toList))
+            |> List.where (fun l -> l.Length > 0)
+
+        let result =
+            incompleteLines
+            |> List.map (fun l -> this.CalcSyntaxCompletionScore (l, 0L))
+            |> List.sort
+
+        let idx = result.Length / 2
+
+        let result = result[idx]
+        Helper.GetPuzzleResultText("What is the middle score?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
@@ -110,6 +172,6 @@ type Day10 (runBenchmarks, runExamples) =
         yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
 
         yield ""
-        //yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
-        //yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
+        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
+        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
         }
