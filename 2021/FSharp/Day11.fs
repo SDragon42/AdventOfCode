@@ -147,8 +147,65 @@ type Day11 (runBenchmarks, runExamples) =
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText ("", result, puzzleData.ExpectedAnswer)
+        let stepsList = [1..100]
+        let mutable grid = puzzleData.Input
+
+        //this.ShowGrid("Initial", grid, puzzleData.xMax, puzzleData.yMax)
+
+
+        let rec DoFlashPowerUp () =
+            //grid <- grid |> List.map this.SuperSaiyan
+
+            //let any10s = grid |> List.where (fun v -> v = 10) |> List.length // DEBUGGING
+
+            let flashedIndexs =
+                grid |> List.mapi (fun i v -> (i, v))
+                |> List.where (fun (_, v) -> v = 10)
+                |> List.map (fun (i, _) -> GridHelper.GetAdjacentIndexes(i, puzzleData.xMax, grid.Length, GridHelper.Offsets8))
+                |> List.concat
+                |> List.sort
+                |> List.groupBy (fun k -> k)
+                |> List.map (fun (i, l) -> (i, l.Length))
+                //|> List.distinct
+
+            let FlashedPowerUp (idx: int, value: int) =
+                //let isFlashIdx = flashedIndexs |> List.contains idx
+                let flashAmmount =
+                    flashedIndexs |> List.where (fun (i, v) -> i = idx)
+                    |> List.map (fun (i, v) -> v)
+                    |> List.sum
+
+                if flashAmmount = 0 then
+                    value
+                else
+                    this.PowerUp (value, flashAmmount)
+
+            grid <- grid |> List.map this.SuperSaiyan
+            grid <- grid |> List.mapi (fun i v -> FlashedPowerUp(i, v))
+            
+            //flashedIndexs
+
+            let any2Flash = grid |> List.exists (fun v -> v = 10)
+
+            if any2Flash
+                then DoFlashPowerUp()
+                else ignore
+
+
+        let rec DoIt (step: int) =
+            grid <- grid |> List.map (fun v -> this.PowerUp(v, 1))
+            DoFlashPowerUp() |> ignore
+            grid <- grid |> List.map this.FlashBurnout
+
+            let allFlashed = grid |> List.forall (fun v -> v = 0)
+            if allFlashed = false
+                then DoIt(step + 1)
+                else step
+
+
+        let result = DoIt(1)
+
+        Helper.GetPuzzleResultText ("What is the first step during which all octopuses flash?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
@@ -158,6 +215,6 @@ type Day11 (runBenchmarks, runExamples) =
         yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput (1, "input") ) )
 
         yield ""
-        //yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput (2, "example1") ) )
-        //yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput (2, "example1") ) )
+        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
         }
