@@ -11,3 +11,19 @@ module Helper =
             | _ when foundAnswer.Equals(expectedAnswer.Value) -> "CORRECT"
             | _ -> "WRONG"
         $"{message}    {foundAnswer}    {answerCheckText}".TrimEnd()
+
+
+    let IsUpper (str : string) =
+        let rec strIter isUpper arr =
+            match arr with
+            | [] -> isUpper
+            | _ -> 
+                match Char.IsLower(arr.Head) with
+                | true -> false //strIter false []
+                | false -> strIter true arr.Tail
+
+        strIter true (Array.toList <| str.ToCharArray())
+
+
+    let IsLower (str : string) =
+        not <| IsUpper(str)
