@@ -31,10 +31,6 @@ type Day12 (runBenchmarks, runExamples) =
         new PuzzleInput (input, answer)
 
 
-    //member private this.IsUpper(value: string) =
-    //    value = value.ToUpper()
-
-
     member private this.BuildMap (input: (string * string) list) =
         let reversedInput = input |> List.map (fun (a, b) -> b, a)
         let fullInput = input @ reversedInput
@@ -64,25 +60,63 @@ type Day12 (runBenchmarks, runExamples) =
 
             let largeCaves = allOptions |> List.where Helper.IsUpper
             let smallCaves = allOptions |> List.where Helper.IsLower |> List.except thePath
-            let viablePaths = largeCaves @ smallCaves
-            let aa =
-                viablePaths
+
+            largeCaves @ smallCaves
                 |> List.map (fun p -> this.FindPaths(map, thePath, p))
                 |> List.concat
-            aa
+
+
+    member private this.VisitedSmallCaveTwice (thePath: string list) =
+        let CountVisits (cave: string) =
+            thePath
+                |> List.where (fun v -> v = cave)
+                |> List.length
+
+        let sc =
+            thePath
+            |> List.where Helper.IsLower
+            |> List.except ["start"]
+            |> List.distinct
+            |> List.map CountVisits
+            |> List.distinct |> List.sum
+        (sc > 1)
+
+
+    member private this.FindPaths2 (map: (string * string list) list, thePath: string list, position: string) =
+        let thePath = thePath @ [position]
+
+        if position = "end" then
+            [thePath]
+        else
+            let _, allOptions = 
+                map
+                |> List.where (fun (k,_) -> k = position)
+                |> List.exactlyOne
+
+            let largeCaves = allOptions |> List.where Helper.IsUpper
+            let smallCaves = 
+                if this.VisitedSmallCaveTwice(thePath)
+                    then allOptions |> List.where Helper.IsLower |> List.except thePath
+                    else allOptions |> List.where Helper.IsLower
+
+            largeCaves @ smallCaves
+                |> List.except ["start"]
+                |> List.map (fun p -> this.FindPaths2(map, thePath, p))
+                |> List.concat
+
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
         let map = this.BuildMap(puzzleData.Input)
-
         let foundPaths = this.FindPaths(map, [], "start")
-        
         let result = foundPaths.Length
         Helper.GetPuzzleResultText ("How many paths are there that visit small caves at most once?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText ("", result, puzzleData.ExpectedAnswer)
+        let map = this.BuildMap(puzzleData.Input)
+        let foundPaths = this.FindPaths2(map, [], "start")
+        let result = foundPaths.Length
+        Helper.GetPuzzleResultText ("How many paths through this cave system are there?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
@@ -94,5 +128,7 @@ type Day12 (runBenchmarks, runExamples) =
 
         yield ""
         yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput (2, "example1") ) )
-        //yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
+        yield this.RunExample (fun _ -> " Ex. 2) " + this.RunPart2 (this.GetPuzzleInput (2, "example2") ) )
+        yield this.RunExample (fun _ -> " Ex. 3) " + this.RunPart2 (this.GetPuzzleInput (2, "example3") ) )
+        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
         }
