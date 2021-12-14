@@ -12,7 +12,7 @@ type Template (runBenchmarks, runExamples) =
     inherit PuzzleBase (runBenchmarks, runExamples)
 
 
-    member private this.GetPuzzleInput (part: int, name: string) =
+    member private this.GetPuzzleInput (part:int) (name: string) =
         let day = 0
 
         let input =
@@ -38,10 +38,10 @@ type Template (runBenchmarks, runExamples) =
 
     override this.SolvePuzzle _ = seq {
         yield "TITLE"
-        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput (1, "example1") ) )
-        yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput (1, "input") ) )
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example1") )
+        yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
 
         yield ""
-        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput (2, "example1") ) )
-        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput (2, "input") ) )
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput 2 "example1") )
+        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
         }
