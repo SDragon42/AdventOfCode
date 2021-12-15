@@ -7,19 +7,19 @@ class Day17 : PuzzleBase
 {
     const int DAY = 17;
 
+    readonly bool DISPLAY = false;
 
     public override IEnumerable<string> SolvePuzzle()
     {
         yield return "Day 17: Set and Forget";
         yield return string.Empty;
 
-        yield return RunExample(() => " Ex. 1) " + RunPart1Example(GetMapData(1, "example1")));
+        yield return RunExample(() => " Ex. 1) " + RunPart1Example(GetMapDataFromInput(1, "example1")));
         yield return RunProblem(() => "Part 1) " + RunPart1(GetPuzzleData(1, "input")));
 
-        //yield return string.Empty;
+        yield return string.Empty;
 
-        //yield return RunExample(() => " Ex. 1) " + RunPart1(GetPuzzleData(2, "example1")));
-        //yield return RunProblem(() => "Part 2) " + RunPart1(GetPuzzleData(2, "input")));
+        yield return RunProblem(() => "Part 2) " + RunPart2(GetPuzzleData(2, "input")));
     }
 
 
@@ -33,7 +33,7 @@ class Day17 : PuzzleBase
         };
         return result;
     }
-    public (List<List<char>>, long?) GetMapData(int part, string name)
+    public (List<List<char>>, long?) GetMapDataFromInput(int part, string name)
     {
         var map = new List<List<char>>();
         var lines = InputHelper.LoadInputFile(DAY, name);
@@ -50,12 +50,60 @@ class Day17 : PuzzleBase
     }
 
 
+    void Add2Map(long value, List<List<char>> map)
+    {
+        switch (value)
+        {
+            case Code_NewLine:
+                map.Add(new List<char>());
+                break;
+            default:
+                var c = Convert.ToChar(value);
+                var line = GetLastLine();
+                line.Add(c);
+                break;
+        }
+
+        List<char> GetLastLine()
+        {
+            var line = map.LastOrDefault();
+            if (line == null)
+            {
+                line = new List<char>();
+                map.Add(line);
+            }
+            return line;
+        }
+    }
+
+    void ShowOutput(long value)
+    {
+        if (!DISPLAY)
+            return;
+        switch (value)
+        {
+            case Code_NewLine:
+                Console.WriteLine();
+                break;
+            default:
+                var c = Convert.ToChar(value);
+                Console.Write(c);
+                Console.Write(' ');
+                break;
+        }
+    }
+
     string RunPart1(InputAnswer puzzleData)
     {
-        var map = GetMapData(puzzleData.Code);
-        //ShowMap(map);
+        var map = new List<List<char>>();
+
+        var bot = new IntCode(puzzleData.Code);
+        bot.Output += (s, e) => Add2Map(e.OutputValue, map);
+        bot.Output += (s, e) => ShowOutput(e.OutputValue);
+        bot.Run();
+
         var intersections = MarkIntersections(map);
-        
+
         var answer = intersections
             .Select(p => p.X * p.Y)
             .Sum();
@@ -65,7 +113,6 @@ class Day17 : PuzzleBase
     {
         var intersections = MarkIntersections(data.Map);
 
-        //ShowMap(data.Map);
         var answer = intersections
                 .Select(p => p.X * p.Y)
                 .Sum();
@@ -75,49 +122,60 @@ class Day17 : PuzzleBase
 
     string RunPart2(InputAnswer puzzleData)
     {
-        var answer = 0;
-        return Helper.GetPuzzleResultText($": {answer}", answer, puzzleData.ExpectedAnswer);
+        var answer = 0L;
+        var map = new List<List<char>>();
+
+        var bot = new IntCode(puzzleData.Code);
+        bot.Output += (s, e) =>
+        {
+            if (e.OutputValue < 256)
+                ShowOutput(e.OutputValue);
+            else
+                answer = e.OutputValue;
+        };
+        bot.Poke(0, 2); // Wake up bot
+
+        var movementCode =
+            "A,A,B,C,A,C,B,C,A,B\n" +
+            "L,4,L,10,L,6\n" +
+            "L,6,L,4,R,8,R,8\n" +
+            "L,6,R,8,L,10,L,8,L,8\n" +
+            "n\n";
+        var input = movementCode.ToCharArray()
+            .Select(x => (long)(int)x)
+            .ToArray();
+
+        bot.AddInput(input);
+        bot.Run();
+
+
+        return Helper.GetPuzzleResultText($"How much dust does the vacuum robot report it has collected? {answer}", answer, puzzleData.ExpectedAnswer);
     }
 
 
 
-    //const long Code_Scaffolding = 35;
     const char Char_Scaffolding = '#';
-    const char Char_Space = '.';
     const char Char_Intersection = 'O';
-    const char Char_Unknown = '?';
 
-    const char Char_BotDirU = '^';
-    const char Char_BotDirR = '>';
-    const char Char_BotDirD = 'V';
-    const char Char_BotDirL = '<';
-
-    private char GetTileData(long value) => value switch
-    {
-        35 => Char_Scaffolding,
-        46 => Char_Space,
-        //10 => "\n",
-        _ => Char_Unknown
-        //_ => throw new ApplicationException("Unrecognized value")
-    };
+    const long Code_NewLine = 10;
 
     private List<List<char>> GetMapData(IList<long> code)
     {
-        List<char> line = new List<char>();
+        var line = new List<char>();
         var map = new List<List<char>>();
 
-        var ascii = new IntCode(code);
-        ascii.Output += (s, e) => Add2Map(e.OutputValue);
-
-        ascii.Run();
+        var bot = new IntCode(code);
+        bot.Output += (s, e) => Add2Map(e.OutputValue);
+        bot.Run();
 
         return map;
 
-        void Add2Map(long numValue)
+        void Add2Map(long value)
         {
-            if (numValue != 10)
+            if (value != Code_NewLine)
             {
-                line.Add(GetTileData(numValue));
+                var c = Convert.ToChar(value);
+                line.Add(c);
                 return;
             }
             if (line.Count > 0)
@@ -172,9 +230,9 @@ class Day17 : PuzzleBase
         {
             var loc = location;
             loc.Offset(shift);
-            if (loc.X < 0 || loc.X >= map[0].Count)
-                return false;
             if (loc.Y < 0 || loc.Y >= map.Count)
+                return false;
+            if (loc.X < 0 || loc.X >= map[loc.Y].Count)
                 return false;
             var tile = map[loc.Y][loc.X];
             var result = (tile == Char_Scaffolding || tile == Char_Intersection);
