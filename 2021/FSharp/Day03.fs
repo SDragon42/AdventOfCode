@@ -49,18 +49,6 @@ type Day03 (runBenchmarks, runExamples) =
         result.Length
 
 
-    member private this.BinToInt(value: string) =
-        let rec doIt(i: int) =
-            if i < 0 then
-                0
-            else
-                let x = value[i].ToString() |> int
-                let power = (value.Length - 1) - i
-                let x2 = if x = 0 then 0 else pown 2 power
-                x2 + doIt(i - 1)
-        doIt(value.Length - 1)
-
-
     member private this.CalcPowerRatingPart(input: string list, func) =
         let count = input[0].Length
         let rec doIt(i: int) =
@@ -87,16 +75,16 @@ type Day03 (runBenchmarks, runExamples) =
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let gammaRate = this.CalcPowerRatingPart(puzzleData.Input, this.MostCommonBit) |> this.BinToInt
-        let epsilonRate = this.CalcPowerRatingPart(puzzleData.Input, this.LeastCommonBit) |> this.BinToInt
+        let gammaRate = this.CalcPowerRatingPart(puzzleData.Input, this.MostCommonBit) |> Helper.BinaryStringToInt
+        let epsilonRate = this.CalcPowerRatingPart(puzzleData.Input, this.LeastCommonBit) |> Helper.BinaryStringToInt
 
         let result = gammaRate * epsilonRate
         Helper.GetPuzzleResultText("What is the power consumption of the submarine?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let o2GeneratorRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.MostCommonBit) |> this.BinToInt
-        let co2ScrubberRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.LeastCommonBit) |> this.BinToInt
+        let o2GeneratorRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.MostCommonBit) |> Helper.BinaryStringToInt
+        let co2ScrubberRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.LeastCommonBit) |> Helper.BinaryStringToInt
 
         let result = o2GeneratorRating * co2ScrubberRating
         Helper.GetPuzzleResultText("What is the life support rating of the submarine?", result, puzzleData.ExpectedAnswer)
