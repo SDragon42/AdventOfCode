@@ -2,8 +2,8 @@
 
 open FSharp.Common
 open System
-
-
+// Understanding Dijkstra's Algorithm
+// http://blog.aos.sh/2018/02/24/understanding-dijkstras-algorithm/
 
 type private PuzzleInput (input, xMax: int, yMax: int, expectedAnswer) =
     inherit InputAnswer<int list, int option> (input, expectedAnswer)
