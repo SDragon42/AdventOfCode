@@ -4,7 +4,7 @@ open System
 
 module Helper =
 
-    let GetPuzzleResultText (message: string, foundAnswer, expectedAnswer) =
+    let GetPuzzleResultText (message:string, foundAnswer, expectedAnswer) =
         let answerCheckText = 
             match expectedAnswer with
             | None -> String.Empty
@@ -13,17 +13,17 @@ module Helper =
         $"{message}    {foundAnswer}    {answerCheckText}".TrimEnd()
 
 
-    let IsUpper (str : string) =
-        let rec strIter isUpper arr =
-            match arr with
-            | [] -> isUpper
-            | _ -> 
-                match Char.IsLower(arr.Head) with
-                | true -> false //strIter false []
-                | false -> strIter true arr.Tail
-
-        strIter true (Array.toList <| str.ToCharArray())
+    let IsLower (value:string) =
+        value |> Seq.forall (fun c -> Char.IsLower c)
 
 
-    let IsLower (str : string) =
-        not <| IsUpper(str)
+    let IsUpper = IsLower >> not
+
+
+    let BinaryStringToInt value =
+        Convert.ToInt32 (value, 2)
+
+
+    let BinaryStringToInt64 value =
+        Convert.ToInt64 (value, 2)
+
