@@ -118,15 +118,11 @@ type Day16 (runBenchmarks, runExamples) =
                 [packet], inputRemainder
 
         match packet.TypeId with
-        | 4 ->
-            // literal packet
+        | 4 -> // literal packet
             let literalValue, inputRemainder = this.GetPacketValue String.Empty inputRemainder
-            
             packet.Value <- literalValue
             HandleRemainingInput inputRemainder
-
-        | _ ->
-            // Process sub packets
+        | _ -> // Process sub packets
             let lengthTypeId, lengthValue, inputRemainder = this.GetPacketLength inputRemainder
             let packetLengthInfo =
                 match lengthTypeId with
@@ -159,18 +155,25 @@ type Day16 (runBenchmarks, runExamples) =
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
         let result = 0
-        Helper.GetPuzzleResultText ("", result, puzzleData.ExpectedAnswer)
+        Helper.GetPuzzleResultText ("What do you get if you evaluate the BITS transmission?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
         yield "Day 16: Packet Decoder"
-        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example1") )
-        yield this.RunExample (fun _ -> " Ex. 2) " + this.RunPart1 (this.GetPuzzleInput 1 "example2") )
-        yield this.RunExample (fun _ -> " Ex. 3) " + this.RunPart1 (this.GetPuzzleInput 1 "example3") )
-        yield this.RunExample (fun _ -> " Ex. 4) " + this.RunPart1 (this.GetPuzzleInput 1 "example4") )
-        yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
+        //yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example01") )
+        //yield this.RunExample (fun _ -> " Ex. 2) " + this.RunPart1 (this.GetPuzzleInput 1 "example02") )
+        //yield this.RunExample (fun _ -> " Ex. 3) " + this.RunPart1 (this.GetPuzzleInput 1 "example03") )
+        //yield this.RunExample (fun _ -> " Ex. 4) " + this.RunPart1 (this.GetPuzzleInput 1 "example04") )
+        //yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
 
-        //yield ""
-        //yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput 2 "example1") )
+        yield ""
+        yield this.RunExample (fun _ -> " Ex. 5) " + this.RunPart2 (this.GetPuzzleInput 2 "example05") )
+        //yield this.RunExample (fun _ -> " Ex. 6) " + this.RunPart2 (this.GetPuzzleInput 2 "example06") )
+        //yield this.RunExample (fun _ -> " Ex. 7) " + this.RunPart2 (this.GetPuzzleInput 2 "example07") )
+        //yield this.RunExample (fun _ -> " Ex. 8) " + this.RunPart2 (this.GetPuzzleInput 2 "example08") )
+        //yield this.RunExample (fun _ -> " Ex. 9) " + this.RunPart2 (this.GetPuzzleInput 2 "example09") )
+        //yield this.RunExample (fun _ -> " Ex.10) " + this.RunPart2 (this.GetPuzzleInput 2 "example10") )
+        //yield this.RunExample (fun _ -> " Ex.11) " + this.RunPart2 (this.GetPuzzleInput 2 "example11") )
+        //yield this.RunExample (fun _ -> " Ex.12) " + this.RunPart2 (this.GetPuzzleInput 2 "example12") )
         //yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
         }
