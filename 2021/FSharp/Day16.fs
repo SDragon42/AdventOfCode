@@ -134,46 +134,128 @@ type Day16 (runBenchmarks, runExamples) =
             HandleRemainingInput inputRemainder
 
 
+    member private this.DecodeTransmition (input:string) =
+        //let binInput = puzzleData.Input |> this.HexStringToBinaryString
+        //let packets, _ = this.ParseToPackets binInput (1, 0)
+        //let rootPacket = packets |> List.exactlyOne
+        let rootPacket =
+            input |> this.HexStringToBinaryString
+            |> this.ParseToPackets <| (1, 0)
+            |> (fun (pl, _) -> pl)
+            |> List.exactlyOne
+        rootPacket
+
+
     member private this.SumPacketVersions (packet:Packet) =
         let sumSubVersions = packet.SubPackets |> List.map this.SumPacketVersions |> List.sum
         packet.Version + sumSubVersions
 
 
+    member private this.SumPackets (packet:Packet) =
+        packet.SubPackets
+            |> List.map this.EvaluateTransmission
+            |> List.sum
+
+
+    member private this.MultiplayPackets (packet:Packet) =
+        packet.SubPackets
+            |> List.map this.EvaluateTransmission
+            |> List.fold (*) 1L
+
+
+    member private this.MinimumPackets (packet:Packet) =
+        packet.SubPackets
+            |> List.map this.EvaluateTransmission
+            |> List.min
+
+
+    member private this.MaximumPackets (packet:Packet) =
+        packet.SubPackets
+            |> List.map this.EvaluateTransmission
+            |> List.max
+
+
+    member private this.GreaterThanPackets (packet:Packet) =
+        let p0 = this.EvaluateTransmission packet.SubPackets[0]
+        let p1 = this.EvaluateTransmission packet.SubPackets[1]
+        p0 > p1 |> Convert.ToInt64
+
+
+    member private this.LessThanPackets (packet:Packet) =
+        let p0 = this.EvaluateTransmission packet.SubPackets[0]
+        let p1 = this.EvaluateTransmission packet.SubPackets[1]
+        p0 < p1 |> Convert.ToInt64
+
+
+    member private this.EqualPackets (packet:Packet) =
+        let p0 = this.EvaluateTransmission packet.SubPackets[0]
+        let p1 = this.EvaluateTransmission packet.SubPackets[1]
+        p0 = p1 |> Convert.ToInt64
+
+
+    member private this.EvaluateTransmission (packet:Packet) =
+        match packet.TypeId with
+        | 0 -> this.SumPackets packet
+        | 1 -> this.MultiplayPackets packet
+        | 2 -> this.MinimumPackets packet
+        | 3 -> this.MaximumPackets packet
+        | 4 -> packet.Value
+        | 5 -> this.GreaterThanPackets packet
+        | 6 -> this.LessThanPackets packet
+        | 7 -> this.EqualPackets packet
+        | _ -> failwith $"Invalid Type ID (%i{packet.TypeId})"
+
+
+    member private this.DisplayTransmition (packet:Packet) =
+        let rec DoIt (p:Packet) (indent:string) =
+            let value = this.EvaluateTransmission p
+            let op =
+                match p.TypeId with
+                | 0 -> "(+)"
+                | 1 -> "(*)"
+                | 2 -> "MIN"
+                | 3 -> "MAX"
+                | 4 -> "VAL"
+                | 5 -> "(>)"
+                | 6 -> "(<)"
+                | 7 -> "(=)"
+                | _ -> ""
+                + $"  =  {value}"
+            let subs = p.SubPackets |> List.map (fun z -> DoIt z ("  " + indent)) |> List.concat
+            [indent + op] @ subs
+
+        let lines = DoIt packet ""
+        printfn "%s" <| String.Join("\r\n", lines)
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let binInput = puzzleData.Input |> this.HexStringToBinaryString
-        //let binInput = "D2FE28" |> this.HexStringToBinaryString
-        //let binInput = "38006F45291200" |> this.HexStringToBinaryString
-        //let binInput = "EE00D40C823060" |> this.HexStringToBinaryString
-        let packets, remainingInput = this.ParseToPackets binInput (1, 0)
-        let rootPacket = packets |> List.exactlyOne
-
-        //let result = Helper.BinaryStringToInt "110"
+        let rootPacket = this.DecodeTransmition puzzleData.Input
         let result = this.SumPacketVersions rootPacket |> int64
         Helper.GetPuzzleResultText ("What do you get if you add up the version numbers in all packets?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = 0
+        let rootPacket = this.DecodeTransmition puzzleData.Input
+        //this.DisplayTransmition rootPacket
+        let result = this.EvaluateTransmission rootPacket
         Helper.GetPuzzleResultText ("What do you get if you evaluate the BITS transmission?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
         yield "Day 16: Packet Decoder"
-        //yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example01") )
-        //yield this.RunExample (fun _ -> " Ex. 2) " + this.RunPart1 (this.GetPuzzleInput 1 "example02") )
-        //yield this.RunExample (fun _ -> " Ex. 3) " + this.RunPart1 (this.GetPuzzleInput 1 "example03") )
-        //yield this.RunExample (fun _ -> " Ex. 4) " + this.RunPart1 (this.GetPuzzleInput 1 "example04") )
-        //yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example01") )
+        yield this.RunExample (fun _ -> " Ex. 2) " + this.RunPart1 (this.GetPuzzleInput 1 "example02") )
+        yield this.RunExample (fun _ -> " Ex. 3) " + this.RunPart1 (this.GetPuzzleInput 1 "example03") )
+        yield this.RunExample (fun _ -> " Ex. 4) " + this.RunPart1 (this.GetPuzzleInput 1 "example04") )
+        yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
 
         yield ""
         yield this.RunExample (fun _ -> " Ex. 5) " + this.RunPart2 (this.GetPuzzleInput 2 "example05") )
-        //yield this.RunExample (fun _ -> " Ex. 6) " + this.RunPart2 (this.GetPuzzleInput 2 "example06") )
-        //yield this.RunExample (fun _ -> " Ex. 7) " + this.RunPart2 (this.GetPuzzleInput 2 "example07") )
-        //yield this.RunExample (fun _ -> " Ex. 8) " + this.RunPart2 (this.GetPuzzleInput 2 "example08") )
-        //yield this.RunExample (fun _ -> " Ex. 9) " + this.RunPart2 (this.GetPuzzleInput 2 "example09") )
-        //yield this.RunExample (fun _ -> " Ex.10) " + this.RunPart2 (this.GetPuzzleInput 2 "example10") )
-        //yield this.RunExample (fun _ -> " Ex.11) " + this.RunPart2 (this.GetPuzzleInput 2 "example11") )
-        //yield this.RunExample (fun _ -> " Ex.12) " + this.RunPart2 (this.GetPuzzleInput 2 "example12") )
-        //yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
+        yield this.RunExample (fun _ -> " Ex. 6) " + this.RunPart2 (this.GetPuzzleInput 2 "example06") )
+        yield this.RunExample (fun _ -> " Ex. 7) " + this.RunPart2 (this.GetPuzzleInput 2 "example07") )
+        yield this.RunExample (fun _ -> " Ex. 8) " + this.RunPart2 (this.GetPuzzleInput 2 "example08") )
+        yield this.RunExample (fun _ -> " Ex. 9) " + this.RunPart2 (this.GetPuzzleInput 2 "example09") )
+        yield this.RunExample (fun _ -> " Ex.10) " + this.RunPart2 (this.GetPuzzleInput 2 "example10") )
+        yield this.RunExample (fun _ -> " Ex.11) " + this.RunPart2 (this.GetPuzzleInput 2 "example11") )
+        yield this.RunExample (fun _ -> " Ex.12) " + this.RunPart2 (this.GetPuzzleInput 2 "example12") )
+        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
         }
