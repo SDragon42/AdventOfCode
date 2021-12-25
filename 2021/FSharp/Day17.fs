@@ -60,15 +60,9 @@ type Day17 (runBenchmarks, runExamples) =
         | _ when value >= target -> velocity
         | _ -> this.FindMinXVelocity target (velocity + 1)
 
+
     member private this.FindMaxYVelocity (target:int) =
         abs target - 1
-
-    member private this.FindYVelocityRange (yHigh:int, yLow:int) (velocity:int) =
-        if velocity = 0 then
-            
-            0
-        else
-            0
 
 
     member private this.ProcessStep (target:Area) (pX:int, pY:int) (velX:int, velY:int) =
@@ -92,6 +86,11 @@ type Day17 (runBenchmarks, runExamples) =
         | _ ->
                 let result, pos = this.ProcessStep target shiftedPos shiftedVel
                 result, [shiftedPos] @ pos
+    
+
+    member private this.InTargetArea (target:Area) (initialVelocity:(int * int)) =
+        let success, _ = this.ProcessStep target (0,0) initialVelocity
+        success, initialVelocity
 
 
     member private this.RunPart1 (puzzleData: PuzzleInput) =
@@ -106,15 +105,30 @@ type Day17 (runBenchmarks, runExamples) =
             | true -> points |> List.map (fun (x,y) -> y) |> List.max
             | false -> -9999
             
-        //printfn $"Last Point: {initalVelocity}"
-        //printfn $"Last Point: {points[points.Length - 1]}"
-            
         Helper.GetPuzzleResultText ("What is the highest y position it reaches on this trajectory?", result, puzzleData.ExpectedAnswer)
 
 
     member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText ("", result, puzzleData.ExpectedAnswer)
+        let minXVelocity = this.FindMinXVelocity puzzleData.Input.XLow 0
+        let maxXVelocity = puzzleData.Input.XHigh
+        let minYVelocity = puzzleData.Input.YLow
+        let maxYVelocity = this.FindMaxYVelocity puzzleData.Input.YLow
+
+        let xRange = [minXVelocity..maxXVelocity]
+        let yRange = [minYVelocity..maxYVelocity]
+
+        let allVelocities = 
+            yRange
+            |> List.map (fun y -> xRange |> List.map (fun x -> (x,y)))
+            |> List.concat
+            |> List.map (fun vel -> this.InTargetArea puzzleData.Input vel)
+            |> List.filter (fun (success, _) -> success)
+            |> List.map (fun (_, vel) -> vel)
+            |> List.distinct
+
+
+        let result = allVelocities.Length
+        Helper.GetPuzzleResultText ("How many distinct initial velocity values cause the probe to be within the target area?", result, puzzleData.ExpectedAnswer)
 
 
     override this.SolvePuzzle _ = seq {
@@ -122,7 +136,7 @@ type Day17 (runBenchmarks, runExamples) =
         yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example1") )
         yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
 
-        //yield ""
-        //yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput 2 "example1") )
-        //yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
+        yield ""
+        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput 2 "example1") )
+        yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
         }
