@@ -1,3 +1,11 @@
-# Advent Of Code
+# Advent of Code Solutions
 
-My code for doing [Advent of Code](https://adventofcode.com/)
+[Advent of Code](https://adventofcode.com/)
+
+Used mostly for practice, and to learn new programming languages.
+
+2019 - C#
+
+2020 - Python
+
+2021 - F#
