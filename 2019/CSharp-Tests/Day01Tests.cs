@@ -1,15 +1,8 @@
 namespace AdventOfCode.CSharp.Year2019.Tests;
 
-public class Day01Test
+public class Day01Tests : TestBase
 {
-    const int DAY = 1;
-    private readonly ITestOutputHelper output;
-
-
-    public Day01Test(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
+    public Day01Tests(ITestOutputHelper output) : base(output, 1) { }
 
     List<int> GetInput(string name)
     {
