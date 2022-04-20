@@ -3,56 +3,9 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/2
 /// </summary>
-class Day02 : PuzzleBase
+public class Day02
 {
-    const int DAY = 2;
-
-
-    public override IEnumerable<string> SolvePuzzle()
-    {
-        yield return "Day 2: 1202 Program Alarm";
-
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunProblem(Part1);
-
-        yield return string.Empty;
-        yield return RunProblem(Part2);
-    }
-
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 12, 2);
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : IntCodeInputAnswer<long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
-    }
-
-
-    string RunPart1(InputAnswer puzzleData, int valueAt1 = -1, int valueAt2 = -1)
-    {
-        var answer = RunCode(puzzleData.Code, valueAt1, valueAt2);
-        return Helper.GetPuzzleResultText($"Value as position 0 : {answer}", answer, puzzleData.ExpectedAnswer);
-    }
-
-
-
-    string RunPart2(InputAnswer puzzleData)
-    {
-        var answer = FindNounVerb(puzzleData.Code, 19690720);
-        return Helper.GetPuzzleResultText($"Noun-Verb pair is : {answer}", answer, puzzleData.ExpectedAnswer);
-    }
-
-
-    private long RunCode(List<long> code, long valueAt1, long valueAt2)
+    public long RunCode(List<long> code, long valueAt1, long valueAt2)
     {
         var computer = new IntCode(code);
         if (valueAt1 >= 0) computer.Poke(1, valueAt1);
@@ -64,7 +17,7 @@ class Day02 : PuzzleBase
     }
 
 
-    int FindNounVerb(List<long> input, long desiredValueAt0)
+    public int FindNounVerb(List<long> input, long desiredValueAt0)
     {
         for (var noun = 0; noun <= 99; noun++)
         {
