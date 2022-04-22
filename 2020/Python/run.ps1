@@ -1,2 +1,2 @@
 $env:PYTHONPATH = "../../Python.Common"
-py main.py $args
+py src/main.py $args
