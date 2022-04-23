@@ -4,19 +4,17 @@ public class Day01Tests : TestBase
 {
     public Day01Tests(ITestOutputHelper output) : base(output, 1) { }
 
-    List<int> GetInput(string name)
+    private (List<int>, int?) GetTestData(string name, int part)
     {
         var input = InputHelper.LoadInputFile(DAY, name)
             .Select(l => l.ToInt32())
             .ToList();
-        return input;
-    }
-    int? GetExpectedAnswer(int part, string name)
-    {
+
         var expected = InputHelper.LoadAnswerFile(DAY, part, name)
             ?.FirstOrDefault()
             ?.ToInt32();
-        return expected;
+
+        return (input, expected);
     }
 
 
@@ -28,11 +26,9 @@ public class Day01Tests : TestBase
     [InlineData("input")]
     public void Part1(string inputName)
     {
+        var (input, expected) = GetTestData(inputName, 1);
+
         var puzzle = new Day01();
-
-        var input = GetInput(inputName);
-        var expected = GetExpectedAnswer(1, inputName);
-
         var value = puzzle.CalcFuelForMasses(input);
 
         output.WriteLine($"Answer: {value}");
@@ -46,11 +42,9 @@ public class Day01Tests : TestBase
     [InlineData("input")]
     public void Part2(string inputName)
     {
+        var (input, expected) = GetTestData(inputName, 2);
+
         var puzzle = new Day01();
-
-        var input = GetInput(inputName);
-        var expected = GetExpectedAnswer(2, inputName);
-
         var value = puzzle.CalcTotalFuelForMasses(input);
 
         output.WriteLine($"Answer: {value}");
