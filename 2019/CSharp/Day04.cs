@@ -3,82 +3,51 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/4
 /// </summary>
-class Day04 : PuzzleBase
+public class Day04
 {
-    const int DAY = 4;
-
 
     delegate bool RuleMethod(int[] digits);
     readonly List<RuleMethod> Rules = new List<RuleMethod>();
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    public int RunPart1(List<int> input)
     {
-        yield return "Day 4: Secure Container";
+        var passwordRangeMin = input[0];
+        var passwordRangeMax = input[1];
 
-        yield return string.Empty;
-        yield return RunProblem(Part1);
-
-        yield return string.Empty;
-        yield return RunProblem(Part2);
-    }
-
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : InputAnswer<List<int>, int?>
-    {
-        public int PasswordRangeMin => Input[0];
-        public int PasswordRangeMax => Input[1];
-    }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name)
-                .First()
-                .Split('-')
-                .Select(l => l.ToInt32())
-                .ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-        };
-        return result;
-    }
-
-
-    string RunPart1(InputAnswer puzzleData)
-    {
         Rules.Clear();
         Rules.Add(Rule_IsSixDigits);
         Rules.Add(Rule_TwoAdjacentDigitsAreTheSame);
         Rules.Add(Rule_LeftToRightDigitValueNeverDecreases);
 
         var numValidPasswords = 0;
-        for (var password = puzzleData.PasswordRangeMin; password <= puzzleData.PasswordRangeMax; password++)
+        for (var password = passwordRangeMin; password <= passwordRangeMax; password++)
         {
             if (IsPasswordValid(password))
                 numValidPasswords++;
         }
 
-        return Helper.GetPuzzleResultText($"Number of valid passwords: {numValidPasswords}", numValidPasswords, puzzleData.ExpectedAnswer);
+        return numValidPasswords;
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    public int RunPart2(List<int> input)
     {
+        var passwordRangeMin = input[0];
+        var passwordRangeMax = input[1];
+
         Rules.Clear();
         Rules.Add(Rule_IsSixDigits);
         Rules.Add(Rule_OnlyTwoAdjacentDigitsAreTheSame);
         Rules.Add(Rule_LeftToRightDigitValueNeverDecreases);
 
         var numValidPasswords = 0;
-        for (var password = puzzleData.PasswordRangeMin; password <= puzzleData.PasswordRangeMax; password++)
+        for (var password = passwordRangeMin; password <= passwordRangeMax; password++)
         {
             if (IsPasswordValid(password))
                 numValidPasswords++;
         }
 
-        return Helper.GetPuzzleResultText($"Number of valid passwords: {numValidPasswords}", numValidPasswords, puzzleData.ExpectedAnswer);
+        return numValidPasswords;
     }
 
 
