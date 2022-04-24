@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
-enum IntCodeState
+public enum IntCodeState
 {
     Running,
     Finished,

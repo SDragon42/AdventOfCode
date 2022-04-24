@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
-class IntCodeOutputEventArgs : EventArgs
+public class IntCodeOutputEventArgs : EventArgs
 {
     public IntCodeOutputEventArgs(long value) : base()
     {

@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
- 
-class IntCodeInputAnswer<TA> : InputAnswer<List<string>, TA>
+
+public class IntCodeInputAnswer<TA> : InputAnswer<List<string>, TA>
 {
     public IntCodeInputAnswer() : base() { }
     public IntCodeInputAnswer(List<string> input, TA expectedAnswer) : base(input, expectedAnswer)
