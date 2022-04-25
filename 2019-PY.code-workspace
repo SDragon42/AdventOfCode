@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"path": "Python.Common"
+		},
+		{
+			"path": "2019\\Python"
+		},
+		{
+			"path": "2019\\Input"
+		}
+	],
+	"settings": {
+		"python.analysis.extraPaths": [
+			"../../Python.Common" // variable substitution is not supported (currently)
+		],
+		"files.exclude": {
+			"**/__pycache__": true
+		}
+	},
+	"extensions": {},
+	"launch": {
+		"configurations": [
+			{
+				"name": "AOC2019",
+				"type": "python",
+				"request": "launch",
+				"cwd": "${workspaceFolder:Python}",
+				"program": "src/main.py",
+				"args": ["-be", ""],
+				"console": "integratedTerminal",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder:Python.Common}"
+				}
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": []
+	}
+}
