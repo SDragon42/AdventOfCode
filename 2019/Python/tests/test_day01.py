@@ -20,7 +20,7 @@ class Day01(unittest.TestCase):
         lines = inputHelper.load_file(_DAY, name).splitlines()
         input = [int(l) for l in lines]
 
-        expectedAnswer = inputHelper.load_file(_DAY, f"{name}-answer{part}")
+        expectedAnswer = inputHelper.load_file(_DAY, f'{name}-answer{part}')
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 
