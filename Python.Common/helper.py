@@ -19,7 +19,7 @@ def validate_result(aocQuestion: str, value, correct_value) -> str:
         check = ''
     elif correct_value == value:
         check = 'CORRECT'
-    return f"{aocQuestion}    {value}    {check}".rstrip()
+    return f'{aocQuestion}    {value}    {check}'.rstrip()
 
 
 

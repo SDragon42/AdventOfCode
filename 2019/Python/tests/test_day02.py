@@ -23,7 +23,7 @@ class Day02(unittest.TestCase):
         text = inputHelper.load_file(_DAY, name)
         input = string_to_int_list(text)
 
-        expectedAnswer = inputHelper.load_file(_DAY, f"{name}-answer{part}")
+        expectedAnswer = inputHelper.load_file(_DAY, f'{name}-answer{part}')
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 
