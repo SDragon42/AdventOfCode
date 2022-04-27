@@ -6,7 +6,6 @@ import config
 
 import inputHelper
 from helper import string_to_int_list
-# import src.intcode_computer as icp
 from src.intcode_computer import IntCode
 import src.day02 as puzzle
 
@@ -35,14 +34,12 @@ class Day02(unittest.TestCase):
         value = puzzle.run_code(input, valueAt1, valueAt2)
         self.assertEqual(value, expected)
 
-
     def test_part1_example_1(self):
         self.part1('example1')
-        pass
 
     def test_part1(self):
         self.part1('input', 12, 2)
-        pass
+
 
     def test_part2(self):
         input, expected = self._get_test_data('input', 2)
