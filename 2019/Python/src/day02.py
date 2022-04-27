@@ -5,9 +5,9 @@ from intcode_computer import IntCode
 def run_code(input:List[int], valueAt1:int = -1, valueAt2:int = -1) -> int:
     comp = IntCode(input)
     if valueAt1 != -1:
-        comp.write_value_at(1, valueAt1)
+        comp.write_value_at(valueAt1, 1)
     if valueAt2 != -1:
-        comp.write_value_at(2, valueAt2)
+        comp.write_value_at(valueAt2, 2)
     comp.run()
 
     value = comp.read_value_at(0)

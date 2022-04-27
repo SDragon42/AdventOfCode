@@ -1,4 +1,5 @@
 import unittest
+from unittest import result
 
 # this adds the 'src' folder to the path. Needed to get the src imports to work in unit tests.
 import config
@@ -6,6 +7,7 @@ import config
 from helper import string_to_int_list
 from src.intcode_computer import (
     IntCode,
+    IntCodeParameterMode,
     IntCodeState,
     IntCodeOpcodeException,
     IntCodeStateException
@@ -45,38 +47,110 @@ class IntCodeComputer(unittest.TestCase):
         ]
         for memoryAddress, expected in data:
             comp = IntCode(memory)
-            comp.write_value_at(memoryAddress, expected)
+            comp.write_value_at(expected, memoryAddress)
             value = comp.read_value_at(memoryAddress)
             self.assertEqual(value, expected)
 
-    def test_opcode_add(self):
-        memory = string_to_int_list('99,5,6,3,99,20,22')
-
+    def test_read_instruction(self):
+        memory = string_to_int_list('10101,1,2,3,42')
         comp = IntCode(memory)
-        comp._opcode_add()
-        value = comp.read_value_at(3)
+        comp._read_instruction()
+        
+        self.assertEquals(comp._position, 0)
+        self.assertEquals(comp._opcode, 1)
+        self.assertEquals(len(comp._paramModes), 3)
+        self.assertEquals(comp._paramModes[0], IntCodeParameterMode.Immediate)
+        self.assertEquals(comp._paramModes[1], IntCodeParameterMode.Positional)
+        self.assertEquals(comp._paramModes[2], IntCodeParameterMode.Immediate)
 
-        self.assertEqual(value, 42)
-        self.assertEqual(comp._position, 4)
+    def test_move_position(self):
+        memory = string_to_int_list('10101,1,2,3,42')
+        comp = IntCode(memory)
+        comp._read_instruction()
+        comp._move_position(4)
+
+        self.assertEquals(comp._position, 4)
+        self.assertEquals(comp._opcode, -1)
+        self.assertEquals(len(comp._paramModes), 0)
+
+
+    def test_opcode_add(self):
+        data = [
+            ('1,5,6,7,99,20,22,0', 7, 5, 42),
+            ('1101,20,22,7,99,0,0,0', 7, 5, 42),
+        ]
+        for memoryData, readAddr, expectedAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
+            value = comp.read_value_at(readAddr)
+
+            self.assertEqual(value, expectedValue)
+            self.assertEqual(comp._position, expectedAddr)
 
     def test_opcode_multiply(self):
-        memory = string_to_int_list('99,5,6,3,99,20,22')
+        data = [
+            ('2,5,6,7,99,20,22,0', 7, 5, 440),
+            ('1102,20,22,7,99,0,0,0', 7, 5, 440),
+        ]
+        for memoryData, readAddr, expectedAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
+            value = comp.read_value_at(readAddr)
 
-        comp = IntCode(memory)
-        comp._opcode_multiply()
-        value = comp.read_value_at(3)
+            self.assertEqual(value, expectedValue)
+            self.assertEqual(comp._position, expectedAddr)
 
-        self.assertEqual(value, 440)
-        self.assertEqual(comp._position, 4)
+    def test_opcode_input(self):
+        data = [
+            ('3,4,99,0,0', 4, 3, 42),
+            ('103,4,99,0,0', 1, 3, 42),
+        ]
+        for memoryData, readAddr, expectedAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            comp.add_input(expectedValue)
+            
+            comp.run()
+            value = comp.read_value_at(readAddr)
+
+            self.assertEqual(value, expectedValue)
+            self.assertEqual(comp._position, expectedAddr)
+
+    def test_opcode_output(self):
+        data = [
+            ('4,4,99,0,42', 42),
+            ('104,42,99,0,0', 42),
+        ]
+        for memoryData, expectedValue in data:
+            def callback(*args):
+                nonlocal result
+                result = args[0]
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            comp.add_output_callback(callback)
+            
+            result = -1
+            comp.run()
+
+            self.assertEqual(result, expectedValue)
 
     def test_opcode_quit(self):
-        memory = string_to_int_list('99,0')
+        data = [
+            ('99,0', 1),
+            ('1102,20,22,7,99,0,0,0', 5),
+        ]
+        for memoryData, expectedAddr in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
 
-        comp = IntCode(memory)
-        comp._opcode_quit()
-
-        self.assertEqual(comp._state, IntCodeState.Finished)
-        self.assertEqual(comp._position, 1)
+            self.assertEqual(comp._state, IntCodeState.Finished)
+            self.assertEqual(comp._position, expectedAddr)
 
     def test_exception_finished(self):
         with self.assertRaises(IntCodeStateException) as context:
@@ -102,12 +176,36 @@ class IntCodeComputer(unittest.TestCase):
             comp.run()
 
     def test_output_listener(self):
-        result = -1
         def the_ouput(*args):
             nonlocal result
             result = args[0]
+
         comp = IntCode([])
-        comp.bind_output(the_ouput)
+        comp.add_output_callback(the_ouput)
+        
+        result = 0
         comp._on_output(42)
 
         self.assertEquals(result, 42)
+
+    def test_output_listener_only_adds_once(self):
+        def the_ouput(*args):
+            pass
+        
+        comp = IntCode([])
+        comp.add_output_callback(the_ouput)
+        comp.add_output_callback(the_ouput)
+
+        self.assertEquals(len(comp._outputCallbacks), 1)
+
+    def test_add_input(self):
+        comp = IntCode([])
+        comp.add_input(1,2)
+        self.assertEquals(comp._inputBuffer.qsize(), 2)
+
+    def test_add_input_as_list_exception(self):
+        comp = IntCode([])
+        input = [1,2,3]
+
+        with self.assertRaises(Exception) as context:
+            comp.add_input(input)
