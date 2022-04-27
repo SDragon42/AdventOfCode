@@ -78,6 +78,10 @@ class IntCode:
             2: self._opcode_multiply,
             3: self._opcode_input,
             4: self._opcode_output,
+            5: self._opcode_jump_if_true,
+            6: self._opcode_jump_if_false,
+            7: self._opcode_lessthan,
+            8: self._opcode_equals,
             99: self._opcode_quit,
         }
 
@@ -185,25 +189,39 @@ class IntCode:
                 raise Exception('not an int')
             self._inputBuffer.put(value)
     
+    def _read_param_value(self, num:int) -> int:
+        value = self._read_memory(
+            self._position + num, 
+            self._get_parameter_mode(num)
+        )
+        return value
+
+    def _write_param_value(self, num:int, value:int) -> None:
+        self._write_memory(
+            value, 
+            self._position + num, 
+            self._get_parameter_mode(num)
+        )
+        
     
     def _opcode_add(self):
         """
         Adds together numbers read from two positions and stores the result in a third position.
         """
-        value1 = self._read_memory(self._position + 1, self._get_parameter_mode(1))
-        value2 = self._read_memory(self._position + 2, self._get_parameter_mode(2))
+        value1 = self._read_param_value(1)
+        value2 = self._read_param_value(2)
         result = value1 + value2
-        self._write_memory(result, self._position + 3, self._get_parameter_mode(3))
+        self._write_param_value(3, result)
         self._move_position(4)
 
     def _opcode_multiply(self):
         """
         Multiplies together numbers read from two positions and stores the result in a third position.
         """
-        value1 = self._read_memory(self._position + 1, self._get_parameter_mode(1))
-        value2 = self._read_memory(self._position + 2, self._get_parameter_mode(2))
+        value1 = self._read_param_value(1)
+        value2 = self._read_param_value(2)
         result = value1 * value2
-        self._write_memory(result, self._position + 3, self._get_parameter_mode(3))
+        self._write_param_value(3, result)
         self._move_position(4)
 
     def _opcode_input(self):
@@ -214,17 +232,66 @@ class IntCode:
             self._state = IntCodeState.NeedsInput
             return
         value = self._inputBuffer.get()
-        self._write_memory(value, self._position + 1, self._get_parameter_mode(1))
+        self._write_param_value(1, value)
         self._move_position(2)
-
 
     def _opcode_output(self):
         """
         Outputs a value from memory.
         """
-        value = self._read_memory(self._position + 1, self._get_parameter_mode(1))
+        value = self._read_param_value(1)
         self._on_output(value)
         self._move_position(2)
+
+    def _opcode_jump_if_true(self):
+        """
+        """
+        value1 = self._read_param_value(1)
+        
+        if value1 == 0:
+            self._move_position(3)
+            return
+
+        value2 = self._read_param_value(2)
+        self._move_position(0)
+        self._position = value2
+
+    def _opcode_jump_if_false(self):
+        """
+        """
+        value1 = self._read_param_value(1)
+        
+        if value1 != 0:
+            self._move_position(3)
+            return
+
+        value2 = self._read_param_value(2)
+        self._move_position(0)
+        self._position = value2
+
+    def _opcode_lessthan(self):
+        """
+        """
+        value1 = self._read_param_value(1)
+        value2 = self._read_param_value(2)
+        if value1 < value2:
+            result = 1
+        else:
+            result = 0
+        self._write_param_value(3, result)
+        self._move_position(4)
+        
+    def _opcode_equals(self):
+        """
+        """
+        value1 = self._read_param_value(1)
+        value2 = self._read_param_value(2)
+        if value1 == value2:
+            result = 1
+        else:
+            result = 0
+        self._write_param_value(3, result)
+        self._move_position(4)
 
     def _opcode_quit(self):
         """

@@ -138,6 +138,68 @@ class IntCodeComputer(unittest.TestCase):
 
             self.assertEqual(result, expectedValue)
 
+    def test_opcode_jump_if_true(self):
+        data = [
+            ('1105,0,5,99,-1,99,-2', 4, -1),
+            ('1105,1,5,99,-1,99,-2', 6, -2),
+        ]
+        for memoryData, expectedAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
+            
+            self.assertEqual(comp._position, expectedAddr)
+            value = comp.read_value_at(expectedAddr)
+            self.assertEqual(value, expectedValue)
+
+    def test_opcode_jump_if_false(self):
+        data = [
+            ('1106,0,5,99,-1,99,-2', 6, -2),
+            ('1106,1,5,99,-1,99,-2', 4, -1),
+        ]
+        for memoryData, expectedAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
+            
+            self.assertEqual(comp._position, expectedAddr)
+            value = comp.read_value_at(expectedAddr)
+            self.assertEqual(value, expectedValue)
+
+    def test_opcode_lessthan(self):
+        data = [
+            ('7,5,6,7,99,20,22,0', 7, 1),
+            ('1107,20,22,7,99,0,0,0', 7, 1),
+            ('7,5,6,7,99,22,20,0', 7, 0),
+            ('1107,20,20,7,99,0,0,0', 7, 0),
+        ]
+        for memoryData, readAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
+            value = comp.read_value_at(readAddr)
+
+            self.assertEqual(value, expectedValue)
+
+    def test_opcode_equals(self):
+        data = [
+            ('8,5,6,7,99,20,22,0', 7, 0),
+            ('1108,20,22,7,99,0,0,0', 7, 0),
+            ('8,5,6,7,99,22,20,0', 7, 0),
+            ('1108,20,20,7,99,0,0,0', 7, 1),
+        ]
+        for memoryData, readAddr, expectedValue in data:
+            memory = string_to_int_list(memoryData)
+            comp = IntCode(memory)
+            
+            comp.run()
+            value = comp.read_value_at(readAddr)
+
+            self.assertEqual(value, expectedValue)
+
     def test_opcode_quit(self):
         data = [
             ('99,0', 1),
