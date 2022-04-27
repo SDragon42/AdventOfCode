@@ -29,20 +29,20 @@ class Day05(unittest.TestCase):
         return input, expectedAnswer
 
 
-    def run_day5(self, inputName:str, inputValue:int) -> None:
+    def run_part1(self, inputName:str, inputValue:int) -> None:
         input, expected = self._get_test_data(inputName, 1)
         value = puzzle.run_code(input, inputValue)
         self.assertEqual(value, expected)
 
 
     def test_part1_example_1(self):
-        self.run_day5('example1', 69)
+        self.run_part1('example1', 69)
 
     def test_part1_example_2(self):
-        self.run_day5('example2', 1)
+        self.run_part1('example2', 1)
 
     def test_part1(self):
-        self.run_day5('input', 1)
+        self.run_part1('input', 1)
 
 
     def test_part2_examples_3(self):
@@ -75,5 +75,11 @@ class Day05(unittest.TestCase):
             value = puzzle.run_code(input, inputValue)
             self.assertEqual(value, expected)
 
+
+    def run_part2(self, inputName:str, inputValue:int) -> None:
+        input, expected = self._get_test_data(inputName, 2)
+        value = puzzle.run_code(input, inputValue)
+        self.assertEqual(value, expected)
+
     def test_part2(self):
-        self.run_day5('input', 5)
+        self.run_part2('input', 5)
