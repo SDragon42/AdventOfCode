@@ -88,10 +88,13 @@ class Day03(unittest.TestCase):
 
     def test_part1_example_1(self):
         self.run_part1('example1')
+
     def test_part1_example_2(self):
         self.run_part1('example2')
+
     def test_part1_example_3(self):
         self.run_part1('example3')
+
     def test_part1(self):
         self.run_part1('input')
 
@@ -103,8 +106,10 @@ class Day03(unittest.TestCase):
 
     def test_part2_example_4(self):
         self.run_part2('example4')
+
     def test_part2_example_5(self):
         self.run_part2('example5')
+        
     def test_part2(self):
         self.run_part2('input')
 
