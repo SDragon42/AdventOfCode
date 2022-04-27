@@ -1,13 +1,15 @@
 import unittest
-from typing import List, Tuple
 
 # this adds the 'src' folder to the path. Needed to get the src imports to work in unit tests.
 import config
 
-import inputHelper
 from helper import string_to_int_list
-# import src.intcode_computer as icp
-from src.intcode_computer import IntCode, IntCodeState
+from src.intcode_computer import (
+    IntCode,
+    IntCodeState,
+    IntCodeOpcodeException,
+    IntCodeStateException
+)
 
 
 class IntCodeComputer(unittest.TestCase):
@@ -49,7 +51,7 @@ class IntCodeComputer(unittest.TestCase):
 
     def test_opcode_add(self):
         memory = string_to_int_list('99,5,6,3,99,20,22')
-        
+
         comp = IntCode(memory)
         comp._opcode_add()
         value = comp.read_value_at(3)
@@ -59,7 +61,7 @@ class IntCodeComputer(unittest.TestCase):
 
     def test_opcode_multiply(self):
         memory = string_to_int_list('99,5,6,3,99,20,22')
-        
+
         comp = IntCode(memory)
         comp._opcode_multiply()
         value = comp.read_value_at(3)
@@ -69,10 +71,43 @@ class IntCodeComputer(unittest.TestCase):
 
     def test_opcode_quit(self):
         memory = string_to_int_list('99,0')
-        
+
         comp = IntCode(memory)
         comp._opcode_quit()
 
         self.assertEqual(comp._state, IntCodeState.Finished)
         self.assertEqual(comp._position, 1)
-        
+
+    def test_exception_finished(self):
+        with self.assertRaises(IntCodeStateException) as context:
+            memory = string_to_int_list('99,5,6,3,99,20,22')
+            comp = IntCode(memory)
+            comp._state = IntCodeState.Finished
+            comp.run()
+        self.assertTrue(IntCodeStateException.MESSAGE_FINISHED in str(context.exception))
+
+
+    def test_exception_needs_input(self):
+        with self.assertRaises(IntCodeStateException) as context:
+            memory = string_to_int_list('99,5,6,3,99,20,22')
+            comp = IntCode(memory)
+            comp._state = IntCodeState.NeedsInput
+            comp.run()
+        self.assertTrue(IntCodeStateException.MESSAGE_NEEDS_INPUT in str(context.exception))
+
+    def test_exception_unknown_opcode(self):
+        with self.assertRaises(IntCodeOpcodeException) as context:
+            memory = string_to_int_list('97,5,6,3,99,20,22')
+            comp = IntCode(memory)
+            comp.run()
+
+    def test_output_listener(self):
+        result = -1
+        def the_ouput(*args):
+            nonlocal result
+            result = args[0]
+        comp = IntCode([])
+        comp.bind_output(the_ouput)
+        comp._on_output(42)
+
+        self.assertEquals(result, 42)
