@@ -15,7 +15,10 @@ class OrbitPair:
         return self.centerOfMass + orbit
 
     def __repr__(self) -> str:
-        return str(self)
+        orbitCenterOfMass = 'None'
+        if self.orbits != None:
+            orbitCenterOfMass = self.orbits.centerOfMass
+        return f'OrbitPair: {self.centerOfMass} ) {orbitCenterOfMass}'
 
     @property
     def centerOfMass(self) -> str:

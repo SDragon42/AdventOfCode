@@ -12,7 +12,7 @@ class LineInfo:
         self._c = (self.a * self.p1.x) + (self.b * self.p1.y)
 
     def __repr__(self) -> str:
-        return f'{self.p1}  --  {self.p2}'
+        return f'LineInfo: {self.p1}  --  {self.p2}'
 
     def __str__(self) -> str:
         return f'{self.p1}  --  {self.p2}'

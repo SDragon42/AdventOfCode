@@ -8,7 +8,7 @@ class Point2D:
         self._y = y
 
     def __repr__(self) -> str:
-        return f'{self.x},{self.y}'
+        return f'Point2D: {self.x},{self.y}'
 
     def __str__(self) -> str:
         return f'{self.x},{self.y}'
@@ -38,7 +38,7 @@ class Point3D(Point2D):
         self._z = z
 
     def __repr__(self) -> str:
-        return f'{self.x},{self.y},{self.z}'
+        return f'Point3D: {self.x},{self.y},{self.z}'
 
     def __str__(self) -> str:
         return f'{self.x},{self.y},{self.z}'
