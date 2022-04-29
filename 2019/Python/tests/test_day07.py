@@ -32,7 +32,22 @@ class Day07(unittest.TestCase):
         return input, phase, expectedAnswer
 
 
-    def run_part1(self, inputName:str) -> None:
+    def test_get_phase_permutations(self):
+        testData = [
+            ([1], 1),
+            ([1,2], 2),
+            ([1,2,3], 6),
+            ([1,2,3,4], 24),
+            ([1,2,3,4,5], 120),
+        ]
+        for values, expected in testData:
+            phases = puzzle.get_phase_permutations(values)
+            result = sum(1 for _ in phases)
+            self.assertEquals(result, expected)
+
+
+
+    def run_part1(self, inputName:str):
         input, phase, expected = self._get_test_data(inputName, 1)
         value = puzzle.part1(input, phase)
         self.assertEqual(value, expected)
@@ -43,7 +58,7 @@ class Day07(unittest.TestCase):
     def test_part1(self): self.run_part1('input')
 
 
-    def run_part2(self, inputName:str) -> None:
+    def run_part2(self, inputName:str):
         input, phase, expected = self._get_test_data(inputName, 2)
         value = puzzle.part2(input, phase)
         self.assertEqual(value, expected)
