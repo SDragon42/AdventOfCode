@@ -10,7 +10,7 @@ def load_file(day: int, name: str) -> str:
         str: The file contents
         None: None if the file was not found.
     """
-    filename = f".\\..\\input\\day{day:02d}\\{name}.txt"
+    filename = f'.\\..\\input\\day{day:02d}\\{name}.txt'
     try:
         with open(filename) as dataFile:
             return dataFile.read()
