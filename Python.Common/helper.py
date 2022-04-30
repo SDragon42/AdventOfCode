@@ -1,8 +1,10 @@
 import math
+from typing import List
 
 
 def validate_result(aocQuestion: str, value, correct_value) -> str:
-    """Displays the results of the 'part', and if the answer was correct or wrong.
+    """
+    Displays the results of the 'part', and if the answer was correct or wrong.
 
     Args:
         aocQuestion (str): This is the AOC question text.
@@ -17,14 +19,15 @@ def validate_result(aocQuestion: str, value, correct_value) -> str:
         check = ''
     elif correct_value == value:
         check = 'CORRECT'
-    return f"{aocQuestion}    {value}    {check}".rstrip()
+    return f'{aocQuestion}    {value}    {check}'.rstrip()
 
 
 
 showDebug = False
 
 def dprint(x) -> None:
-    """A print() that only will run if the 'showDebug' value is set to True.
+    """
+    A print() that only will run if the 'showDebug' value is set to True.
 
     Args:
         x ([type]): a value to print
@@ -34,7 +37,8 @@ def dprint(x) -> None:
 
 
 def get_lcm(a: int, b: int) -> int:
-    """Gets the Least Common Multiple of two numbers
+    """
+    Gets the Least Common Multiple of two numbers
 
     Args:
         a (int): Value A
@@ -44,3 +48,16 @@ def get_lcm(a: int, b: int) -> int:
         int: The least common multiple
     """
     return abs(a * b) // math.gcd(a, b)
+
+def string_to_int_list(value:str) -> List[int]:
+    """
+    Returns a int list of a comma separate string of numbers.
+
+    Args:
+        value (str): a string that is a comma separate list of integers.
+
+    Returns:
+        List[int]: a list of int values
+    """
+    result = [int(a) for a in value.split(',')]
+    return result
