@@ -3,92 +3,54 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/6
 /// </summary>
-class Day06 : PuzzleBase
+public class Day06
 {
-    const int DAY = 6;
 
-
-    public override IEnumerable<string> SolvePuzzle()
+    public Dictionary<string, OrbitPair> BuildOrbitDictionary(IList<string> input)
     {
-        yield return "Day 6: Universal Orbit Map";
+        var uniqueBodies = new Dictionary<string, OrbitPair>();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunProblem(Part1);
+        // Built Orbit Tree
+        var orbitMap = input
+            .Select(m => m.Split(')'))
+            .Select(p => new { centerOfMass = p[0], satalite = p[1] })
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example2);
-        yield return RunProblem(Part2);
-    }
+        var coms = orbitMap.Select(m => m.centerOfMass);
+        var sats = orbitMap.Select(m => m.satalite);
+        uniqueBodies = coms.Union(sats)
+            .Distinct()
+            .ToDictionary(key => key, centerOfMass => new OrbitPair(centerOfMass));
 
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-
-    string Example2() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : InputAnswer<List<string>, int?>
-    {
-        public InputAnswer(List<string> input, int? expectedAnswer)
+        foreach (var orbit in orbitMap)
         {
-            Input = input;
-            ExpectedAnswer = expectedAnswer;
-
-            // Built Orbit Tree
-            var orbitMap = Input
-                .Select(m => m.Split(')'))
-                .Select(p => new { centerOfMass = p[0], satalite = p[1] })
-                .ToList();
-
-            var coms = orbitMap.Select(m => m.centerOfMass);
-            var sats = orbitMap.Select(m => m.satalite);
-            UniqueBodies = coms.Union(sats)
-                .Distinct()
-                .ToDictionary(key => key, centerOfMass => new OrbitPair(centerOfMass));
-
-            foreach (var orbit in orbitMap)
-            {
-                var comObj = UniqueBodies[orbit.centerOfMass];
-                var orbitObj = UniqueBodies[orbit.satalite];
-                orbitObj.Orbits = comObj;
-            }
+            var comObj = uniqueBodies[orbit.centerOfMass];
+            var orbitObj = uniqueBodies[orbit.satalite];
+            orbitObj.Orbits = comObj;
         }
 
-        public Dictionary<string, OrbitPair> UniqueBodies;
+        return uniqueBodies;
     }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer(
-            InputHelper.LoadInputFile(DAY, name).ToList(),
-            InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-            );
 
+
+
+    public int RunPart1(IList<string> input)
+    {
+        var uniqueBodies = BuildOrbitDictionary(input);
+        var result = CountAllOrbits(uniqueBodies);
         return result;
     }
 
-
-
-
-
-
-    string RunPart1(InputAnswer puzzleData)
+    public int RunPart2(IList<string> input)
     {
-        var result = CountAllOrbits(puzzleData.UniqueBodies);
-
-        return Helper.GetPuzzleResultText($"The total number of Direct and Indirect orbits: {result}", result, puzzleData.ExpectedAnswer);
-    }
-
-    string RunPart2(InputAnswer puzzleData)
-    {
-        var meToCommonCOM = GetPathToUniversalCOM(puzzleData.UniqueBodies["YOU"].Orbits).ToList();
-        var destToCommonCOM = GetPathToUniversalCOM(puzzleData.UniqueBodies["SAN"].Orbits).ToList();
+        var uniqueBodies = BuildOrbitDictionary(input);
+        var meToCommonCOM = GetPathToUniversalCOM(uniqueBodies["YOU"].Orbits).ToList();
+        var destToCommonCOM = GetPathToUniversalCOM(uniqueBodies["SAN"].Orbits).ToList();
 
         RemoveSharedCOMs(meToCommonCOM, destToCommonCOM);
 
         var result = meToCommonCOM.Count + destToCommonCOM.Count;
-
-        return Helper.GetPuzzleResultText($"The minimum # of orbit transfers required: {result}", result, puzzleData.ExpectedAnswer);
+        return result;
     }
 
 
@@ -132,7 +94,7 @@ class Day06 : PuzzleBase
     }
 
 
-    class OrbitPair
+    public class OrbitPair
     {
         public OrbitPair(string centerOfMass)
         {
