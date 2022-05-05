@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using AdventOfCode.CSharp.Year2019.IntCodeComputer;
-
-namespace AdventOfCode.CSharp.Year2019.Tests;
+﻿namespace AdventOfCode.CSharp.Year2019.Tests;
 
 public class Day05Tests : TestBase
 {
