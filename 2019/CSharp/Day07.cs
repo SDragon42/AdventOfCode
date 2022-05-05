@@ -3,73 +3,21 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/7
 /// </summary>
-class Day07 : PuzzleBase
+public class Day07
 {
-    const int DAY = 7;
 
-
-    public override IEnumerable<string> SolvePuzzle()
-    {
-        yield return "Day 7: Amplification Circuit";
-
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunExample(Example3);
-        yield return RunProblem(Part1);
-
-        yield return string.Empty;
-        yield return RunExample(Example4);
-        yield return RunExample(Example5);
-        yield return RunProblem(Part2);
-    }
-
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
-    string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-
-    string Example4() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example4"));
-    string Example5() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example5"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : IntCodeInputAnswer<long?>
-    {
-        protected override void SetInput(List<string> value)
-        {
-            base.SetInput(value);
-            Phase = Input.Skip(1).FirstOrDefault()
-                ?.Split(',')
-                ?.Select(v => v.ToInt64())
-                ?.ToList();
-        }
-
-        public List<long> Phase { get; set; }
-    }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
-    }
-
-
-    string RunPart1(InputAnswer puzzleData)
+    public long RunPart1(List<long> code, List<long> fixedPhase)
     {
         var phaseValues = new long[] { 0, 1, 2, 3, 4 };
         var answer = 0L;
 
-        foreach (var phase in GetPhases(phaseValues, puzzleData.Phase))
+        foreach (var phase in GetPhases(phaseValues, fixedPhase))
         {
-            var ampA = new IntCode(puzzleData.Code);
-            var ampB = new IntCode(puzzleData.Code);
-            var ampC = new IntCode(puzzleData.Code);
-            var ampD = new IntCode(puzzleData.Code);
-            var ampE = new IntCode(puzzleData.Code);
+            var ampA = new IntCode(code);
+            var ampB = new IntCode(code);
+            var ampC = new IntCode(code);
+            var ampD = new IntCode(code);
+            var ampE = new IntCode(code);
 
             var outputValue = 0L;
 
@@ -98,21 +46,21 @@ class Day07 : PuzzleBase
                 answer = outputValue;
         }
 
-        return Helper.GetPuzzleResultText($"Highest signal that can be sent to the thrusters: {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    public long RunPart2(List<long> code, List<long> fixedPhase)
     {
         var phaseValues = new long[] { 5, 6, 7, 8, 9 };
         var answer = 0L;
 
-        foreach (var phase in GetPhases(phaseValues, puzzleData.Phase))
+        foreach (var phase in GetPhases(phaseValues, fixedPhase))
         {
-            var ampA = new IntCode(puzzleData.Code);
-            var ampB = new IntCode(puzzleData.Code);
-            var ampC = new IntCode(puzzleData.Code);
-            var ampD = new IntCode(puzzleData.Code);
-            var ampE = new IntCode(puzzleData.Code);
+            var ampA = new IntCode(code);
+            var ampB = new IntCode(code);
+            var ampC = new IntCode(code);
+            var ampD = new IntCode(code);
+            var ampE = new IntCode(code);
 
             var outputValue = 0L;
 
@@ -151,7 +99,7 @@ class Day07 : PuzzleBase
                 answer = outputValue;
         }
 
-        return Helper.GetPuzzleResultText($"Highest signal that can be sent to the thrusters: {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
     IEnumerable<IList<long>> GetPhases(IList<long> sourceValues, IList<long> fixedPhase = null)
