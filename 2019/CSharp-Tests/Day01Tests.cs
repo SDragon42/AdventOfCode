@@ -2,6 +2,7 @@ namespace AdventOfCode.CSharp.Year2019.Tests;
 
 public class Day01Tests : TestBase
 {
+    private readonly Day01 puzzle = new();
     public Day01Tests(ITestOutputHelper output) : base(output, 1) { }
 
     private (List<int>, int?) GetTestData(string name, int part)
@@ -28,7 +29,6 @@ public class Day01Tests : TestBase
     {
         var (input, expected) = GetTestData(inputName, 1);
 
-        var puzzle = new Day01();
         var value = puzzle.CalcFuelForMasses(input);
 
         output.WriteLine($"Answer: {value}");
@@ -44,7 +44,6 @@ public class Day01Tests : TestBase
     {
         var (input, expected) = GetTestData(inputName, 2);
 
-        var puzzle = new Day01();
         var value = puzzle.CalcTotalFuelForMasses(input);
 
         output.WriteLine($"Answer: {value}");
