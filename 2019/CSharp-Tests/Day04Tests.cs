@@ -2,7 +2,7 @@
 
 public class Day04Tests : TestBase
 {
-    private readonly Day04 puzzle = new Day04();
+    private readonly Day04 puzzle = new();
 
     public Day04Tests(ITestOutputHelper output) : base(output, 4) { }
 

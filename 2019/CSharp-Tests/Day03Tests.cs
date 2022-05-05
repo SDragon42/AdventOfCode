@@ -2,6 +2,8 @@
 
 public class Day03Tests : TestBase
 {
+    private readonly Day03 puzzle = new();
+
     public Day03Tests(ITestOutputHelper output) : base(output, 3) { }
 
     private readonly Point origin = new Point(0, 0);
@@ -27,7 +29,6 @@ public class Day03Tests : TestBase
     {
         var (input, expected) = GetTestData(inputName, 1);
 
-        var puzzle = new Day03();
         var answer = puzzle.RunPart1(input);
 
         output.WriteLine($"Closest distance : {answer}");
@@ -43,7 +44,6 @@ public class Day03Tests : TestBase
     {
         var (input, expected) = GetTestData(inputName, 2);
 
-        var puzzle = new Day03();
         var answer = puzzle.RunPart2(input);
 
         output.WriteLine($"The fewest combined steps is : {answer}");

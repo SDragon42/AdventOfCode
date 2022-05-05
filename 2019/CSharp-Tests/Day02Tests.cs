@@ -2,6 +2,8 @@
 
 public class Day02Tests : TestBase
 {
+    private readonly Day02 puzzle = new();
+
     public Day02Tests(ITestOutputHelper output) : base(output, 2) { }
 
     private (List<long>, long?) GetTestData(string name, int part)
@@ -26,7 +28,6 @@ public class Day02Tests : TestBase
     {
         var (input, expected) = GetTestData(inputName, 1);
 
-        var puzzle = new Day02();
         var value = puzzle.RunCode(input, valueAt1, valueAt2);
 
         output.WriteLine($"Value as position 0 : {value}");
@@ -40,7 +41,6 @@ public class Day02Tests : TestBase
     {
         var (input, expected) = GetTestData(inputName, 2);
 
-        var puzzle = new Day02();
         var value = puzzle.FindNounVerb(input, valueAt0);
 
         output.WriteLine($"Noun-Verb pair is : {value}");
