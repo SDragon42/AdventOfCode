@@ -3,15 +3,32 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/4
 /// </summary>
-public class Day04
+public class Day04 : TestBase
 {
-
-    delegate bool RuleMethod(int[] digits);
-    readonly List<RuleMethod> Rules = new List<RuleMethod>();
+    public Day04(ITestOutputHelper output) : base(output, 4) { }
 
 
-    public int RunPart1(List<int> input)
+    private (List<int>, int?) GetTestData(string name, int part)
     {
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split('-')
+            .Select(l => l.ToInt32())
+            .ToList();
+
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
+
+        return (input, expected);
+    }
+
+    [Theory]
+    [InlineData("input")]
+    public void Part1(string inputName)
+    {
+        var (input, expected) = GetTestData(inputName, 1);
+
         var passwordRangeMin = input[0];
         var passwordRangeMax = input[1];
 
@@ -27,11 +44,17 @@ public class Day04
                 numValidPasswords++;
         }
 
-        return numValidPasswords;
+        output.WriteLine($"How many different passwords : {numValidPasswords}");
+
+        Assert.Equal(expected, numValidPasswords);
     }
 
-    public int RunPart2(List<int> input)
+    [Theory]
+    [InlineData("input")]
+    public void Part2(string inputName)
     {
+        var (input, expected) = GetTestData(inputName, 2);
+
         var passwordRangeMin = input[0];
         var passwordRangeMax = input[1];
 
@@ -47,8 +70,15 @@ public class Day04
                 numValidPasswords++;
         }
 
-        return numValidPasswords;
+        output.WriteLine($"How many different passwords : {numValidPasswords}");
+
+        Assert.Equal(expected, numValidPasswords);
     }
+
+
+
+    delegate bool RuleMethod(int[] digits);
+    readonly List<RuleMethod> Rules = new List<RuleMethod>();
 
 
     bool IsPasswordValid(int password)

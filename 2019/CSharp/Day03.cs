@@ -3,13 +3,34 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/3
 /// </summary>
-public class Day03
+public class Day03 : TestBase
 {
+    public Day03(ITestOutputHelper output) : base(output, 3) { }
+
+
     private readonly Point origin = new Point(0, 0);
 
-
-    public int RunPart1(List<string> input)
+    private (List<string>, int?) GetTestData(string name, int part)
     {
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
+
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
+
+        return (input, expected);
+    }
+
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("input")]
+    public void Part1(string inputName)
+    {
+        var (input, expected) = GetTestData(inputName, 1);
+
         var wire1 = BuildWirePoints(input[0], 0, 0);
         var wire2 = BuildWirePoints(input[1], 0, 0);
         var intersctions = FindIntersections(wire1, wire2)
@@ -17,11 +38,20 @@ public class Day03
         var answer = intersctions
             .Select(p => CalcManhattenDistance(origin, p))
             .Min();
-        return answer;
+
+        output.WriteLine($"Closest distance : {answer}");
+
+        Assert.Equal(expected, answer);
     }
 
-    public int RunPart2(List<string> input)
+    [Theory]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part2(string inputName)
     {
+        var (input, expected) = GetTestData(inputName, 2);
+
         var wire1 = BuildWirePoints(input[0], 0, 0);
         var wire2 = BuildWirePoints(input[1], 0, 0);
         var origin = new Point(0, 0);
@@ -30,8 +60,12 @@ public class Day03
         var answer = intersctions
             .Select(p => p.Distance)
             .Min();
-        return answer;
+
+        output.WriteLine($"The fewest combined steps is : {answer}");
+
+        Assert.Equal(expected, answer);
     }
+
 
     List<Point> BuildWirePoints(string input, int x, int y)
     {
