@@ -1,19 +1,57 @@
 ﻿namespace AdventOfCode.CSharp.Year2019;
 
-/// <summary>
-/// https://adventofcode.com/2019/day/1
-/// </summary>
-public class Day01
+public class Day01 : TestBase
 {
-    public int CalcFuelForMasses(IEnumerable<int> masses)
+    public Day01(ITestOutputHelper output) : base(output, 1) { }
+
+
+    private (List<int>, int?) GetTestData(string name, int part)
     {
-        return masses.Sum(CalcFuel);
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .Select(l => l.ToInt32())
+            .ToList();
+
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
+
+        return (input, expected);
     }
 
-    public int CalcTotalFuelForMasses(IEnumerable<int> masses)
+
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("example4")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        return masses.Sum(CalcTotalFuel);
+        var (input, expected) = GetTestData(inputName, 1);
+
+        var value = input.Sum(CalcFuel);
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
     }
+
+    [Theory]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("input")]
+    public void Part2(string inputName)
+    {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        var value = input.Sum(CalcTotalFuel);
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
+    }
+
+
 
 
     /// <summary>

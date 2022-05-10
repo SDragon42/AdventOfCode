@@ -3,10 +3,73 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/7
 /// </summary>
-public class Day07
+public class Day07 : TestBase
 {
+    public Day07(ITestOutputHelper output) : base(output, 7) { }
 
-    public long RunPart1(List<long> code, List<long> fixedPhase)
+    private (List<long>, List<long>?, long?) GetTestData(string name, int part)
+    {
+        var inputData = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
+
+        var input = inputData[0]
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
+
+        List<long> phase = null;
+        if (inputData.Count > 1)
+        {
+            phase = inputData[1]
+                .Split(',')
+                .Select(v => v.ToInt64())
+                .ToList();
+        }
+
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
+
+        return (input, phase, expected);
+    }
+
+
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("input")]
+    public void Part1(string inputName)
+    {
+        var (input, phase, expected) = GetTestData(inputName, 1);
+
+        var answer = RunPart1(input, phase);
+
+        output.WriteLine($"Highest signal that can be sent to the thrusters: {answer}");
+
+        Assert.Equal(expected, answer);
+    }
+
+
+    [Theory]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part2(string inputName)
+    {
+        var (input, phase, expected) = GetTestData(inputName, 2);
+
+        var answer = RunPart2(input, phase);
+
+        output.WriteLine($"Highest signal that can be sent to the thrusters: {answer}");
+
+        Assert.Equal(expected, answer);
+    }
+
+
+
+
+    long RunPart1(List<long> code, List<long> fixedPhase)
     {
         var phaseValues = new long[] { 0, 1, 2, 3, 4 };
         var answer = 0L;
@@ -49,7 +112,7 @@ public class Day07
         return answer;
     }
 
-    public long RunPart2(List<long> code, List<long> fixedPhase)
+    long RunPart2(List<long> code, List<long> fixedPhase)
     {
         var phaseValues = new long[] { 5, 6, 7, 8, 9 };
         var answer = 0L;
@@ -125,7 +188,7 @@ public class Day07
     /// Sourced and modified from:
     /// https://stackoverflow.com/questions/5132758/words-combinations-without-repetition
     /// </remarks>
-    public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
+    static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
     {
         if (items.Count() == 1)
         {
