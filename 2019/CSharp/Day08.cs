@@ -3,56 +3,53 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/8
 /// </summary>
-class Day08 : PuzzleBase
+public class Day08 : TestBase
 {
-    const int DAY = 8;
+    public Day08(ITestOutputHelper output) : base(output, 8) { }
 
-
-    public override IEnumerable<string> SolvePuzzle()
+    private List<int> GetInput(string name)
     {
-        yield return "Day 8: Space Image Format";
-
-        yield return string.Empty;
-        yield return RunProblem(Part1);
-
-        yield return string.Empty;
-        yield return RunProblem(Part2);
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Select(c => (int)char.GetNumericValue(c))
+            .ToList();
+        return input;
     }
 
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : InputAnswer<string, int?>
+    private int? GetPart1Expected(string name)
     {
-        public InputAnswer(string input, int? expectedAnswer1 = null, IEnumerable<string> expectedAnswer2 = null)
-        {
-            Input = input;
-            ExpectedAnswer = expectedAnswer1;
-            if (expectedAnswer2 != null)
-                ExpectedAnswer2 = string.Join("\r\n", expectedAnswer2);
-
-            ImageData = Input.Select(c => (int)char.GetNumericValue(c)).ToList();
-        }
-
-        public List<int> ImageData { get; private set; }
-        public string ExpectedAnswer2 { get; private set; }
+        var expected = InputHelper.LoadAnswerFile(DAY, 1, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
+        return expected;
     }
-    InputAnswer GetPuzzleData(int part, string name)
+
+    private string GetPart2Expected(string name)
     {
-        var result = part switch
-        {
-            1 => new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).First(),
-                expectedAnswer1: InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault().ToInt32()
-                ),
-            2 => new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).First(),
-                expectedAnswer2: InputHelper.LoadAnswerFile(DAY, part, name)
-                ),
-            _ => throw new ApplicationException($"Invalid part ({part}) value")
-        };
-        return result;
+        var expected = InputHelper.LoadAnswerFile(DAY, 2, name);
+        return string.Join("\r\n", expected);
+    }
+
+
+    [Fact]
+    public void Part1()
+    {
+        var input = GetInput("input");
+        var expected = GetPart1Expected("input");
+        var result = RunPart1(input);
+
+        Assert.True(expected.HasValue);
+        Assert.Equal(expected.Value, result);
+    }
+
+    [Fact]
+    public void Part2()
+    {
+        var input = GetInput("input");
+        var expected = GetPart2Expected("input");
+        var compositeImage = buildCompositImage(input);
+
+        Assert.Equal(expected, compositeImage);
     }
 
     const int DimensionX = 25;
@@ -60,24 +57,17 @@ class Day08 : PuzzleBase
     const int ImageSize = DimensionX * DimensionY;
 
 
-    string RunPart1(InputAnswer puzzleData)
+    int RunPart1(List<int> input)
     {
-        var foundLayer = GetFindLayerNumberWithLeast(puzzleData.ImageData, 0);
+        var foundLayer = GetFindLayerNumberWithLeast(input, 0);
 
-        var layerData = GetImageLayer(puzzleData.ImageData, foundLayer);
+        var layerData = GetImageLayer(input, foundLayer);
         var numOf1s = CountInLayer(layerData, 1);
         var numOf2s = CountInLayer(layerData, 2);
 
         var result = numOf1s * numOf2s;
 
-        return Helper.GetPuzzleResultText($"The number of 1 digits multiplied by the number of 2 digits: {result}", result, puzzleData.ExpectedAnswer);
-    }
-
-    string RunPart2(InputAnswer puzzleData)
-    {
-        var compositeImage = buildCompositImage(puzzleData.ImageData);
-
-        return Helper.GetPuzzleResultText(Environment.NewLine + compositeImage, compositeImage, puzzleData.ExpectedAnswer2);
+        return result;
     }
 
     int GetFindLayerNumberWithLeast(IList<int> imageData, int value)
