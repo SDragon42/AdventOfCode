@@ -3,67 +3,62 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/9
 /// </summary>
-class Day09 : PuzzleBase
+public class Day09 : TestBase
 {
-    const int DAY = 9;
+    public Day09(ITestOutputHelper output) : base(output, 9) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<long>, string) GetTestData(string name, int part)
     {
-        yield return "Day 9: Sensor Boost";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunExample(Example3);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault();
 
-        yield return string.Empty;
-        yield return RunProblem(Part2);
-    }
-
-    string Example1() => " Ex. 1) " + RunTestCase(GetPuzzleData(1, "example1"));
-    string Example2() => " Ex. 2) " + RunTestCase(GetPuzzleData(1, "example2"));
-    string Example3() => " Ex. 3) " + RunTestCase(GetPuzzleData(1, "example3"));
-    string Part1() => "Part 1) " + RunBOOST(GetPuzzleData(1, "input"), 1);
-
-    string Part2() => "Part 2) " + RunBOOST(GetPuzzleData(2, "input"), 2);
-
-    class InputAnswer : IntCodeInputAnswer<string> { }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()
-        };
-        return result;
+        return (input, expected);
     }
 
 
-    string RunBOOST(InputAnswer puzzleData, long initalInput)
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    public void TestCase(string inputName)
     {
-        var answer = default(string);
+        var (input, expected) = GetTestData(inputName, 1);
 
-        var computer = new IntCode(puzzleData.Code);
-        computer.Output += (s, e) => answer = e.OutputValue.ToString();
-
-        computer.AddInput(initalInput);
-        computer.Run();
-
-        return Helper.GetPuzzleResultText($"BOOST key-code: {answer}", answer, puzzleData.ExpectedAnswer);
-    }
-
-    string RunTestCase(InputAnswer puzzleData)
-    {
         var outputBuffer = new List<long>();
-        var computer = new IntCode(puzzleData.Code);
+        var computer = new IntCode(input);
         computer.Output += (s, e) => outputBuffer.Add(e.OutputValue);
 
         computer.Run();
 
         var answer = string.Join(',', outputBuffer);
-        return Helper.GetPuzzleResultText($"Output: {answer}", answer, puzzleData.ExpectedAnswer);
+
+        Assert.Equal(answer, expected);
+    }
+
+
+    [Theory]
+    [InlineData("input", 1, 1)]
+    [InlineData("input", 2, 2)]
+    public void RunBoost(string inputName, int part, int initialInputValue)
+    {
+        var (input, expected) = GetTestData(inputName, part);
+
+        var answer = default(string);
+
+        var computer = new IntCode(input);
+        computer.Output += (s, e) => answer = e.OutputValue.ToString();
+
+        computer.AddInput(initialInputValue);
+        computer.Run();
+
+        Assert.Equal(answer, expected);
     }
 
 }
