@@ -3,50 +3,62 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/15
 /// </summary>
-class Day15 : PuzzleBase
+public class Day15 : TestBase
 {
-    const int DAY = 15;
+    public Day15(ITestOutputHelper output) : base(output, 15) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<long>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 15: Oxygen System";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
-
-
-    class InputAnswer : IntCodeInputAnswer<long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
+    [Fact]
+    public void Part1()
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        var (input, expected) = GetTestData("input", 1);
+
+        var result = RunPart1(input);
+
+        Assert.Equal(expected, result);
     }
+
+    [Fact]
+    public void Part2()
+    {
+        var (input, expected) = GetTestData("input", 2);
+
+        var result = RunPart2(input);
+
+        Assert.Equal(expected, result);
+    }
+
+
 
 
     readonly Map map = new();
     readonly Stack<Point> stepStack = new();
     RepairDroid robot;
 
-    string RunPart1(InputAnswer puzzleData)
+    
+    long RunPart1(List<long> code)
     {
         map.Clear();
         stepStack.Clear();
-        var stepCount = 0;
+        var stepCount = 0L;
 
-        robot = new RepairDroid(puzzleData.Code, map);
+        robot = new RepairDroid(code, map);
         robot.ReportStatus += (s, e) =>
         {
             if (e.StatusCode != RepairDroidStatusCode.HitWall)
@@ -66,20 +78,14 @@ class Day15 : PuzzleBase
         }
         catch (Exception) { }
 
-
-        var sb = new StringBuilder();
-        sb.AppendLine();
-        sb.AppendLine(map.RenderMap());
-        sb.AppendLine();
-        var result = stepCount;
-        sb.AppendLine(Helper.GetPuzzleResultText($"The fewest number of movement commands: {result}", result, puzzleData.ExpectedAnswer));
-        return sb.ToString();
+        return stepCount;
     }
 
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<long> code)
     {
-        var minutes = 0;
+        RunPart1(code);
+        var minutes = 0L;
 
         var start = map.MapData
             .Where(kv => kv.Value == MapLegend.O2Generator)
@@ -102,13 +108,7 @@ class Day15 : PuzzleBase
                 map.Set(p, MapLegend.Oxygen);
         }
 
-
-        var sb = new StringBuilder();
-        sb.AppendLine();
-        sb.AppendLine(map.RenderMap());
-        sb.AppendLine();
-        sb.AppendLine(Helper.GetPuzzleResultText($"# minutes to fill with oxygen: {minutes}", minutes, puzzleData.ExpectedAnswer));
-        return sb.ToString();
+        return minutes;
     }
 
     bool NextToOxygen(Point location)
