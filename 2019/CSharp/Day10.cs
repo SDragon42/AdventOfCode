@@ -3,115 +3,104 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/10
 /// </summary>
-class Day10 : PuzzleBase
+public class Day10 : TestBase
 {
-    const int DAY = 10;
+    public Day10(ITestOutputHelper output) : base(output, 10) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (Dictionary<Point, AsteroidInfo>, Point, int?) GetTestData(string name, int part)
     {
-        yield return "Day 10: Monitoring Station";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunExample(Example3);
-        yield return RunExample(Example4);
-        yield return RunExample(Example5);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
+
+
         var baseLocation = default(Point);
-        yield return RunProblem(() => Part1(out baseLocation));
+        var mapData = new Dictionary<Point, AsteroidInfo>();
 
-        yield return string.Empty;
-        yield return RunExample(Example5P2);
-        yield return RunProblem(() => Part2(baseLocation));
-    }
-
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"), out _);
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"), out _);
-    string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"), out _);
-    string Example4() => " Ex. 4) " + RunPart1(GetPuzzleData(1, "example4"), out _);
-    string Example5() => " Ex. 5) " + RunPart1(GetPuzzleData(1, "example5"), out _);
-    string Part1(out Point baseLocation) => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), out baseLocation);
-
-    string Example5P2() => " Ex. 6) " + RunPart2(GetPuzzleData(2, "example5"), new Point(11, 13), 200);
-    string Part2(Point baseLocation) => "Part 2) " + RunPart2(GetPuzzleData(2, "input"), baseLocation, 200);
-
-
-
-    class InputAnswer : InputAnswer<string[], int?>
-    {
-        public InputAnswer(string[] input, int? expectedAnswer = null, Point? fountPosition = null)
+        var y = 0;
+        foreach (var line in input)
         {
-            Input = input;
-            ExpectedAnswer = expectedAnswer;
-
-            BaseLocation = default(Point);
-            MapData = new Dictionary<Point, AsteroidInfo>();
-
-            var y = 0;
-            foreach (var line in Input)
+            for (var x = 0; x < line.Length; x++)
             {
-                for (var x = 0; x < line.Length; x++)
-                {
-                    if (line[x] == '.')
-                        continue;
-                    var z = new AsteroidInfo(x, y);
-                    MapData.Add(z.Location, z);
-                    if (line[x] == 'X')
-                        BaseLocation = z.Location;
-                }
-                y++;
+                if (line[x] == '.')
+                    continue;
+                var z = new AsteroidInfo(x, y);
+                mapData.Add(z.Location, z);
+                if (line[x] == 'X')
+                    baseLocation = z.Location;
             }
+            y++;
         }
 
-        public Dictionary<Point, AsteroidInfo> MapData { get; private set; }
-        public Point BaseLocation { get; private set; }
+        return (mapData, baseLocation, expected);
     }
-    InputAnswer GetPuzzleData(int part, string name)
+
+
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        var result = part switch
+        var (mapData, baseLocation, expected) = GetTestData(inputName, 1);
+
+        var result = RunPart1(mapData);
+
+        Assert.Equal(expected, result.NumberCanSee);
+    }
+
+
+    public static IEnumerable<object[]> Part2TheoryInputs()
+    {
+        yield return new object[] { "example5", 200, new Point(11, 13) };
+        yield return new object[] { "input", 200, null };
+    }
+
+    [Theory]
+    [MemberData(nameof(Part2TheoryInputs))]
+    public void Part2(string inputName, int vaporizeNumber, Point? baseLocation)
+    {
+        var (mapData, _, expected) = GetTestData(inputName, 2);
+
+        if (!baseLocation.HasValue)
         {
-            1 => new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).ToArray(),
-                InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-                ),
-            2 => new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).ToArray(),
-                InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-                ),
-            _ => throw new ApplicationException($"Invalid part ({part}) value")
-        };
-        return result;
+            var aa = RunPart1(mapData);
+            baseLocation = aa.Location;
+        }
+
+        var result = RunPart2(mapData, baseLocation.Value, vaporizeNumber);
+
+        Assert.Equal(expected, result);
     }
 
 
 
 
-
-
-    string RunPart1(InputAnswer puzzleData, out Point baseLocation)
+    AsteroidInfo RunPart1(Dictionary<Point, AsteroidInfo> mapData)
     {
-        foreach (var prospect in puzzleData.MapData.Keys)
-            ScanFrom(puzzleData.MapData[prospect], puzzleData.MapData);
+        foreach (var prospect in mapData.Keys)
+            ScanFrom(mapData[prospect], mapData);
 
-        var best = puzzleData.MapData.Keys
-            .Select(k => puzzleData.MapData[k])
+        var best = mapData.Keys
+            .Select(k => mapData[k])
             .OrderByDescending(m => m.NumberCanSee)
             .First();
-
-        baseLocation = best.Location;
-
-        return Helper.GetPuzzleResultText($"# asteroids that can be detected from ({best.Location.X},{best.Location.Y})?: {best.NumberCanSee}",
-            best.NumberCanSee,
-            puzzleData.ExpectedAnswer);
+        return best;
     }
 
-    string RunPart2(InputAnswer puzzleData, Point baseLocation, int vaporizeNumber)
+    int RunPart2(Dictionary<Point, AsteroidInfo> mapData, Point baseLocation, int vaporizeNumber)
     {
         var vaporizeCount = 0;
         var foundBet = 0;
 
-        var allAsteroids = puzzleData.MapData.Values
+        var allAsteroids = mapData.Values
             .Where(z => z.Location != baseLocation)
             .Select(z => new
             {
@@ -131,7 +120,7 @@ class Day10 : PuzzleBase
                 .First();
 
             vaporizeCount++;
-            puzzleData.MapData.Remove(target.asteroid.Location);
+            mapData.Remove(target.asteroid.Location);
 
             if (vaporizeCount == vaporizeNumber)
             {
@@ -148,10 +137,7 @@ class Day10 : PuzzleBase
                 : allAsteroids.Select(z => z.angle).Min();
         }
 
-
-        return Helper.GetPuzzleResultText($"Winning Bet: {foundBet}",
-            foundBet,
-            puzzleData.ExpectedAnswer);
+        return foundBet;
     }
 
 
