@@ -3,108 +3,103 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/12
 /// </summary>
-class Day12 : PuzzleBase
+public class Day12 : TestBase
 {
-    const int DAY = 12;
+    public Day12(ITestOutputHelper output) : base(output, 12) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<string>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 12: The N-Body Problem";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-        yield return RunExample(Example1P2);
-        yield return RunExample(Example2P2);
-        yield return RunProblem(Part2);
-    }
-
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"), 10);
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"), 100);
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 1000);
-
-    string Example1P2() => " Ex. 1) " + RunPart2(GetPuzzleData(2, "example1"));
-    string Example2P2() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-
-    class InputAnswer : InputAnswer<List<string>, long?>
-    {
-        public List<Body> Bodies { get; private set; } = new List<Body>();
-
-        protected override void SetInput(List<string> value)
-        {
-            base.SetInput(value);
-
-            var rx = new Regex(@"<x=(?<x>.*), y=(?<y>.*), z=(?<z>.*)>");
-
-            Bodies.Clear();
-            foreach (var item in Input)
-            {
-                var match = rx.Match(item);
-                var p3D = new Point3D(
-                    (int)Convert.ChangeType(match.Groups[1].Value, typeof(int)),
-                    (int)Convert.ChangeType(match.Groups[2].Value, typeof(int)),
-                    (int)Convert.ChangeType(match.Groups[3].Value, typeof(int))
-                );
-                Bodies.Add(new Body(p3D));
-            }
-        }
-    }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        return (input, expected);
     }
 
 
-
-    string RunPart1(InputAnswer puzzleData, int numOfSteps)
+    [Theory]
+    [InlineData("example1", 10)]
+    [InlineData("example2", 100)]
+    [InlineData("input", 1000)]
+    public void Part1(string inputName, int numOfSteps)
     {
-        // Console.WriteLine($"After {0} steps:");
-        // input.ForEach(ShowBodyInfo);
-        // Console.WriteLine();
+        var (input, expected) = GetTestData(inputName, 1);
+
+        var result = RunPart1(input, numOfSteps);
+        output.WriteLine($"Total Energy: {result}");
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("input")]
+    public void Part2(string inputName)
+    {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        var result = RunPart2(input);
+        output.WriteLine($"Number of steps to return to original state: {result}");
+
+        Assert.Equal(expected, result);
+    }
+
+
+    long RunPart1(List<string> input, int numOfSteps)
+    {
+        var bodies = BuildBodyList(input);
 
         for (var step = 1; step <= numOfSteps; step++)
         {
-            puzzleData.Bodies.ForEach(b => ApplyGravity(b, puzzleData.Bodies));
-            puzzleData.Bodies.ForEach(ApplyVelocity);
-
-            // Console.WriteLine($"After {step} steps:");
-            // input.ForEach(ShowBodyInfo);
-            // Console.WriteLine();
+            bodies.ForEach(b => ApplyGravity(b, bodies));
+            bodies.ForEach(ApplyVelocity);
         }
 
-        var result = puzzleData.Bodies.Sum(b => b.TotalEnergy);
-
-        return Helper.GetPuzzleResultText($"Total Energy: {result}", result, puzzleData.ExpectedAnswer);
+        var result = bodies.Sum(b => b.TotalEnergy);
+        return result;
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<string> input)
     {
-        var originalState = puzzleData.Bodies.Select(b => b.GetCopy()).ToList();
+        var bodies = BuildBodyList(input);
+        var originalState = bodies.Select(b => b.GetCopy()).ToList();
 
         var xCount = 0L;
         var yCount = 0L;
         var zCount = 0L;
-        CountSteps(puzzleData.Bodies, originalState, ref xCount, ref yCount, ref zCount);
+        CountSteps(bodies, originalState, ref xCount, ref yCount, ref zCount);
 
         var result = Helper.FindLeastCommonMultiple(
             xCount,
             Helper.FindLeastCommonMultiple(yCount, zCount));
 
-        return Helper.GetPuzzleResultText($"Number of steps to return to original state: {result}", result, puzzleData.ExpectedAnswer);
+        return result;
     }
 
+
+    List<Body> BuildBodyList(IEnumerable<string> input)
+    {
+        var rx = new Regex(@"<x=(?<x>.*), y=(?<y>.*), z=(?<z>.*)>");
+
+        var bodies = new List<Body>();
+        foreach (var item in input)
+        {
+            var match = rx.Match(item);
+            var p3D = new Point3D(
+                (int)Convert.ChangeType(match.Groups[1].Value, typeof(int)),
+                (int)Convert.ChangeType(match.Groups[2].Value, typeof(int)),
+                (int)Convert.ChangeType(match.Groups[3].Value, typeof(int))
+            );
+            bodies.Add(new Body(p3D));
+        }
+
+        return bodies;
+    }
 
     void ApplyGravity(Body current, List<Body> input)
     {

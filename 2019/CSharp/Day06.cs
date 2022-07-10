@@ -3,92 +3,85 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/6
 /// </summary>
-class Day06 : PuzzleBase
+public class Day06 : TestBase
 {
-    const int DAY = 6;
+    public Day06(ITestOutputHelper output) : base(output, 6) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<string>, int?) GetTestData(string name, int part)
     {
-        yield return "Day 6: Universal Orbit Map";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
 
-        yield return string.Empty;
-        yield return RunExample(Example2);
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-
-    string Example2() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : InputAnswer<List<string>, int?>
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        public InputAnswer(List<string> input, int? expectedAnswer)
-        {
-            Input = input;
-            ExpectedAnswer = expectedAnswer;
+        var (input, expected) = GetTestData(inputName, 1);
 
-            // Built Orbit Tree
-            var orbitMap = Input
-                .Select(m => m.Split(')'))
-                .Select(p => new { centerOfMass = p[0], satalite = p[1] })
-                .ToList();
+        var uniqueBodies = BuildOrbitDictionary(input);
+        var result = CountAllOrbits(uniqueBodies);
 
-            var coms = orbitMap.Select(m => m.centerOfMass);
-            var sats = orbitMap.Select(m => m.satalite);
-            UniqueBodies = coms.Union(sats)
-                .Distinct()
-                .ToDictionary(key => key, centerOfMass => new OrbitPair(centerOfMass));
+        output.WriteLine($"The total number of Direct and Indirect orbits: {result}");
 
-            foreach (var orbit in orbitMap)
-            {
-                var comObj = UniqueBodies[orbit.centerOfMass];
-                var orbitObj = UniqueBodies[orbit.satalite];
-                orbitObj.Orbits = comObj;
-            }
-        }
-
-        public Dictionary<string, OrbitPair> UniqueBodies;
-    }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer(
-            InputHelper.LoadInputFile(DAY, name).ToList(),
-            InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-            );
-
-        return result;
+        Assert.Equal(expected, result);
     }
 
-
-
-
-
-
-    string RunPart1(InputAnswer puzzleData)
+    [Theory]
+    [InlineData("example2")]
+    [InlineData("input")]
+    public void Part2(string inputName)
     {
-        var result = CountAllOrbits(puzzleData.UniqueBodies);
+        var (input, expected) = GetTestData(inputName, 2);
 
-        return Helper.GetPuzzleResultText($"The total number of Direct and Indirect orbits: {result}", result, puzzleData.ExpectedAnswer);
-    }
-
-    string RunPart2(InputAnswer puzzleData)
-    {
-        var meToCommonCOM = GetPathToUniversalCOM(puzzleData.UniqueBodies["YOU"].Orbits).ToList();
-        var destToCommonCOM = GetPathToUniversalCOM(puzzleData.UniqueBodies["SAN"].Orbits).ToList();
+        var uniqueBodies = BuildOrbitDictionary(input);
+        var meToCommonCOM = GetPathToUniversalCOM(uniqueBodies["YOU"].Orbits).ToList();
+        var destToCommonCOM = GetPathToUniversalCOM(uniqueBodies["SAN"].Orbits).ToList();
 
         RemoveSharedCOMs(meToCommonCOM, destToCommonCOM);
 
         var result = meToCommonCOM.Count + destToCommonCOM.Count;
 
-        return Helper.GetPuzzleResultText($"The minimum # of orbit transfers required: {result}", result, puzzleData.ExpectedAnswer);
+        output.WriteLine($"The minimum # of orbit transfers required: {result}");
+
+        Assert.Equal(expected, result);
+    }
+
+
+
+
+    Dictionary<string, OrbitPair> BuildOrbitDictionary(IList<string> input)
+    {
+        var uniqueBodies = new Dictionary<string, OrbitPair>();
+
+        // Built Orbit Tree
+        var orbitMap = input
+            .Select(m => m.Split(')'))
+            .Select(p => new { centerOfMass = p[0], satalite = p[1] })
+            .ToList();
+
+        var coms = orbitMap.Select(m => m.centerOfMass);
+        var sats = orbitMap.Select(m => m.satalite);
+        uniqueBodies = coms.Union(sats)
+            .Distinct()
+            .ToDictionary(key => key, centerOfMass => new OrbitPair(centerOfMass));
+
+        foreach (var orbit in orbitMap)
+        {
+            var comObj = uniqueBodies[orbit.centerOfMass];
+            var orbitObj = uniqueBodies[orbit.satalite];
+            orbitObj.Orbits = comObj;
+        }
+
+        return uniqueBodies;
     }
 
 

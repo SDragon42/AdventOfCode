@@ -1,58 +1,57 @@
 ﻿namespace AdventOfCode.CSharp.Year2019;
 
-/// <summary>
-/// https://adventofcode.com/2019/day/2
-/// </summary>
-class Day02 : PuzzleBase
+public class Day02 : TestBase
 {
-    const int DAY = 2;
+    public Day02(ITestOutputHelper output) : base(output, 2) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+
+    private (List<long>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 2: 1202 Program Alarm";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 12, 2);
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : IntCodeInputAnswer<long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
+    [Theory]
+    [InlineData("example1", -1, -1)]
+    [InlineData("input", 12, 2)]
+    public void Part1(string inputName, int valueAt1, int valueAt2)
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        var (input, expected) = GetTestData(inputName, 1);
+
+        var value = RunCode(input, valueAt1, valueAt2);
+
+        output.WriteLine($"Value as position 0 : {value}");
+
+        Assert.Equal(expected, value);
+    }
+
+    [Theory]
+    [InlineData("input", 19690720)]
+    public void Part2(string inputName, long valueAt0)
+    {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        var value = FindNounVerb(input, valueAt0);
+
+        output.WriteLine($"Noun-Verb pair is : {value}");
+
+        Assert.Equal(expected, value);
     }
 
 
-    string RunPart1(InputAnswer puzzleData, int valueAt1 = -1, int valueAt2 = -1)
-    {
-        var answer = RunCode(puzzleData.Code, valueAt1, valueAt2);
-        return Helper.GetPuzzleResultText($"Value as position 0 : {answer}", answer, puzzleData.ExpectedAnswer);
-    }
 
 
-
-    string RunPart2(InputAnswer puzzleData)
-    {
-        var answer = FindNounVerb(puzzleData.Code, 19690720);
-        return Helper.GetPuzzleResultText($"Noun-Verb pair is : {answer}", answer, puzzleData.ExpectedAnswer);
-    }
-
-
-    private long RunCode(List<long> code, long valueAt1, long valueAt2)
+    long RunCode(List<long> code, long valueAt1, long valueAt2)
     {
         var computer = new IntCode(code);
         if (valueAt1 >= 0) computer.Poke(1, valueAt1);

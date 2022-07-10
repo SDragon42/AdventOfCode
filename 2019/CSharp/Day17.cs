@@ -3,37 +3,28 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/17
 /// </summary>
-class Day17 : PuzzleBase
+public class Day17 : TestBase
 {
-    const int DAY = 17;
+    public Day17(ITestOutputHelper output) : base(output, 17) { }
 
     readonly bool DISPLAY = false;
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<long>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 17: Set and Forget";
-        yield return string.Empty;
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return RunExample(() => " Ex. 1) " + RunPart1Example(GetMapDataFromInput(1, "example1")));
-        yield return RunProblem(() => "Part 1) " + RunPart1(GetPuzzleData(1, "input")));
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-
-        yield return RunProblem(() => "Part 2) " + RunPart2(GetPuzzleData(2, "input")));
+        return (input, expected);
     }
 
-
-    class InputAnswer : IntCodeInputAnswer<long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
-    }
-    public (List<List<char>>, long?) GetMapDataFromInput(int part, string name)
+    private (List<List<char>>, long?) GetMapDataFromInput(string name, int part)
     {
         var map = new List<List<char>>();
         var lines = InputHelper.LoadInputFile(DAY, name);
@@ -48,6 +39,37 @@ class Day17 : PuzzleBase
             InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
         );
     }
+
+
+    [Fact]
+    public void Part1Example()
+    {
+        var (input, expected) = GetMapDataFromInput("example1", 1);
+
+        var result = RunPart1Example(input);
+
+        Assert.Equal(expected, result);
+    }
+    [Fact]
+    public void Part1()
+    {
+        var (input, expected) = GetTestData("input", 1);
+
+        var result = RunPart1(input);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void Part2()
+    {
+        var (input, expected) = GetTestData("input", 2);
+
+        var result = RunPart2(input);
+
+        Assert.Equal(expected, result);
+    }
+
 
 
     void Add2Map(long value, List<List<char>> map)
@@ -93,11 +115,11 @@ class Day17 : PuzzleBase
         }
     }
 
-    string RunPart1(InputAnswer puzzleData)
+    long RunPart1(List<long> code)
     {
         var map = new List<List<char>>();
 
-        var bot = new IntCode(puzzleData.Code);
+        var bot = new IntCode(code);
         bot.Output += (s, e) => Add2Map(e.OutputValue, map);
         bot.Output += (s, e) => ShowOutput(e.OutputValue);
         bot.Run();
@@ -107,25 +129,25 @@ class Day17 : PuzzleBase
         var answer = intersections
             .Select(p => p.X * p.Y)
             .Sum();
-        return Helper.GetPuzzleResultText($"What is the sum of the alignment parameters? {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
-    string RunPart1Example((List<List<char>> Map, long? ExpectedAnswer) data)
+    long RunPart1Example(List<List<char>> map)
     {
-        var intersections = MarkIntersections(data.Map);
+        var intersections = MarkIntersections(map);
 
         var answer = intersections
                 .Select(p => p.X * p.Y)
                 .Sum();
-        return Helper.GetPuzzleResultText($"What is the sum of the alignment parameters? {answer}", answer, data.ExpectedAnswer);
+        return answer;
     }
 
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<long> code)
     {
         var answer = 0L;
         var map = new List<List<char>>();
 
-        var bot = new IntCode(puzzleData.Code);
+        var bot = new IntCode(code);
         bot.Output += (s, e) =>
         {
             if (e.OutputValue < 256)
@@ -148,8 +170,7 @@ class Day17 : PuzzleBase
         bot.AddInput(input);
         bot.Run();
 
-
-        return Helper.GetPuzzleResultText($"How much dust does the vacuum robot report it has collected? {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
 
@@ -240,8 +261,4 @@ class Day17 : PuzzleBase
         }
     }
 
-
-
-
 }
-

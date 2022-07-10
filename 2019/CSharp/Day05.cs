@@ -3,57 +3,127 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/5
 /// </summary>
-class Day05 : PuzzleBase
+public class Day05 : TestBase
 {
-    const int DAY = 5;
+    public Day05(ITestOutputHelper output) : base(output, 5) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<long>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 5: Sunny with a Chance of Asteroids";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-        //yield return RunExample(Example3a);
-        //yield return RunExample(Example3b);
-        //yield return RunExample(Example4a);
-        //yield return RunExample(Example4b);
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"), 69, 69);
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"), 1, 0);
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"), 1);
-
-    string Example3a() => " Ex. 3a) " + RunPart2Example3(8);
-    string Example3b() => " Ex. 3b) " + RunPart2Example3(7);
-    string Example4a() => " Ex. 4a) " + RunPart2Example4(0);
-    string Example4b() => " Ex. 4b) " + RunPart2Example4(42);
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-    class InputAnswer : IntCodeInputAnswer<long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
+    [Theory]
+    [InlineData("input", 1)]
+    public void Part1(string inputName, long inputValue)
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        var (input, expected) = GetTestData(inputName, 1);
+
+        var answer = RunPart1(input, inputValue);
+
+        output.WriteLine($"The diagnostic Code is: {answer}");
+
+        Assert.Equal(expected, answer);
+    }
+    [Theory]
+    [InlineData("3,0,4,0,99", 69, 69)]
+    [InlineData("1002,4,3,4,33", 1, 0)]
+    public void Part1Example(string codeStr, long inputValue, long expected)
+    {
+        var input = codeStr.Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
+
+        var answer = RunPart1(input, inputValue);
+
+        output.WriteLine($"The diagnostic Code is: {answer}");
+
+        Assert.Equal(expected, answer);
     }
 
-
-    string RunPart1(InputAnswer puzzleData, long inputValue, long? overrideExpectedAnswer = null)
+    [Theory]
+    [InlineData("input")]
+    public void Part2(string inputName)
     {
-        if (overrideExpectedAnswer.HasValue)
-            puzzleData.ExpectedAnswer = overrideExpectedAnswer.Value;
+        var (input, expected) = GetTestData(inputName, 2);
 
+        var answer = RunPart2(input);
+
+        output.WriteLine($"The diagnostic Code is: {answer}");
+
+        Assert.Equal(expected, answer);
+    }
+
+    [Theory]
+    [InlineData("3,9,8,9,10,9,4,9,99,-1,8", 8, 1)]
+    [InlineData("3,9,7,9,10,9,4,9,99,-1,8", 8, 0)]
+    [InlineData("3,3,1108,-1,8,3,4,3,99", 8, 1)]
+    [InlineData("3,3,1107,-1,8,3,4,3,99", 8, 0)]
+    [InlineData("3,9,8,9,10,9,4,9,99,-1,8", 7, 0)]
+    [InlineData("3,9,7,9,10,9,4,9,99,-1,8", 7, 1)]
+    [InlineData("3,3,1108,-1,8,3,4,3,99", 7, 0)]
+    [InlineData("3,3,1107,-1,8,3,4,3,99", 7, 1)]
+    public void Part2Example3(string codeStr, long value, long expected)
+    {
+        var input = codeStr.Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
+
+        var computer = new IntCode(input);
         var answer = 0L;
-        var computer = new IntCode(puzzleData.Code);
+        computer.Output += (s, e) => answer = e.OutputValue;
+
+        computer.Run();
+        if (computer.State == IntCodeState.NeedsInput)
+        {
+            computer.AddInput(value);
+            computer.Run();
+        }
+
+        Assert.Equal(expected, answer);
+    }
+
+    [Theory]
+    [InlineData("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 0, 0)]
+    [InlineData("3,3,1105,-1,9,1101,0,0,12,4,12,99,1", 42, 1)]
+    public void Part2Example4(string codeStr, long value, long expected)
+    {
+        var input = codeStr.Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
+
+        var computer = new IntCode(input);
+        var answer = 0L;
+        computer.Output += (s, e) => answer = e.OutputValue;
+
+        computer.Run();
+        if (computer.State == IntCodeState.NeedsInput)
+        {
+            computer.AddInput(value);
+            computer.Run();
+        }
+
+        Assert.Equal(expected, answer);
+    }
+
+
+
+
+
+    long RunPart1(List<long> input, long inputValue)
+    {
+        var answer = 0L;
+        var computer = new IntCode(input);
         computer.Output += (s, e) => { answer = e.OutputValue; };
 
         computer.Run();
@@ -63,14 +133,14 @@ class Day05 : PuzzleBase
             computer.Run();
         }
 
-        return Helper.GetPuzzleResultText($"The diagnostic Code is: {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<long> input)
     {
         var answer = 0L;
-        var computer = new IntCode(puzzleData.Code);
+        var computer = new IntCode(input);
         computer.Output += (s, e) => { answer = e.OutputValue; };
 
         computer.Run();
@@ -80,57 +150,9 @@ class Day05 : PuzzleBase
             computer.Run();
         }
 
-        return Helper.GetPuzzleResultText($"The diagnostic Code is: {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
-    string RunPart2Example3(long inputValue)
-    {
-        var sb = new StringBuilder();
-        var inputList = InputHelper.LoadInputFile(5, "example3")
-            .Select(l => l.Split(',').Select(v => v.ToInt64()).ToList());
-
-        sb.AppendLine($"Input: {inputValue}");
-        foreach (var input in inputList)
-        {
-            var computer = new IntCode(input);
-            computer.Output += (s, e) => sb.AppendLine($"Output: {e.OutputValue}");
-
-            computer.Run();
-            if (computer.State == IntCodeState.NeedsInput)
-            {
-                computer.AddInput(inputValue);
-                computer.Run();
-            }
-        }
-        sb.AppendLine();
-
-        return sb.ToString();
-    }
-
-    string RunPart2Example4(int inputValue)
-    {
-        var sb = new StringBuilder();
-        var inputList = InputHelper.LoadInputFile(5, "example4")
-            .Select(l => l.Split(',').Select(v => v.ToInt64()).ToList());
-
-        sb.AppendLine($"Input: {inputValue}");
-        foreach (var input in inputList)
-        {
-            sb.AppendLine("-------------------");
-            var computer = new IntCode(input);
-            computer.Output += (s, e) => sb.AppendLine($"Output: {e.OutputValue}");
-
-            computer.Run();
-            if (computer.State == IntCodeState.NeedsInput)
-            {
-                computer.AddInput(inputValue);
-                computer.Run();
-            }
-        }
-        sb.AppendLine();
-
-        return sb.ToString();
-    }
 
     IEnumerable<string> ShowState(IntCode comp)
     {

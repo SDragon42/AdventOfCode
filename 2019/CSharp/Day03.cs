@@ -3,106 +3,91 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/3
 /// </summary>
-class Day03 : PuzzleBase
+public class Day03 : TestBase
 {
-    const int DAY = 3;
+    public Day03(ITestOutputHelper output) : base(output, 3) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private readonly Point origin = new Point(0, 0);
+
+    private (List<string>, int?) GetTestData(string name, int part)
     {
-        yield return "Day 3: Crossed Wires";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunExample(Example3);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
 
-        yield return string.Empty;
-        yield return RunExample(Example4);
-        yield return RunExample(Example5);
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
-    string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-
-    string Example4() => " Ex. 4) " + RunPart2(GetPuzzleData(2, "example4"));
-    string Example5() => " Ex. 5) " + RunPart2(GetPuzzleData(2, "example5"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : InputAnswer<List<string>, int?>
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        public InputAnswer(List<string> input, int? expectedAnswer)
-        {
-            Input = input;
-            Wire1 = BuildWirePoints(input[0], 0, 0);
-            Wire2 = BuildWirePoints(input[1], 0, 0);
-            ExpectedAnswer = expectedAnswer;
-        }
+        var (input, expected) = GetTestData(inputName, 1);
 
-        public List<Point> Wire1 { get; private set; }
-        public List<Point> Wire2 { get; private set; }
-
-
-        List<Point> BuildWirePoints(string input, int x, int y)
-        {
-            var wire = new List<Point>();
-            wire.Add(new Point(x, y));
-
-            var _directions = input.Split(',');
-            foreach (var item in _directions)
-            {
-                var t = item.Substring(1);
-                var dist = Convert.ToInt32(t);
-                switch (item[0])
-                {
-                    case 'R': x += dist; break;
-                    case 'L': x -= dist; break;
-                    case 'U': y += dist; break;
-                    case 'D': y -= dist; break;
-                }
-                wire.Add(new Point(x, y));
-            }
-
-            return wire;
-        }
-    }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer(
-            InputHelper.LoadInputFile(DAY, name).ToList(),
-            InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-            );
-        return result;
-    }
-
-
-    string RunPart1(InputAnswer puzzleData)
-    {
-        var origin = new Point(0, 0);
-
-        var intersctions = FindIntersections(puzzleData.Wire1, puzzleData.Wire2)
+        var wire1 = BuildWirePoints(input[0], 0, 0);
+        var wire2 = BuildWirePoints(input[1], 0, 0);
+        var intersctions = FindIntersections(wire1, wire2)
             .Where(p => p != origin);
+        var answer = intersctions
+            .Select(p => CalcManhattenDistance(origin, p))
+            .Min();
 
-        var answer = intersctions.Select(p => CalcManhattenDistance(origin, p)).Min();
+        output.WriteLine($"Closest distance : {answer}");
 
-        return Helper.GetPuzzleResultText($"Closest distance: {answer}", answer, puzzleData.ExpectedAnswer);
+        Assert.Equal(expected, answer);
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    [Theory]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part2(string inputName)
     {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        var wire1 = BuildWirePoints(input[0], 0, 0);
+        var wire2 = BuildWirePoints(input[1], 0, 0);
         var origin = new Point(0, 0);
-
-        var intersctions = FindIntersectionsWithDistance(puzzleData.Wire1, puzzleData.Wire2)
+        var intersctions = FindIntersectionsWithDistance(wire1, wire2)
             .Where(p => p.IntersectPoint != origin);
+        var answer = intersctions
+            .Select(p => p.Distance)
+            .Min();
 
-        var minDist = intersctions.Select(p => p.Distance).Min();
+        output.WriteLine($"The fewest combined steps is : {answer}");
 
-        return Helper.GetPuzzleResultText($"The fewest combined steps is: {minDist}", minDist, puzzleData.ExpectedAnswer);
+        Assert.Equal(expected, answer);
+    }
+
+
+    List<Point> BuildWirePoints(string input, int x, int y)
+    {
+        var wire = new List<Point>();
+        wire.Add(new Point(x, y));
+
+        var _directions = input.Split(',');
+        foreach (var item in _directions)
+        {
+            var t = item.Substring(1);
+            var dist = Convert.ToInt32(t);
+            switch (item[0])
+            {
+                case 'R': x += dist; break;
+                case 'L': x -= dist; break;
+                case 'U': y += dist; break;
+                case 'D': y -= dist; break;
+            }
+            wire.Add(new Point(x, y));
+        }
+
+        return wire;
     }
 
 

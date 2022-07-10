@@ -1,63 +1,61 @@
 ﻿namespace AdventOfCode.CSharp.Year2019;
 
 /// <summary>
-/// https://adventofcode.com/2019/day/12
+/// https://adventofcode.com/2019/day/16
 /// </summary>
-class Day16 : PuzzleBase
+public class Day16 : TestBase
 {
-    const int DAY = 16;
+    public Day16(ITestOutputHelper output) : base(output, 16) { }
 
     private readonly IReadOnlyList<int> basePattern = new List<int>() { 0, 1, 0, -1 };
 
-    public override IEnumerable<string> SolvePuzzle()
+
+    private (string, string) GetTestData(string name, int part)
     {
-        Debug = (t) => { };
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First();
 
-        yield return "Day 16: Flawed Frequency Transmission";
-        yield return string.Empty;
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault();
 
-        yield return RunExample(() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1")));
-        yield return RunExample(() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2")));
-        yield return RunExample(() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3")));
-        yield return RunExample(() => " Ex. 4) " + RunPart1(GetPuzzleData(1, "example4")));
-        yield return RunProblem(() => "Part 1) " + RunPart1(GetPuzzleData(1, "input")));
-
-        yield return string.Empty;
-
-        //yield return RunExample(() => " Ex. 1) " + RunPart2(GetPuzzleData(2, "example1")));
-        //yield return RunExample(() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example2")));
-        //yield return RunProblem(() => "Part 2) " + RunPart2(GetPuzzleData(1, "input")));
+        return (input, expected);
     }
 
 
-
-    class InputAnswer : InputAnswer<string, string> { }
-    InputAnswer GetPuzzleData(int part, string name)
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("example4")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).First(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()
-        };
-        return result;
+        var (input, expected) = GetTestData(inputName, 1);
+
+        var numPhases = 100;
+        var result = RunPart1(input, numPhases);
+        output.WriteLine($"first 8 digits after {numPhases} phases : {result}");
+
+        Assert.Equal(expected, result);
     }
+
 
     string ListToString(IList<int> l) => string.Join("", l.Select(x => x.ToString()));
-    
+
     Action<string> Debug = (t) => Console.WriteLine(t);
 
-    string RunPart1(InputAnswer puzzleData)
+    string RunPart1(string input, int numPhases)
     {
         var phase = 0;
 
-        var signal = puzzleData.Input.Select(c => c.ToString().ToInt32()).ToList();
+        var signal = input.Select(c => c.ToString().ToInt32()).ToList();
         var maxDigits = signal.Count;
 
         Debug("Input Signal: " + ListToString(signal));
         Debug("");
 
         var line = new StringBuilder();
-        while (phase < 100)
+        while (phase < numPhases)
         {
             phase++;
 
@@ -95,8 +93,7 @@ class Day16 : PuzzleBase
         }
 
         var result = ListToString(signal.Take(8).ToList());
-
-        return Helper.GetPuzzleResultText($"first 8 digits after {phase} phases : {result}", result, puzzleData.ExpectedAnswer);
+        return result;
     }
 
     int GetPatternDigit(int repeatCount, int idx)

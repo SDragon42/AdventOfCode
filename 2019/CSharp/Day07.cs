@@ -3,73 +3,84 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/7
 /// </summary>
-class Day07 : PuzzleBase
+public class Day07 : TestBase
 {
-    const int DAY = 7;
+    public Day07(ITestOutputHelper output) : base(output, 7) { }
 
-
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<long>, List<long>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 7: Amplification Circuit";
+        var inputData = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunExample(Example3);
-        yield return RunProblem(Part1);
+        var input = inputData[0]
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunExample(Example4);
-        yield return RunExample(Example5);
-        yield return RunProblem(Part2);
-    }
-
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
-    string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-
-    string Example4() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example4"));
-    string Example5() => " Ex. 2) " + RunPart2(GetPuzzleData(2, "example5"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : IntCodeInputAnswer<long?>
-    {
-        protected override void SetInput(List<string> value)
+        List<long> phase = null;
+        if (inputData.Count > 1)
         {
-            base.SetInput(value);
-            Phase = Input.Skip(1).FirstOrDefault()
-                ?.Split(',')
-                ?.Select(v => v.ToInt64())
-                ?.ToList();
+            phase = inputData[1]
+                .Split(',')
+                .Select(v => v.ToInt64())
+                .ToList();
         }
 
-        public List<long> Phase { get; set; }
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
+
+        return (input, phase, expected);
     }
-    InputAnswer GetPuzzleData(int part, string name)
+
+
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        var (input, phase, expected) = GetTestData(inputName, 1);
+
+        var answer = RunPart1(input, phase);
+
+        output.WriteLine($"Highest signal that can be sent to the thrusters: {answer}");
+
+        Assert.Equal(expected, answer);
     }
 
 
-    string RunPart1(InputAnswer puzzleData)
+    [Theory]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part2(string inputName)
+    {
+        var (input, phase, expected) = GetTestData(inputName, 2);
+
+        var answer = RunPart2(input, phase);
+
+        output.WriteLine($"Highest signal that can be sent to the thrusters: {answer}");
+
+        Assert.Equal(expected, answer);
+    }
+
+
+
+
+    long RunPart1(List<long> code, List<long> fixedPhase)
     {
         var phaseValues = new long[] { 0, 1, 2, 3, 4 };
         var answer = 0L;
 
-        foreach (var phase in GetPhases(phaseValues, puzzleData.Phase))
+        foreach (var phase in GetPhases(phaseValues, fixedPhase))
         {
-            var ampA = new IntCode(puzzleData.Code);
-            var ampB = new IntCode(puzzleData.Code);
-            var ampC = new IntCode(puzzleData.Code);
-            var ampD = new IntCode(puzzleData.Code);
-            var ampE = new IntCode(puzzleData.Code);
+            var ampA = new IntCode(code);
+            var ampB = new IntCode(code);
+            var ampC = new IntCode(code);
+            var ampD = new IntCode(code);
+            var ampE = new IntCode(code);
 
             var outputValue = 0L;
 
@@ -98,21 +109,21 @@ class Day07 : PuzzleBase
                 answer = outputValue;
         }
 
-        return Helper.GetPuzzleResultText($"Highest signal that can be sent to the thrusters: {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<long> code, List<long> fixedPhase)
     {
         var phaseValues = new long[] { 5, 6, 7, 8, 9 };
         var answer = 0L;
 
-        foreach (var phase in GetPhases(phaseValues, puzzleData.Phase))
+        foreach (var phase in GetPhases(phaseValues, fixedPhase))
         {
-            var ampA = new IntCode(puzzleData.Code);
-            var ampB = new IntCode(puzzleData.Code);
-            var ampC = new IntCode(puzzleData.Code);
-            var ampD = new IntCode(puzzleData.Code);
-            var ampE = new IntCode(puzzleData.Code);
+            var ampA = new IntCode(code);
+            var ampB = new IntCode(code);
+            var ampC = new IntCode(code);
+            var ampD = new IntCode(code);
+            var ampE = new IntCode(code);
 
             var outputValue = 0L;
 
@@ -151,7 +162,7 @@ class Day07 : PuzzleBase
                 answer = outputValue;
         }
 
-        return Helper.GetPuzzleResultText($"Highest signal that can be sent to the thrusters: {answer}", answer, puzzleData.ExpectedAnswer);
+        return answer;
     }
 
     IEnumerable<IList<long>> GetPhases(IList<long> sourceValues, IList<long> fixedPhase = null)
@@ -177,7 +188,7 @@ class Day07 : PuzzleBase
     /// Sourced and modified from:
     /// https://stackoverflow.com/questions/5132758/words-combinations-without-repetition
     /// </remarks>
-    public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
+    static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
     {
         if (items.Count() == 1)
         {

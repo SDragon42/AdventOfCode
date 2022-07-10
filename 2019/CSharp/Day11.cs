@@ -3,75 +3,62 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/11
 /// </summary>
-class Day11 : PuzzleBase
+public class Day11 : TestBase
 {
-    const int DAY = 11;
+    public Day11(ITestOutputHelper output) : base(output, 11) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private List<long> GetInput(string name)
     {
-        yield return "Day 11: Space Police";
-
-        yield return string.Empty;
-        yield return RunProblem(Part1);
-
-        yield return string.Empty;
-        yield return RunProblem(Part2);
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
+        return input;
     }
 
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-
-    class InputAnswer : IntCodeInputAnswer<int?>
+    private int? GetPart1Expected(string name)
     {
-        public InputAnswer(List<string> input, int? expectedAnswer1 = null, IEnumerable<string> expectedAnswer2 = null)
-        {
-            Input = input;
-            ExpectedAnswer = expectedAnswer1;
-            if (expectedAnswer2 != null)
-                ExpectedAnswer2 = string.Join("\r\n", expectedAnswer2);
-        }
-
-        public string ExpectedAnswer2 { get; private set; }
+        var expected = InputHelper.LoadAnswerFile(DAY, 1, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
+        return expected;
     }
-    InputAnswer GetPuzzleData(int part, string name)
+
+    private string GetPart2Expected(string name)
     {
-        var result = part switch
-        {
-            1 => new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).ToList(),
-                expectedAnswer1: InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-                ),
-            2 => new InputAnswer(
-                InputHelper.LoadInputFile(DAY, name).ToList(),
-                expectedAnswer2: InputHelper.LoadAnswerFile(DAY, part, name)
-                ),
-            _ => throw new ApplicationException($"Invalid part ({part}) value")
-        };
-        return result;
+        var expected = InputHelper.LoadAnswerFile(DAY, 2, name);
+        return string.Join("\r\n", expected);
     }
 
 
 
-    string RunPart1(InputAnswer puzzleData)
+    [Fact]
+    public void Part1()
     {
+        var input = GetInput("input");
+        var expected = GetPart1Expected("input");
+
         var hull = new Dictionary<Point, HullColor>();
-        var robot = new HullPaintingRobot(puzzleData.Code);
+        var robot = new HullPaintingRobot(input);
         robot.ScanHull += (s, e) => e.HullColor = GetHullColor(hull, e.Location);
         robot.PaintHull += (s, e) => SetHullColor(hull, e.Location, e.HullColor);
 
         robot.Start();
         var result = hull.Count();
 
-        return Helper.GetPuzzleResultText($"Hull panels painted: {result}", result, puzzleData.ExpectedAnswer);
+        Assert.Equal(expected, result);
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    [Fact]
+    public void Part2()
     {
+        var input = GetInput("input");
+        var expected = GetPart2Expected("input");
+
         var hull = new Dictionary<Point, HullColor>();
-        var robot = new HullPaintingRobot(puzzleData.Code);
+        var robot = new HullPaintingRobot(input);
 
         SetHullColor(hull, robot.CurrentLocation, HullColor.White);
 
@@ -79,10 +66,9 @@ class Day11 : PuzzleBase
         robot.PaintHull += (s, e) => SetHullColor(hull, e.Location, e.HullColor);
 
         robot.Start();
-        var compositeImage = Helper.DrawPointGrid2D(hull, DrawPanel);//.TrimEnd();
+        var compositeImage = Helper.DrawPointGrid2D(hull, DrawPanel);
 
-
-        return Environment.NewLine + Helper.GetPuzzleResultText(compositeImage, compositeImage, puzzleData.ExpectedAnswer2);
+        Assert.Equal(expected, compositeImage);
     }
 
     HullColor GetHullColor(IDictionary<Point, HullColor> hull, Point location)
@@ -216,7 +202,6 @@ class Day11 : PuzzleBase
             myLocation = Point.Add(myLocation, shift);
 
             var args = new MoveToHullLocationEventArgs(myLocation);
-            //MoveOnHull(this, args);
         }
 
 

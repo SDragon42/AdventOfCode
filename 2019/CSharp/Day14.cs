@@ -6,95 +6,90 @@
 /// <remarks>
 /// used https://asmartins.com/blog/rocket-fuel/ to solve this puzzle.
 /// </remarks>
-class Day14 : PuzzleBase
+public class Day14 : TestBase
 {
-    const int DAY = 14;
-
     const string FUEL = "FUEL";
     const string ORE = "ORE";
-
     const long TRILLION_ORE = 1000000000000;
 
+    public Day14(ITestOutputHelper output) : base(output, 14) { }
 
-    public override IEnumerable<string> SolvePuzzle()
+
+    private (List<string>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 14: Space Stoichiometry";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .ToList();
 
-        yield return RunExample(Example1);
-        yield return RunExample(Example2);
-        yield return RunExample(Example3);
-        yield return RunExample(Example4);
-        yield return RunExample(Example5);
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-        yield return RunExample(Example3P2);
-        yield return RunExample(Example4P2);
-        yield return RunExample(Example5P2);
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Example1() => " Ex. 1) " + RunPart1(GetPuzzleData(1, "example1"));
-    string Example2() => " Ex. 2) " + RunPart1(GetPuzzleData(1, "example2"));
-    string Example3() => " Ex. 3) " + RunPart1(GetPuzzleData(1, "example3"));
-    string Example4() => " Ex. 4) " + RunPart1(GetPuzzleData(1, "example4"));
-    string Example5() => " Ex. 5) " + RunPart1(GetPuzzleData(1, "example5"));
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
 
-    string Example3P2() => " Ex. 3) " + RunPart2(GetPuzzleData(2, "example3"));
-    string Example4P2() => " Ex. 4) " + RunPart2(GetPuzzleData(2, "example4"));
-    string Example5P2() => " Ex. 5) " + RunPart2(GetPuzzleData(2, "example5"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-
-    class InputAnswer : InputAnswer<List<string>, long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
+    [Theory]
+    [InlineData("example1")]
+    [InlineData("example2")]
+    [InlineData("example3")]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        var (input, expected) = GetTestData(inputName, 1);
+
+        var result = RunPart1(input);
+        output.WriteLine($"Minimum amount of ORE needed for 1 Fuel: {result}");
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("example3")]
+    [InlineData("example4")]
+    [InlineData("example5")]
+    [InlineData("input")]
+    public void Part2(string inputName)
+    {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        var result = RunPart2(input);
+        output.WriteLine($"Maximum Fuel Produced: {result}");
+
+        Assert.Equal(expected, result);
     }
 
 
     readonly StringBuilder Log = new StringBuilder();
 
-    string RunPart1(InputAnswer puzzleData)
+    long RunPart1(List<string> input)
     {
         Log.Clear();
-        var reactions = BuildReactionChains(puzzleData.Input);
+        var reactions = BuildReactionChains(input);
         var orderedChems = SetTopologicalOrder(reactions);
 
         var oreNeeded = CalcOreNeeded_Topological(FUEL, 1, reactions, orderedChems);
-
-        Log.AppendLine(Helper.GetPuzzleResultText($"Minimum amount of ORE needed for 1 Fuel: {oreNeeded}", oreNeeded, puzzleData.ExpectedAnswer));
-        return Log.ToString().Trim();
+        return oreNeeded;
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<string> input)
     {
         Log.Clear();
-        var reactions = BuildReactionChains(puzzleData.Input);
+        var reactions = BuildReactionChains(input);
         var orderedChems = SetTopologicalOrder(reactions);
 
-        var fuelProduced = 1L;
         var args = (reactions, orderedChems);
         (var estimations, _) = EstimateFuelProduced(reactions, TRILLION_ORE, orderedChems);
-        (long result, long i) = Bisect(f, TRILLION_ORE, estimations, args);
+        (long result, _) = Bisect(f, TRILLION_ORE, estimations, args);
+
+        return result;
 
         long f(long x, IDictionary<string, ChemReaction> reactions, List<string> orderedChems)
         {
             var ore = CalcOreNeeded_Topological(FUEL, x, reactions, orderedChems.ToList());
             return ore;
         }
-
-        fuelProduced = result;
-
-        Log.AppendLine(Helper.GetPuzzleResultText($"Maximum Fuel Produced: {fuelProduced}", fuelProduced, puzzleData.ExpectedAnswer));
-        return Log.ToString().Trim();
     }
 
     List<string> SetTopologicalOrder(IDictionary<string, ChemReaction> reactions)

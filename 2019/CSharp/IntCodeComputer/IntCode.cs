@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
 
-class IntCode
+public class IntCode
 {
     const int NumOpCodeDigits = 2;
 

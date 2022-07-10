@@ -3,36 +3,45 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/13
 /// </summary>
-class Day13 : PuzzleBase
+public class Day13 : TestBase
 {
-    const int DAY = 13;
+    public Day13(ITestOutputHelper output) : base(output, 13) { }
 
 
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<long>, long?) GetTestData(string name, int part)
     {
-        yield return "Day 13: Care Package";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split(',')
+            .Select(v => v.ToInt64())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt64();
 
-        yield return string.Empty;
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
 
-
-
-    class InputAnswer : IntCodeInputAnswer<long?> { }
-    InputAnswer GetPuzzleData(int part, string name)
+    [Fact]
+    public void Part1()
     {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name).ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
-        };
-        return result;
+        var (input, expected) = GetTestData("input", 1);
+
+        var result = RunPart1(input);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void Part2()
+    {
+        var (input, expected) = GetTestData("input", 2);
+
+        var result = RunPart2(input);
+
+        Assert.Equal(expected, result);
     }
 
 
@@ -41,29 +50,26 @@ class Day13 : PuzzleBase
     readonly List<long> outputCache = new List<long>();
     long Score = 0;
 
-    string RunPart1(InputAnswer puzzleData)
+    int RunPart1(List<long> code)
     {
         TileGrid.Clear();
-        var arcade = new IntCode(puzzleData.Code);
+        var arcade = new IntCode(code);
         arcade.Output += ArcadeOutput;
 
         arcade.Run();
 
-        // var grid = DisplayHelper.DrawPointGrid2D(TileGrid, DrawGridTitle);
-        // Console.WriteLine(grid);
-
         var result = TileGrid.Values.Where(v => v == TileType.Brick).Count();
 
-        return Helper.GetPuzzleResultText($"Number of block tiles are on the screen: {result}", result, puzzleData.ExpectedAnswer);
+        return result;
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    long RunPart2(List<long> code)
     {
         TileGrid.Clear();
         outputCache.Clear();
         Score = 0;
 
-        var arcade = new IntCode(puzzleData.Code);
+        var arcade = new IntCode(code);
         arcade.Output += ArcadeOutput;
 
         var ballPosition = GetTilePositions(TileType.Ball);
@@ -82,7 +88,7 @@ class Day13 : PuzzleBase
             }
         }
 
-        return Helper.GetPuzzleResultText($"Final Score: {Score}", Score, puzzleData.ExpectedAnswer);
+        return Score;
     }
 
     IEnumerable<Point> GetTilePositions(TileType tileKind) =>

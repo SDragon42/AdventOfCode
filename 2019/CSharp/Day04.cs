@@ -3,83 +3,82 @@
 /// <summary>
 /// https://adventofcode.com/2019/day/4
 /// </summary>
-class Day04 : PuzzleBase
+public class Day04 : TestBase
 {
-    const int DAY = 4;
+    public Day04(ITestOutputHelper output) : base(output, 4) { }
 
 
-    delegate bool RuleMethod(int[] digits);
-    readonly List<RuleMethod> Rules = new List<RuleMethod>();
-
-
-    public override IEnumerable<string> SolvePuzzle()
+    private (List<int>, int?) GetTestData(string name, int part)
     {
-        yield return "Day 4: Secure Container";
+        var input = InputHelper.LoadInputFile(DAY, name)
+            .First()
+            .Split('-')
+            .Select(l => l.ToInt32())
+            .ToList();
 
-        yield return string.Empty;
-        yield return RunProblem(Part1);
+        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+            ?.FirstOrDefault()
+            ?.ToInt32();
 
-        yield return string.Empty;
-        yield return RunProblem(Part2);
+        return (input, expected);
     }
 
-    string Part1() => "Part 1) " + RunPart1(GetPuzzleData(1, "input"));
-    string Part2() => "Part 2) " + RunPart2(GetPuzzleData(2, "input"));
-
-
-    class InputAnswer : InputAnswer<List<int>, int?>
+    [Theory]
+    [InlineData("input")]
+    public void Part1(string inputName)
     {
-        public int PasswordRangeMin => Input[0];
-        public int PasswordRangeMax => Input[1];
-    }
-    InputAnswer GetPuzzleData(int part, string name)
-    {
-        var result = new InputAnswer()
-        {
-            Input = InputHelper.LoadInputFile(DAY, name)
-                .First()
-                .Split('-')
-                .Select(l => l.ToInt32())
-                .ToList(),
-            ExpectedAnswer = InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt32()
-        };
-        return result;
-    }
+        var (input, expected) = GetTestData(inputName, 1);
 
+        var passwordRangeMin = input[0];
+        var passwordRangeMax = input[1];
 
-    string RunPart1(InputAnswer puzzleData)
-    {
         Rules.Clear();
         Rules.Add(Rule_IsSixDigits);
         Rules.Add(Rule_TwoAdjacentDigitsAreTheSame);
         Rules.Add(Rule_LeftToRightDigitValueNeverDecreases);
 
         var numValidPasswords = 0;
-        for (var password = puzzleData.PasswordRangeMin; password <= puzzleData.PasswordRangeMax; password++)
+        for (var password = passwordRangeMin; password <= passwordRangeMax; password++)
         {
             if (IsPasswordValid(password))
                 numValidPasswords++;
         }
 
-        return Helper.GetPuzzleResultText($"Number of valid passwords: {numValidPasswords}", numValidPasswords, puzzleData.ExpectedAnswer);
+        output.WriteLine($"How many different passwords : {numValidPasswords}");
+
+        Assert.Equal(expected, numValidPasswords);
     }
 
-    string RunPart2(InputAnswer puzzleData)
+    [Theory]
+    [InlineData("input")]
+    public void Part2(string inputName)
     {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        var passwordRangeMin = input[0];
+        var passwordRangeMax = input[1];
+
         Rules.Clear();
         Rules.Add(Rule_IsSixDigits);
         Rules.Add(Rule_OnlyTwoAdjacentDigitsAreTheSame);
         Rules.Add(Rule_LeftToRightDigitValueNeverDecreases);
 
         var numValidPasswords = 0;
-        for (var password = puzzleData.PasswordRangeMin; password <= puzzleData.PasswordRangeMax; password++)
+        for (var password = passwordRangeMin; password <= passwordRangeMax; password++)
         {
             if (IsPasswordValid(password))
                 numValidPasswords++;
         }
 
-        return Helper.GetPuzzleResultText($"Number of valid passwords: {numValidPasswords}", numValidPasswords, puzzleData.ExpectedAnswer);
+        output.WriteLine($"How many different passwords : {numValidPasswords}");
+
+        Assert.Equal(expected, numValidPasswords);
     }
+
+
+
+    delegate bool RuleMethod(int[] digits);
+    readonly List<RuleMethod> Rules = new List<RuleMethod>();
 
 
     bool IsPasswordValid(int password)
