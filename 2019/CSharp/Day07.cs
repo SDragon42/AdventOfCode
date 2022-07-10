@@ -7,7 +7,7 @@ public class Day07 : TestBase
 {
     public Day07(ITestOutputHelper output) : base(output, 7) { }
 
-    private (List<long>, List<long>?, long?) GetTestData(string name, int part)
+    private (List<long>, List<long>, long?) GetTestData(string name, int part)
     {
         var inputData = InputHelper.LoadInputFile(DAY, name)
             .ToList();
