@@ -1,23 +1,5 @@
 from typing import Callable, List, Dict
 
-import helper
-import inputHelper
-from puzzleBase import PuzzleBase
-
-
-
-class InputData:
-    input: List[str]
-    expectedAnswer: int
-
-    def __init__(self, name: str, part: int) -> None:
-        day = 8
-        self.input = inputHelper.load_file(day, name).splitlines()
-        
-        answer = inputHelper.load_file(day, f"{name}-answer{part}")
-        self.expectedAnswer = int(answer) if answer is not None else None
-
-
 
 class AccumulatorProcessor:
 
@@ -72,53 +54,38 @@ class AccumulatorProcessor:
 
         finished = (self.idx >= len(self.code))
         return finished
-        
 
 
-class Puzzle(PuzzleBase):
 
-    def flip_instruction(self, instructionIdx: int, input: List[str]) -> List[str]:
-        if input[instructionIdx].startswith("nop"):
-            input[instructionIdx] = input[instructionIdx].replace("nop", "jmp")
-        else:
-            input[instructionIdx] = input[instructionIdx].replace("jmp", "nop")
-        return input
-
-
-    def run_part1(self, data: InputData) -> str:
-        comp = AccumulatorProcessor(data.input)
-        comp.run()
-        return helper.validate_result('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
+def flip_instruction(instructionIdx: int, input: List[str]) -> List[str]:
+    if input[instructionIdx].startswith("nop"):
+        input[instructionIdx] = input[instructionIdx].replace("nop", "jmp")
+    else:
+        input[instructionIdx] = input[instructionIdx].replace("jmp", "nop")
+    return input
 
 
-    def run_part2(self, data: InputData) -> str:
-        comp = AccumulatorProcessor(data.input)
-        comp.run()
-
-        firstCallStack = comp.callStack.copy()
-        while len(firstCallStack) > 0:
-            lastIdx = firstCallStack.pop()
-            if data.input[lastIdx].startswith("acc"):
-                continue
-
-            newInput = self.flip_instruction(lastIdx, data.input.copy())
-
-            comp = AccumulatorProcessor(newInput)
-            reachedEnd = comp.run()
-            if reachedEnd:
-                break
-
-        return helper.validate_result('The value in the accumulator is:', comp.accValue, data.expectedAnswer)
+def run_part1(input: List[str]) -> int:
+    comp = AccumulatorProcessor(input)
+    comp.run()
+    return comp.accValue
 
 
-    def solve(self):
-        print("Day 8: Handheld Halting")
-        print("")
+def run_part2(input: List[str]) -> int:
+    comp = AccumulatorProcessor(input)
+    comp.run()
 
-        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
-        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
+    firstCallStack = comp.callStack.copy()
+    while len(firstCallStack) > 0:
+        lastIdx = firstCallStack.pop()
+        if input[lastIdx].startswith("acc"):
+            continue
 
-        print("")
+        newInput = flip_instruction(lastIdx, input.copy())
 
-        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
-        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
+        comp = AccumulatorProcessor(newInput)
+        reachedEnd = comp.run()
+        if reachedEnd:
+            break
+
+    return comp.accValue
