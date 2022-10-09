@@ -126,7 +126,7 @@ def calc_manhattan_distance(x: int, y: int) -> int:
     return abs(x) + abs(y)
 
 
-def get_distance_from_start(input: List[int], actions: Dict) -> int:
+def get_distance_from_start(input: List[str], actions: Dict) -> int:
     currentPos = Position(0, 0, "E")
     currentPos.waypoint = WaypointPosition(10, 1)
 

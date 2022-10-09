@@ -11,7 +11,7 @@ import src.day14 as puzzle
 _DAY = 14
 
 class Day14(unittest.TestCase):
-    def get_test_data(self, name:str, part:int) -> tuple[List[int], int]:
+    def get_test_data(self, name:str, part:int) -> tuple[List[str], int]:
         input = inputHelper.load_file(_DAY, name).splitlines()
 
         expectedAnswer = inputHelper.load_file(_DAY, f"{name}-answer{part}")

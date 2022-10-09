@@ -45,7 +45,7 @@ def get_next_matching_time(time: int, busId: int, increment: int, offset: int) -
     return time
 
 
-def run_part1(input: List[int]) -> int:
+def run_part1(input: List[str]) -> int:
     earliestTime = int(input[0])
     buses = input[1].split(",")
     bus = get_soonest_bus(earliestTime, buses)
@@ -53,7 +53,7 @@ def run_part1(input: List[int]) -> int:
     return result
 
 
-def run_part2(input: List[int]) -> int:
+def run_part2(input: List[str]) -> int:
     buses = input[1].split(",")
     increment = 0
     lcmValue = 1
