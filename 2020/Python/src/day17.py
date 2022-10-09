@@ -1,24 +1,8 @@
 from typing import List, Dict
 
-import helper
-import inputHelper
-from puzzleBase import PuzzleBase
-
-
-
-class InputData:
-    input: List[str]
-    expectedAnswer: int
-    numDimensions: int
-
-    def __init__(self, name: str, part: int) -> None:
-        day = 17
-        self.input = inputHelper.load_file(day, name).splitlines()
-
-        self.numDimensions = int(inputHelper.load_file(day, f'dimensions{part}'))
-
-        answer = inputHelper.load_file(day, f"{name}-answer{part}")
-        self.expectedAnswer = int(answer) if answer is not None else None
+# import helper
+# import inputHelper
+# from puzzleBase import PuzzleBase
 
 
 
@@ -229,28 +213,13 @@ class ConwayCube:
 
 
 
-class Puzzle(PuzzleBase):
+def run_part(input: List[str], numDimensions: int) -> int:
+    cc = ConwayCube(input, numDimensions)
 
-    def run_part(self, data: InputData) -> str:
-        cc = ConwayCube(data.input, data.numDimensions)
+    cycle = 1
+    while cycle <= 6:
+        cc.apply_rules()
+        cycle += 1
 
-        cycle = 1
-        while cycle <= 6:
-            cc.apply_rules()
-            cycle += 1
-
-        result = cc.get_num_active_cubes()
-        return helper.validate_result('How many cubes are left in the active state after the sixth cycle?', result, data.expectedAnswer)
-
-
-    def solve(self):
-        print("Day 17: Conway Cubes")
-        print("")
-
-        self.run_example(lambda: "P1 Ex1) " + self.run_part(InputData('example1', 1)))
-        self.run_problem(lambda: "Part 1) " + self.run_part(InputData('input', 1)))
-
-        print("")
-
-        self.run_example(lambda: "P2 Ex1) " + self.run_part(InputData('example1', 2)))
-        self.run_problem(lambda: "Part 2) " + self.run_part(InputData('input', 2)))
+    result = cc.get_num_active_cubes()
+    return result
