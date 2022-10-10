@@ -4,189 +4,156 @@
 import re
 from typing import List, Dict, Any, Optional
 
-import helper
-import inputHelper
-from puzzleBase import PuzzleBase
-
-
-
-class InputData:
-    input: List[str]
-    expectedAnswer: int
-
-    def __init__(self, name: str, part: int) -> None:
-        day = 19
-        self.input = inputHelper.load_file(day, name).splitlines()
-        
-        answer = inputHelper.load_file(day, f"{name}-answer{part}")
-        self.expectedAnswer = int(answer) if answer is not None else None
-
 
 
 RuleChains = List[List[Any]]
 
 
 
-class Puzzle(PuzzleBase):
-    
-    def build_rule_dict(self, input: List[str]) -> Dict[int, RuleChains]:
-        rules: Dict[int, RuleChains] = {}
+def build_rule_dict(input: List[str]) -> Dict[int, RuleChains]:
+    rules: Dict[int, RuleChains] = {}
 
-        for line in input:
-            i = line.index(":")
-            key = int(line[:i].strip())
-            line = line[i+1:]
+    for line in input:
+        i = line.index(":")
+        key = int(line[:i].strip())
+        line = line[i+1:]
 
-            orParts = line.split("|")
-            orChain: RuleChains = []
-            for orLine in orParts:
-                parts = orLine.split()
-                andChain = []
-                for p in parts:
-                    val = p.strip().replace('"', '')
-                    try:
-                        andChain.append(int(val))
-                    except:
-                        andChain.append(val)
-                orChain.append(andChain)
-            rules[key] = orChain
+        orParts = line.split("|")
+        orChain: RuleChains = []
+        for orLine in orParts:
+            parts = orLine.split()
+            andChain = []
+            for p in parts:
+                val = p.strip().replace('"', '')
+                try:
+                    andChain.append(int(val))
+                except:
+                    andChain.append(val)
+            orChain.append(andChain)
+        rules[key] = orChain
 
-        return rules
+    return rules
 
 
-    def convert_to_regex_rules(self, rules: Dict[int, RuleChains]) -> Dict[int, RuleChains]:
-        while True:
-            key = self.get_str_only_rule(rules)
-            if not key:
+def convert_to_regex_rules(rules: Dict[int, RuleChains]) -> Dict[int, RuleChains]:
+    while True:
+        key = get_str_only_rule(rules)
+        if not key:
+            break
+        rule = rules.pop(key)
+        regex = convert_to_regex(rule)
+        rules = replace_references(rules, key, regex)
+    return rules
+
+
+def rule_is_all_str(rule: RuleChains) -> bool:
+    xx = [val for orGroup in rule for val in orGroup]
+    for check in xx:
+        if not isinstance(check, str):
+            return False
+    return True
+
+
+def get_str_only_rule(rules: Dict[int, RuleChains]) -> Optional[int]:
+    for key, rule in rules.items():
+        if rule_is_all_str(rule):
+            return key
+    return None
+
+
+def convert_to_regex(rule: RuleChains) -> str:
+    parts = []
+    for group in rule:
+        subParts = []
+        for cs in group:
+            for c in cs:
+                subParts.append(c)
+        a = f"({''.join(subParts)})"
+        parts.append(a)
+    ref2 = f"({'|'.join(parts)})"
+
+    return ref2
+
+
+def replace_references(rules: Dict[int, RuleChains], replace_key: int, regex: str) -> Dict[int, RuleChains]:
+    for key, rule in rules.items():
+        for gIdx, g in enumerate(rule):
+            for cIdx, c in enumerate(g):
+                if c == replace_key:
+                    rules[key][gIdx][cIdx] = regex
+    return rules
+
+
+def process_image(imageData: str, rules: Dict[str, RuleChains], charIdx: int, ruleKey: str) -> int:
+    chain: RuleChains = rules[ruleKey]
+    for orChain in chain:
+        successChars = 0
+        for x in orChain:
+            if charIdx + successChars >= len(imageData):
                 break
-            rule = rules.pop(key)
-            regex = self.convert_to_regex(rule)
-            rules = self.replace_references(rules, key, regex)
-        return rules
 
-
-    def rule_is_all_str(self, rule: RuleChains) -> bool:
-        xx = [val for orGroup in rule for val in orGroup]
-        for check in xx:
-            if not isinstance(check, str):
-                return False
-        return True
-
-
-    def get_str_only_rule(self, rules: Dict[int, RuleChains]) -> Optional[int]:
-        for key, rule in rules.items():
-            if self.rule_is_all_str(rule):
-                return key
-        return None
-
-
-    def convert_to_regex(self, rule: RuleChains) -> str:
-        parts = []
-        for group in rule:
-            subParts = []
-            for cs in group:
-                for c in cs:
-                    subParts.append(c)
-            a = f"({''.join(subParts)})"
-            parts.append(a)
-        ref2 = f"({'|'.join(parts)})"
-
-        return ref2
-
-
-    def replace_references(self, rules: Dict[int, RuleChains], replace_key: int, regex: str) -> Dict[int, RuleChains]:
-        for key, rule in rules.items():
-            for gIdx, g in enumerate(rule):
-                for cIdx, c in enumerate(g):
-                    if c == replace_key:
-                        rules[key][gIdx][cIdx] = regex
-        return rules
-
-
-    def process_image(self, imageData: str, rules: Dict[str, RuleChains], charIdx: int, ruleKey: str) -> int:
-        chain: RuleChains = rules[ruleKey]
-        for orChain in chain:
-            successChars = 0
-            for x in orChain:
-                if charIdx + successChars >= len(imageData):
-                    break
-
-                if x == "a" or x == "b":
-                    if x == imageData[charIdx + successChars]:
-                        return 1
-                    else:
-                        return 0
-                        
-                shift = self.process_image(imageData, rules, charIdx + successChars, x)
-                successChars += shift
-                if shift <= 0:
-                    successChars = 0
-                    break
-            
-            if successChars > 0:
-                return successChars
-        return 0
-
-
-    def count_valid_images(self, messages: List[str], regex: str):
-        regex += r'$' # Include line-end in regex to match whole line
-        p = re.compile(regex)
-        count = 0
-        for message in messages:
-            match = p.match(message)
-            if match:
-                count += 1
-                helper.dprint(message)
-        return count
-
-
-    def run_part1(self, data: InputData) -> str:
-        end = data.input.index("")
-        rules = self.build_rule_dict(data.input[:end])
-        rules = self.convert_to_regex_rules(rules)
-
-        images = data.input[end+1:]
-
-        regex = self.convert_to_regex(rules[0])
-        result = self.count_valid_images(images, regex)
-
-        return helper.validate_result('How many messages completely match rule 0?', result, data.expectedAnswer)
-
-
-    def run_part2(self, data: InputData) -> str:
-        end = data.input.index("")
-        rules = self.build_rule_dict(data.input[:end])
-
-        rules[8] = [[42], [42, 8]]
-        rules[11] = [[42, 31], [42, 11, 31]]
-
-        rules = self.convert_to_regex_rules(rules)
-
-        rx42 = rules[8][0][0]
-        rx31 = rules[11][0][1]
-        rx8 = f"{rx42}+"
-        parts = []
-        for n in range(1, 6):
-            val = f"{rx42}{{{n}}}{rx31}{{{n}}}"
-            parts.append(val)
-        rx11 = "(" + "|".join(parts) + ")"
-        regex = rx8 + rx11
-
-        images = data.input[end+1:]
-
-        result = self.count_valid_images(images, regex)
+            if x == "a" or x == "b":
+                if x == imageData[charIdx + successChars]:
+                    return 1
+                else:
+                    return 0
+                    
+            shift = process_image(imageData, rules, charIdx + successChars, x)
+            successChars += shift
+            if shift <= 0:
+                successChars = 0
+                break
         
-        return helper.validate_result('After updating rules 8 and 11, how many messages completely match rule 0?', result, data.expectedAnswer)
+        if successChars > 0:
+            return successChars
+    return 0
 
 
-    def solve(self):
-        print("Day 19: Monster Messages")
-        print("")
+def count_valid_images(messages: List[str], regex: str):
+    regex += r'$' # Include line-end in regex to match whole line
+    p = re.compile(regex)
+    count = 0
+    for message in messages:
+        match = p.match(message)
+        if match:
+            count += 1
+    return count
 
-        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
-        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
 
-        print("")
+def run_part1(input: List[str]) -> str:
+    end = input.index("")
+    rules = build_rule_dict(input[:end])
+    rules = convert_to_regex_rules(rules)
 
-        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example2', 2)))
-        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
+    images = input[end+1:]
+
+    regex = convert_to_regex(rules[0])
+    result = count_valid_images(images, regex)
+
+    return result
+
+
+def run_part2(input: List[str]) -> str:
+    end = input.index("")
+    rules = build_rule_dict(input[:end])
+
+    rules[8] = [[42], [42, 8]]
+    rules[11] = [[42, 31], [42, 11, 31]]
+
+    rules = convert_to_regex_rules(rules)
+
+    rx42 = rules[8][0][0]
+    rx31 = rules[11][0][1]
+    rx8 = f"{rx42}+"
+    parts = []
+    for n in range(1, 6):
+        val = f"{rx42}{{{n}}}{rx31}{{{n}}}"
+        parts.append(val)
+    rx11 = "(" + "|".join(parts) + ")"
+    regex = rx8 + rx11
+
+    images = input[end+1:]
+
+    result = count_valid_images(images, regex)
+    
+    return result
