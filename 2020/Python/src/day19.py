@@ -120,7 +120,7 @@ def count_valid_images(messages: List[str], regex: str):
     return count
 
 
-def run_part1(input: List[str]) -> str:
+def run_part1(input: List[str]) -> int:
     end = input.index("")
     rules = build_rule_dict(input[:end])
     rules = convert_to_regex_rules(rules)
@@ -133,7 +133,7 @@ def run_part1(input: List[str]) -> str:
     return result
 
 
-def run_part2(input: List[str]) -> str:
+def run_part2(input: List[str]) -> int:
     end = input.index("")
     rules = build_rule_dict(input[:end])
 
