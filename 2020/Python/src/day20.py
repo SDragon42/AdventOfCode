@@ -4,22 +4,7 @@
 import math
 from typing import Any, List
 
-import helper
-import inputHelper
-from puzzleBase import PuzzleBase
-
-
-
-class InputData:
-    input: str
-    expectedAnswer: int
-
-    def __init__(self, name: str, part: int) -> None:
-        day = 20
-        self.input = inputHelper.load_file(day, name)
-
-        answer = inputHelper.load_file(day, f"{name}-answer{part}")
-        self.expectedAnswer = int(answer) if answer is not None else None
+# import helper
 
 
 
@@ -106,181 +91,166 @@ class TileData:
 
 
 
-class Puzzle(PuzzleBase):
-
-    def create_tile(self, data: str) -> TileData:
-        lines = data.split("\n")
-        tmp = lines[0]
-        id = int(tmp[5:tmp.index(":")])
-        tile = TileData(id, lines[1:])
-        return tile
+def create_tile(data: str) -> TileData:
+    lines = data.split("\n")
+    tmp = lines[0]
+    id = int(tmp[5:tmp.index(":")])
+    tile = TileData(id, lines[1:])
+    return tile
 
 
-    def create_all_tiles(self, inputData: str) -> List[TileData]:
-        puzzleData = inputData.split("\n\n")
-        tileList = [self.create_tile(p) for p in puzzleData]
-        return tileList
+def create_all_tiles(inputData: str) -> List[TileData]:
+    puzzleData = inputData.split("\n\n")
+    tileList = [create_tile(p) for p in puzzleData]
+    return tileList
 
-    def find_matching_tiles(self, tileList: List[TileData], edge: str) -> List[TileData]:
-        return [
-            tile
-            for tile in tileList
-            if edge in tile.allPossibleTileSides]
-
-
-    def does_edge_match(self, tileList: List[TileData], edge: str) -> bool:
-        for t in tileList:
-            if edge in t.allPossibleTileSides:
-                return True
-        return False
+def find_matching_tiles(tileList: List[TileData], edge: str) -> List[TileData]:
+    return [
+        tile
+        for tile in tileList
+        if edge in tile.allPossibleTileSides]
 
 
-    def get_open_side_tiles(self, tileList: List[TileData], numOpenSides: int) -> List[TileData]:
-        openTiles: List[TileData] = []
-        for tile in tileList:
-            otherTiles = tileList.copy()
-            otherTiles.remove(tile)
-
-            num = 0
-            for edge in tile.tileSides:
-                if not self.does_edge_match(otherTiles, edge):
-                    num += 1
-                    continue
-            if num == numOpenSides:
-                openTiles.append(tile)
-        return openTiles
+def does_edge_match(tileList: List[TileData], edge: str) -> bool:
+    for t in tileList:
+        if edge in t.allPossibleTileSides:
+            return True
+    return False
 
 
-    def find_monster(self, image: str, idx: int, monsterIndexes: List[int]) -> bool:
-        result = not any([image[idx + i] == '.' for i in monsterIndexes])
-        return result
+def get_open_side_tiles(tileList: List[TileData], numOpenSides: int) -> List[TileData]:
+    openTiles: List[TileData] = []
+    for tile in tileList:
+        otherTiles = tileList.copy()
+        otherTiles.remove(tile)
+
+        num = 0
+        for edge in tile.tileSides:
+            if not does_edge_match(otherTiles, edge):
+                num += 1
+                continue
+        if num == numOpenSides:
+            openTiles.append(tile)
+    return openTiles
 
 
-    def tag_monster(self, tile: TileData, idx: int, monsterIndexes: List[int]) -> None:
-        helper.dprint("monster found")
-        for i in monsterIndexes:
-            tIdx = idx + i
-            r = (tIdx % tile.tileSize)
-            row = (tIdx - r) // tile.tileSize
-            xidx = tIdx - (row * tile.tileSize)
-            tile.tile[row][xidx] = "O"
+def find_monster(image: str, idx: int, monsterIndexes: List[int]) -> bool:
+    result = not any([image[idx + i] == '.' for i in monsterIndexes])
+    return result
 
 
-    def run_part1(self, data: InputData) -> str:
-        tileList = self.create_all_tiles(data.input)
-        cornerTiles = self.get_open_side_tiles(tileList, 2)
-        result = 1
-        for corner in cornerTiles:
-            result *= corner.id
-            helper.dprint(f"tile id: {corner.id}")
-        return helper.validate_result('What do you get if you multiply together the IDs of the four corner tiles?', result, data.expectedAnswer)
+def tag_monster(tile: TileData, idx: int, monsterIndexes: List[int]) -> None:
+    # helper.dprint("monster found")
+    for i in monsterIndexes:
+        tIdx = idx + i
+        r = (tIdx % tile.tileSize)
+        row = (tIdx - r) // tile.tileSize
+        xidx = tIdx - (row * tile.tileSize)
+        tile.tile[row][xidx] = "O"
 
 
-    def run_part2(self, data: InputData) -> str:
-        tileList = self.create_all_tiles(data.input)
+def run_part1(input:str) -> int:
+    tileList = create_all_tiles(input)
+    cornerTiles = get_open_side_tiles(tileList, 2)
+    result = 1
+    for corner in cornerTiles:
+        result *= corner.id
+        # helper.dprint(f"tile id: {corner.id}")
+    return result
 
-        sideSize = int(math.sqrt(len(tileList)))
 
-        grid: List[List[TileData]] = [[None for x in range(sideSize)] for y in range(sideSize)]
+def run_part2(input:str) -> int:
+    tileList = create_all_tiles(input)
 
-        cornerTiles = self.get_open_side_tiles(tileList, 2)
+    sideSize = int(math.sqrt(len(tileList)))
 
-        t = cornerTiles[0]
-        grid[0][0] = t
+    grid: List[List[TileData]] = [[None for x in range(sideSize)] for y in range(sideSize)]
 
-        # starting corner
-        for transformFunc in t.get_rotate_flip_actions():
-            bottomMatches = self.find_matching_tiles(tileList, t.get_edge_bottom())
-            leftMatches = self.find_matching_tiles(tileList, t.get_edge_left())
-            if len(bottomMatches) == 1 and len(leftMatches) == 1:
+    cornerTiles = get_open_side_tiles(tileList, 2)
+
+    t = cornerTiles[0]
+    grid[0][0] = t
+
+    # starting corner
+    for transformFunc in t.get_rotate_flip_actions():
+        bottomMatches = find_matching_tiles(tileList, t.get_edge_bottom())
+        leftMatches = find_matching_tiles(tileList, t.get_edge_left())
+        if len(bottomMatches) == 1 and len(leftMatches) == 1:
+            break
+        transformFunc()
+
+    # bottom row
+    for x in range(1, sideSize):
+        edge = grid[0][x-1].get_edge_right()
+        rtList = find_matching_tiles(tileList, edge)
+        rtList.remove(grid[0][x-1])
+        assert(len(rtList) == 1)
+        rt = rtList[0]
+        for transformFunc in rt.get_rotate_flip_actions():
+            if rt.get_edge_left() == edge:
+                grid[0][x] = rt
                 break
             transformFunc()
 
-        # bottom row
-        for x in range(1, sideSize):
-            edge = grid[0][x-1].get_edge_right()
-            rtList = self.find_matching_tiles(tileList, edge)
-            rtList.remove(grid[0][x-1])
-            assert(len(rtList) == 1)
-            rt = rtList[0]
-            for transformFunc in rt.get_rotate_flip_actions():
-                if rt.get_edge_left() == edge:
-                    grid[0][x] = rt
+    # each column
+    for x in range(sideSize):
+        for y in range(1, sideSize):
+            edge = grid[y-1][x].get_edge_top()
+            ntList = find_matching_tiles(tileList, edge)
+            ntList.remove(grid[y-1][x])
+            assert(len(ntList) == 1)
+            nt = ntList[0]
+            for transformFunc in nt.get_rotate_flip_actions():
+                if nt.get_edge_bottom() == edge:
+                    grid[y][x] = nt
                     break
                 transformFunc()
 
-        # each column
+    # remove all edges
+    for y in range(sideSize):
         for x in range(sideSize):
-            for y in range(1, sideSize):
-                edge = grid[y-1][x].get_edge_top()
-                ntList = self.find_matching_tiles(tileList, edge)
-                ntList.remove(grid[y-1][x])
-                assert(len(ntList) == 1)
-                nt = ntList[0]
-                for transformFunc in nt.get_rotate_flip_actions():
-                    if nt.get_edge_bottom() == edge:
-                        grid[y][x] = nt
-                        break
-                    transformFunc()
+            grid[y][x].remove_edges()
 
-        # remove all edges
-        for y in range(sideSize):
-            for x in range(sideSize):
-                grid[y][x].remove_edges()
+    # consolidate image
+    imageList: List[str] = []
 
-        # consolidate image
-        imageList: List[str] = []
+    for y in range(sideSize - 1, -1, -1): #top down (each tile)
+        for i in range(grid[0][0].tileSize):
+            lineParts = ["".join(grid[y][x].tile[i]) for x in range(sideSize)]
 
-        for y in range(sideSize - 1, -1, -1): #top down (each tile)
-            for i in range(grid[0][0].tileSize):
-                lineParts = ["".join(grid[y][x].tile[i]) for x in range(sideSize)]
+            line = "".join(lineParts)
+            imageList.append(line)
 
-                line = "".join(lineParts)
-                imageList.append(line)
+    t = TileData(0, imageList)
 
-        t = TileData(0, imageList)
+    monsterLengh = 20
+    spaces = " "*(t.tileSize - monsterLengh)
+    monsterimage = f"                  # {spaces}#    ##    ##    ###{spaces} #  #  #  #  #  #   "
+    monsterIndexes = [i for i,c in enumerate(monsterimage) if c == '#']
 
-        monsterLengh = 20
-        spaces = " "*(t.tileSize - monsterLengh)
-        monsterimage = f"                  # {spaces}#    ##    ##    ###{spaces} #  #  #  #  #  #   "
-        monsterIndexes = [i for i,c in enumerate(monsterimage) if c == '#']
+    monstersFound = False
+    for transformFunc in t.get_rotate_flip_actions():
+        image = "".join(["".join(x) for x in t.tile])
+        for row in range(t.tileSize - 2):
+            for i in range(t.tileSize - monsterLengh):
+                start = (row * (t.tileSize)) + i
+                if find_monster(image, start, monsterIndexes):
+                    monstersFound = True
+                    tag_monster(t, start, monsterIndexes)
+        if monstersFound:
+            break
+        transformFunc()
 
-        monstersFound = False
-        for transformFunc in t.get_rotate_flip_actions():
-            image = "".join(["".join(x) for x in t.tile])
-            for row in range(t.tileSize - 2):
-                for i in range(t.tileSize - monsterLengh):
-                    start = (row * (t.tileSize)) + i
-                    if self.find_monster(image, start, monsterIndexes):
-                        monstersFound = True
-                        self.tag_monster(t, start, monsterIndexes)
-            if monstersFound:
-                break
-            transformFunc()
+    image = "\n".join(["".join(x) for x in t.tile])
+    # helper.dprint("--- IMAGE ---")
+    # helper.dprint(image)
+    # helper.dprint("")
 
-        image = "\n".join(["".join(x) for x in t.tile])
-        helper.dprint("--- IMAGE ---")
-        helper.dprint(image)
-        helper.dprint("")
+    result = 0
 
-        result = 0
+    for row in range(t.tileSize):
+        for x in range(t.tileSize):
+            if t.tile[row][x] == "#":
+                result += 1
 
-        for row in range(t.tileSize):
-            for x in range(t.tileSize):
-                if t.tile[row][x] == "#":
-                    result += 1
-
-        return helper.validate_result('How many # are not part of a sea monster?', result, data.expectedAnswer)
-
-
-    def solve(self):
-        print("Day 20: Jurassic Jigsaw")
-        print("")
-
-        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
-        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
-
-        print("")
-
-        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
-        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
+    return result
