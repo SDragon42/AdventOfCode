@@ -32,7 +32,7 @@ class Day19(unittest.TestCase):
         self.assertEqual(answer, expected)
 
 
-    def test_part2_example1(self):
+    def test_part2_example2(self):
         input, expected = self.get_test_data("example2", 2)
         answer = puzzle.run_part2(input)
         self.assertEqual(answer, expected)
