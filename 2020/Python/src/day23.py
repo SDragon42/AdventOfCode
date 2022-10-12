@@ -3,28 +3,6 @@
 
 from typing import List, Dict
 
-import helper
-import inputHelper
-from puzzleBase import PuzzleBase
-
-
-
-class InputData:
-    input: List[int]
-    numMoves: int
-    expectedAnswer: int
-
-    def __init__(self, name: str, part: int) -> None:
-        day = 23
-
-        text = inputHelper.load_file(day, name)
-        self.input = [int(c) for c in text]
-
-        self.numMoves = int(inputHelper.load_file(day, f"{name}-moves{part}"))
-
-        answer = inputHelper.load_file(day, f"{name}-answer{part}")
-        self.expectedAnswer = int(answer) if answer is not None else None
-
 
 
 class CrabCups:
@@ -108,45 +86,30 @@ class CrabCups:
         return (tmp, self.cupLinks[tmp])
 
 
-class Puzzle(PuzzleBase):
 
-    def int_list_to_dict_links(self, values: List[int]) -> Dict[int, int]:
-        links = {number: values[(idx + 1) % len(values)] for idx, number in enumerate(values)}
-        return links
-
-
-    def run_part1(self, data: InputData) -> str:
-        cupLinks = self.int_list_to_dict_links(data.input)
-
-        game = CrabCups(cupLinks, data.input[0], data.numMoves)
-        while game.perform_move():
-            pass
-        result = game.get_cups_after_1()
-        return helper.validate_result('What are the labels on the cups after cup 1?', result, data.expectedAnswer)
+def int_list_to_dict_links(values: List[int]) -> Dict[int, int]:
+    links = {number: values[(idx + 1) % len(values)] for idx, number in enumerate(values)}
+    return links
 
 
-    def run_part2(self, data: InputData) -> str:
-        tmp = range(max(data.input) + 1, 1000001, 1)
-        data.input.extend(tmp)
-        cupLinks = self.int_list_to_dict_links(data.input)
+def run_part1(input: List[int], numMoves: int) -> int:
+    cupLinks = int_list_to_dict_links(input)
 
-        game = CrabCups(cupLinks, data.input[0], data.numMoves)
-        while game.perform_move():
-            pass
-        values = game.get_cups_after_1b()
-        result = values[0] * values[1]
-        return helper.validate_result('What do you get if you multiply their labels together?', result, data.expectedAnswer)
+    game = CrabCups(cupLinks, input[0], numMoves)
+    while game.perform_move():
+        pass
+    result = game.get_cups_after_1()
+    return result
 
 
-    def solve(self):
-        print("Day 23: Crab Cups")
-        print("")
+def run_part2(input: List[int], numMoves: int) -> int:
+    tmp = range(max(input) + 1, 1000001, 1)
+    input.extend(tmp)
+    cupLinks = int_list_to_dict_links(input)
 
-        self.run_example(lambda: "P1 Ex1) " + self.run_part1(InputData('example1', 1)))
-        self.run_example(lambda: "P1 Ex2) " + self.run_part1(InputData('example2', 1)))
-        self.run_problem(lambda: "Part 1) " + self.run_part1(InputData('input', 1)))
-
-        print("")
-
-        self.run_example(lambda: "P2 Ex1) " + self.run_part2(InputData('example1', 2)))
-        self.run_problem(lambda: "Part 2) " + self.run_part2(InputData('input', 2)))
+    game = CrabCups(cupLinks, input[0], numMoves)
+    while game.perform_move():
+        pass
+    values = game.get_cups_after_1b()
+    result = values[0] * values[1]
+    return result
