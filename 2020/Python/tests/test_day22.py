@@ -42,8 +42,8 @@ class Day22(unittest.TestCase):
         answer = puzzle.run_part2(input)
         self.assertEqual(answer, expected)
 
-    def test_part2(self):
-        # input, expected = self.get_test_data("input", 2)
-        # answer = puzzle.run_part2(input)
-        # self.assertEqual(answer, expected)
-        self.assertEqual(True, False, "This test is disabled because it runs SLOW.")
+    # # This test is disabled because it runs SLOW.
+    # def test_part2(self):
+    #     input, expected = self.get_test_data("input", 2)
+    #     answer = puzzle.run_part2(input)
+    #     self.assertEqual(answer, expected)
