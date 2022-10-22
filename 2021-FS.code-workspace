@@ -17,8 +17,8 @@
 			"**/obj": true,
 			"**/.ionide": true,
 			"*.fsproj.user": true
-			// "*.sln": true
-		}
+		},
+		"editor.inlayHints.enabled": "offUnlessPressed"
 	},
 	"extensions": {},
 	"launch": {
