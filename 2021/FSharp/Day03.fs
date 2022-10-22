@@ -8,46 +8,54 @@ open Xunit
 
 type Puzzle03 () =
 
-    member private this.GetdigitsAt(position: int, input: string list) =
+    member private this.GetdigitsAt (position: int, input: string list) =
         let GetDigitAt(value: string) =
             value[position]
         input |> List.map GetDigitAt
 
 
-    member private this.MostCommonBit(bits: char list) =
-        let a = this.CountChars(bits, '0')
-        let b = this.CountChars(bits, '1')
-        if a = b then '1' elif a < b then '1' else '0'
+    member private this.MostCommonBit (bits: char list) =
+        let a = this.CountChars bits '0'
+        let b = this.CountChars bits '1'
+        match a with
+        | _ when a <= b -> '1'
+        | _ -> '0'
 
 
-    member private this.LeastCommonBit(bits: char list) =
-        let a = this.CountChars(bits, '0')
-        let b = this.CountChars(bits, '1')
-        if a = b then '0' elif a < b then '0' else '1'
+    member private this.LeastCommonBit (bits: char list) =
+        let a = this.CountChars bits '0'
+        let b = this.CountChars bits '1'
+        match a with
+        | _ when a <= b -> '0'
+        | _ -> '1'
 
 
-    member private this.CountChars(bits: char list, value: char) =
-        let result = bits |> Seq.where (fun x -> x = value) |> Seq.toList
-        result.Length
+    member private this.CountChars (bits: char list) (value: char) =
+        bits
+        |> Seq.where (fun x -> x = value)
+        |> Seq.toList
+        |> Seq.length
 
 
-    member private this.CalcPowerRatingPart(input: string list, func) =
+    member private this.CalcPowerRatingPart (input: string list, func) =
         let count = input[0].Length
         let rec doIt(i: int) =
-            if i < 0 then
+            match i with
+            | _ when i < 0 ->
                 ""
-            else
+            | _ ->
                 let bits = this.GetdigitsAt(i, input)
                 let x = bits |> func |> string
                 doIt(i - 1) + x
         doIt(count - 1)
 
 
-    member private this.FindLifeSupportRatingPart(input: string list, func) =
+    member private this.FindLifeSupportRatingPart (input: string list, func) =
         let rec doIt(i: int, data: string list) = 
-            if data.Length = 1 then
+            match data with
+            | _ when data.Length = 1 ->
                 data[0]
-            else
+            | _ ->
                 let bits = this.GetdigitsAt(i, data)
                 let x = bits |> func
 
