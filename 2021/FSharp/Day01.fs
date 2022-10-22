@@ -4,6 +4,8 @@ open FSharp.Common
 open System
 open Xunit
 
+
+
 type private Puzzle01 () =
 
     member private this.CountIncreases = 
