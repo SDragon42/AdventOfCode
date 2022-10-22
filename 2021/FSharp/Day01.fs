@@ -14,22 +14,28 @@ type private Puzzle01 () =
         >> List.length
 
 
-    member this.RunPart1 (input:int list) =
-        // How many measurements are larger than the previous measurement?
-        let result = 
-            input
-            |> this.CountIncreases
-        result
+    // How many measurements are larger than the previous measurement?
+    //member this.RunPart1 (input:int list) =
+    //    input
+    //    |> this.CountIncreases
+
+    // How many measurements are larger than the previous measurement?
+    member this.RunPart1 =
+        this.CountIncreases
 
 
-    member this.RunPart2 (input:int list) =
-        // How many sums are larger than the previous sum?
-        let result =
-            input
-            |> List.windowed(3)
-            |> List.map List.sum
-            |> this.CountIncreases
-        result
+    // How many sums are larger than the previous sum?
+    //member this.RunPart2 (input:int list) =
+    //    input
+    //    |> List.windowed(3)
+    //    |> List.map List.sum
+    //    |> this.CountIncreases
+
+    // How many sums are larger than the previous sum?
+    member this.RunPart2 =
+        List.windowed(3)
+        >> List.map List.sum
+        >> this.CountIncreases
 
 
 
