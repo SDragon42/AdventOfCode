@@ -1,30 +1,12 @@
-﻿module Day03
+﻿namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
 open System
+open Xunit
 
 
-type private PuzzleInput(input, expectedAnswer) = 
-    inherit InputAnswer<string list, int option>(input, expectedAnswer)
 
-
-type Day03 (runBenchmarks, runExamples) =
-    inherit PuzzleBase(runBenchmarks, runExamples)
-
-
-    member private this.GetPuzzleInput (part: int, name: string) =
-        let day = 3
-
-        let input = 
-            InputHelper.LoadLines(day, name)
-            |> Seq.toList
-        
-        let answer = 
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
-            |> InputHelper.AsInt
-        
-        new PuzzleInput(input, answer)
-
+type Puzzle03 () =
 
     member private this.GetdigitsAt(position: int, input: string list) =
         let GetDigitAt(value: string) =
@@ -74,28 +56,60 @@ type Day03 (runBenchmarks, runExamples) =
         doIt(0, input)
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let gammaRate = this.CalcPowerRatingPart(puzzleData.Input, this.MostCommonBit) |> Helper.BinaryStringToInt
-        let epsilonRate = this.CalcPowerRatingPart(puzzleData.Input, this.LeastCommonBit) |> Helper.BinaryStringToInt
+    member this.RunPart1 (input: string list) =
+        let gammaRate = this.CalcPowerRatingPart(input, this.MostCommonBit) |> Helper.BinaryStringToInt
+        let epsilonRate = this.CalcPowerRatingPart(input, this.LeastCommonBit) |> Helper.BinaryStringToInt
 
         let result = gammaRate * epsilonRate
-        Helper.GetPuzzleResultText("What is the power consumption of the submarine?", result, puzzleData.ExpectedAnswer)
+        result
 
 
-    member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let o2GeneratorRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.MostCommonBit) |> Helper.BinaryStringToInt
-        let co2ScrubberRating = this.FindLifeSupportRatingPart(puzzleData.Input, this.LeastCommonBit) |> Helper.BinaryStringToInt
+    member this.RunPart2 (input: string list) =
+        let o2GeneratorRating = this.FindLifeSupportRatingPart(input, this.MostCommonBit) |> Helper.BinaryStringToInt
+        let co2ScrubberRating = this.FindLifeSupportRatingPart(input, this.LeastCommonBit) |> Helper.BinaryStringToInt
 
         let result = o2GeneratorRating * co2ScrubberRating
-        Helper.GetPuzzleResultText("What is the life support rating of the submarine?", result, puzzleData.ExpectedAnswer)
-
-
-    override this.SolvePuzzle _ = seq {
-        yield "Day 3: Binary Diagnostic"
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
-        yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
-
-        yield ""
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
-        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
-        }
+        result
+        
+        
+        
+module ``Day 3: Binary Diagnostic`` =
+    let private GetPuzzleInput (part:int) (name:string) =
+        let day = 3
+        
+        let input = 
+            InputHelper.LoadLines (day, name)
+            |> Seq.toList
+        
+        let answer = 
+            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
+            
+        input, answer
+        
+        
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part1 (name:string) =
+        let input, expected = GetPuzzleInput 1 name
+        
+        let actual = (new Puzzle03()).RunPart1 input
+        
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+        
+        
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part2 (name:string) =
+        let input, expected = GetPuzzleInput 2 name
+        
+        let actual = (new Puzzle03()).RunPart2 input
+        
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+        
