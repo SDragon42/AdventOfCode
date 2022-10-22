@@ -64,23 +64,23 @@ type Puzzle03 () =
         doIt(0, input)
 
 
+    // What is the power consumption of the submarine?
     member this.RunPart1 (input: string list) =
         let gammaRate = this.CalcPowerRatingPart(input, this.MostCommonBit) |> Helper.BinaryStringToInt
         let epsilonRate = this.CalcPowerRatingPart(input, this.LeastCommonBit) |> Helper.BinaryStringToInt
 
-        let result = gammaRate * epsilonRate
-        result
+        gammaRate * epsilonRate
 
 
+    // What is the life support rating of the submarine?
     member this.RunPart2 (input: string list) =
         let o2GeneratorRating = this.FindLifeSupportRatingPart(input, this.MostCommonBit) |> Helper.BinaryStringToInt
         let co2ScrubberRating = this.FindLifeSupportRatingPart(input, this.LeastCommonBit) |> Helper.BinaryStringToInt
 
-        let result = o2GeneratorRating * co2ScrubberRating
-        result
-        
-        
-        
+        o2GeneratorRating * co2ScrubberRating
+
+
+
 module ``Day 3: Binary Diagnostic`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 3
