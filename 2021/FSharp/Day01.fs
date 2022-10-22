@@ -1,31 +1,10 @@
-﻿module Day01
+﻿namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
 open System
+open Xunit
 
-
-type private PuzzleInput(input, expectedAnswer) = 
-    inherit InputAnswer<int list, int option>(input, expectedAnswer)
-
-
-type Day01 (runBenchmarks, runExamples) =
-    inherit PuzzleBase(runBenchmarks, runExamples)
-
-
-    member private this.GetPuzzleInput (part:int) (name:string) =
-        let day = 1
-
-        let input = 
-            InputHelper.LoadLines(day, name)
-            |> Seq.map int
-            |> Seq.toList
-
-        let answer = 
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
-            |> InputHelper.AsInt
-        
-        new PuzzleInput(input, answer)
-
+type private Puzzle01 () =
 
     member private this.CountIncreases = 
         List.pairwise 
@@ -33,28 +12,62 @@ type Day01 (runBenchmarks, runExamples) =
         >> List.length
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
+    member this.RunPart1 (input:int list) =
+        // How many measurements are larger than the previous measurement?
         let result = 
-            puzzleData.Input
+            input
             |> this.CountIncreases
-        Helper.GetPuzzleResultText("How many measurements are larger than the previous measurement?", result, puzzleData.ExpectedAnswer)
+        result
 
 
-    member private this.RunPart2 (puzzleData: PuzzleInput) =
+    member this.RunPart2 (input:int list) =
+        // How many sums are larger than the previous sum?
         let result =
-            puzzleData.Input
+            input
             |> List.windowed(3)
             |> List.map List.sum
             |> this.CountIncreases
-        Helper.GetPuzzleResultText("How many sums are larger than the previous sum?", result, puzzleData.ExpectedAnswer)
+        result
 
 
-    override this.SolvePuzzle _ = seq {
-        yield "Day 1: Sonar Sweep"
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example1"))
-        yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input"))
 
-        yield ""
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput 2 "example1"))
-        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input"))
-       }
+module Day01 =
+    let private GetPuzzleInput (part:int) (name:string) =
+        let day = 1
+
+        let input = 
+            InputHelper.LoadLines (day, name)
+            |> Seq.map int
+            |> Seq.toList
+
+        let answer = 
+            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
+    
+        input, answer
+
+
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part1 (name:string) =
+        let input, expected = GetPuzzleInput 1 name
+
+        let actual = (new Puzzle01()).RunPart1 input
+
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+
+
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part2 (name:string) =
+        let input, expected = GetPuzzleInput 2 name
+
+        let actual = (new Puzzle01()).RunPart2 input
+
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
