@@ -33,7 +33,7 @@ type private Puzzle01 () =
 
 
 
-module Day01 =
+module ``Day 1: Sonar Sweep`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 1
 
