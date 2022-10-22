@@ -38,32 +38,11 @@ type private Puzzle02 () =
             this.CalculateSubPosition_Flawed (remaining, values)
 
 
-        //if (input.Length = 0) then
-        //    (position, depth)
-        //else
-        //    let next = input[0]
-        //    let remaining = input[1..]
-
-        //    let values =
-        //        match next.Direction with
-        //        | "forward" -> (
-        //            position + next.Amount,
-        //            depth)
-        //        | "down" -> (
-        //            position,
-        //            depth + next.Amount)
-        //        | "up" -> (
-        //            position,
-        //            depth - next.Amount)
-        //        | _ -> (position, depth)
-
-        //    this.CalculateSubPosition_Flawed (remaining, values)
-
-
     member private this.CalculateSubPosition(input: PilotAction list, (position, depth, aim): int * int * int) =
-        if (input.Length = 0) then
+        match input with
+        | _ when input.Length = 0 ->
             (position, depth, aim)
-        else
+        | _ ->
             let next = input[0]
             let remaining = input[1..]
 
@@ -86,15 +65,15 @@ type private Puzzle02 () =
             this.CalculateSubPosition(remaining, values)
 
 
+    // What do you get if you multiply your final horizontal position by your final depth?
     member this.RunPart1 (input: PilotAction list) =
-        // What do you get if you multiply your final horizontal position by your final depth?
         let horizontal, depth = this.CalculateSubPosition_Flawed (input, (0, 0))
         let result = horizontal * depth
         result
 
 
+    // What do you get if you multiply your final horizontal position by your final depth?
     member this.RunPart2 (input: PilotAction list) =
-        // What do you get if you multiply your final horizontal position by your final depth?
         let horizontal, depth, _ = this.CalculateSubPosition(input, (0, 0, 0))
         let result = horizontal * depth
         result
