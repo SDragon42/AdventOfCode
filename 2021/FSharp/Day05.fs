@@ -1,39 +1,27 @@
 ﻿// Speed improvements were found by referencing this solution:
 // https://github.com/bhosale-ajay/adventofcode/blob/master/2021/fs/D05.fs
-
-module Day05
+namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
 open System
+open Xunit
 
 
-type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<string list, int option>(input, expectedAnswer)
 
-
-type Day05 (runBenchmarks, runExamples) =
-    inherit PuzzleBase(runBenchmarks, runExamples)
-
-
-    member private this.GetPuzzleInput (part: int, name: string) =
-        let day = 5
-
-        let input =
-            InputHelper.LoadLines(day, name)
-            |> Seq.toList
-
-        let answer =
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
-            |> InputHelper.AsInt
-
-        new PuzzleInput(input, answer)
-
+type Puzzle05 () =
 
     member private this.ParseToEndPointStrings (value: string) =
-        value.Split(" -> ") |> Array.toList
+        value.Split(" -> ")
+        |> Array.toList
 
-    member private this.ParseStringEndpointToIntList (l: string list) =
-        l |> List.map (fun a -> a.Split(",") |> Array.map int |> Array.toList)
+    member private this.parseToIntList (value: string) =
+        value.Split(",")
+        |> Array.map int
+        |> Array.toList
+
+    member private this.ParseStringEndpointToIntList (values: string list) =
+        values
+        |> List.map this.parseToIntList
 
     member private this.OnlyFlatLines (z: int list list) =
         z[0][0] = z[1][0] || z[0][1] = z[1][1]
@@ -52,12 +40,14 @@ type Day05 (runBenchmarks, runExamples) =
 
     member private this.MakePoints (value: int list * int list) =
         let a, b = value
-        if a.Length <> b.Length then
-            List.allPairs a b
-        else
+        
+        match a with
+        | _ when a.Length = b.Length ->
             [0..a.Length - 1]
             |> List.map (fun i -> [a[i], b[i]])
             |> List.concat
+        | _ ->
+            List.allPairs a b
 
 
     member private this.ToPointString (value: int * int) =
@@ -65,49 +55,72 @@ type Day05 (runBenchmarks, runExamples) =
         $"{a},{b}"
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let coordinates =
-            puzzleData.Input |> List.map this.ParseToEndPointStrings
-            |> List.map this.ParseStringEndpointToIntList
-            |> List.where this.OnlyFlatLines
-            |> List.map this.MakeRanges
-            |> List.map this.MakePoints
-            |> List.concat
-            |> List.map this.ToPointString
-
-        let result =
-            coordinates
-            |> List.countBy id
-            |> List.where (fun (p, c) -> c > 1)
-            |> List.length
-
-        Helper.GetPuzzleResultText("At how many points do at least two lines overlap?", result, puzzleData.ExpectedAnswer)
+    // At how many points do at least two lines overlap?
+    member this.RunPart1 (input: string list) =
+        input
+        |> List.map this.ParseToEndPointStrings
+        |> List.map this.ParseStringEndpointToIntList
+        |> List.where this.OnlyFlatLines
+        |> List.map this.MakeRanges
+        |> List.map this.MakePoints
+        |> List.concat
+        |> List.map this.ToPointString
+        |> List.countBy id
+        |> List.where (fun (p, c) -> c > 1)
+        |> List.length
 
 
-    member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let coordinates =
-            puzzleData.Input |> List.map this.ParseToEndPointStrings
-            |> List.map this.ParseStringEndpointToIntList
-            |> List.map this.MakeRanges
-            |> List.map this.MakePoints
-            |> List.concat
-            |> List.map this.ToPointString
-
-        let result =
-            coordinates
-            |> List.countBy id
-            |> List.where (fun (p, c) -> c > 1)
-            |> List.length
-
-        Helper.GetPuzzleResultText("At how many points do at least two lines overlap?", result, puzzleData.ExpectedAnswer)
+    // At how many points do at least two lines overlap?
+    member this.RunPart2 (input: string list) =
+        input
+        |> List.map this.ParseToEndPointStrings
+        |> List.map this.ParseStringEndpointToIntList
+        |> List.map this.MakeRanges
+        |> List.map this.MakePoints
+        |> List.concat
+        |> List.map this.ToPointString
+        |> List.countBy id
+        |> List.where (fun (p, c) -> c > 1)
+        |> List.length
 
 
-    override this.SolvePuzzle _ = seq {
-        yield "Day 5: Hydrothermal Venture"
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
-        yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
 
-        yield ""
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
-        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
-        }
+module ``Day 5: Hydrothermal Venture`` =
+    let private GetPuzzleInput (part:int) (name:string) =
+        let day = 5
+        
+        let input =
+            InputHelper.LoadLines(day, name)
+            |> Seq.toList
+        
+        let answer = 
+            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
+            
+        input, answer
+        
+        
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part1 (name:string) =
+        let input, expected = GetPuzzleInput 1 name
+        
+        let actual = (new Puzzle05()).RunPart1 input
+        
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+        
+        
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part2 (name:string) =
+        let input, expected = GetPuzzleInput 2 name
+        
+        let actual = (new Puzzle05()).RunPart2 input
+        
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
