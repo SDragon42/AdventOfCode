@@ -1,39 +1,13 @@
-﻿module Day08
+﻿namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
 open System
 open System.Collections.Generic
-
-
-type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<(string list * string list) list, int option>(input, expectedAnswer)
+open Xunit
 
 
 
-type Day08 (runBenchmarks, runExamples) =
-    inherit PuzzleBase(runBenchmarks, runExamples)
-
-    member private this.GetPuzzleInput (part: int, name: string) =
-        let day = 8
-
-        let SplitData (line: string) =
-            let parts = line.Split('|', 2)
-            let signal = parts[0].Split(' ', StringSplitOptions.RemoveEmptyEntries) |> Array.map (fun i -> i.Trim()) |> Array.toList
-            let digits = parts[1].Split(' ', StringSplitOptions.RemoveEmptyEntries) |> Array.map (fun i -> i.Trim()) |> Array.toList
-            signal, digits
-
-
-        let input =
-            InputHelper.LoadLines(day, name)
-            |> Seq.map SplitData
-            |> Seq.toList
-
-        let answer = 
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
-            |> InputHelper.AsInt
-
-        new PuzzleInput(input, answer)
-
+type Puzzle08 () =
 
     member private this.IsDigit_1(pattern: string) =
         pattern.Length = 2
@@ -121,16 +95,17 @@ type Day08 (runBenchmarks, runExamples) =
         result
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
+    // In the output values, how many times do digits 1, 4, 7, or 8 appear?
+    member this.RunPart1 (input: (string list * string list) list) =
         let result = 
-            puzzleData.Input
+            input
             |> List.map this.ProcessDigits
             |> List.sum
+        result
 
-        Helper.GetPuzzleResultText("In the output values, how many times do digits 1, 4, 7, or 8 appear?", result, puzzleData.ExpectedAnswer)
 
-
-    member private this.RunPart2 (puzzleData: PuzzleInput) =
+    // What do you get if you add up all of the output values?
+    member this.RunPart2 (input: (string list * string list) list) =
         let ProcessLine ((signal, digits): (string list * string list)) =
             let signalMap = this.BuildSignalMap(signal)
 
@@ -145,21 +120,59 @@ type Day08 (runBenchmarks, runExamples) =
             String.Concat(digits |> List.map GetNumber) |> int
 
         let result = 
-            puzzleData.Input
+            input
             |> List.map ProcessLine
             |> List.sum
+        result
 
-        Helper.GetPuzzleResultText("What do you get if you add up all of the output values?", result, puzzleData.ExpectedAnswer)
 
 
-    override this.SolvePuzzle _ = seq {
-        yield "Day 8: Seven Segment Search"
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
-        yield this.RunExample(fun _ -> " Ex. 2) " + this.RunPart1(this.GetPuzzleInput(1, "example2")))
-        yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
+module ``Day 8: Seven Segment Search`` =
+    let private GetPuzzleInput (part:int) (name:string) =
+        let day = 8
+                
+        let SplitData (line: string) =
+            let parts = line.Split('|', 2)
+            let signal = parts[0].Split(' ', StringSplitOptions.RemoveEmptyEntries) |> Array.map (fun i -> i.Trim()) |> Array.toList
+            let digits = parts[1].Split(' ', StringSplitOptions.RemoveEmptyEntries) |> Array.map (fun i -> i.Trim()) |> Array.toList
+            signal, digits
 
-        yield ""
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
-        yield this.RunExample(fun _ -> " Ex. 2) " + this.RunPart2(this.GetPuzzleInput(2, "example2")))
-        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
-        }
+
+        let input =
+            InputHelper.LoadLines(day, name)
+            |> Seq.map SplitData
+            |> Seq.toList
+
+        let answer = 
+            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsInt
+                    
+        input, answer
+                
+                
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("example2")>]
+    [<InlineData("input")>]
+    let Part1 (name:string) =
+        let input, expected = GetPuzzleInput 1 name
+                
+        let actual = (new Puzzle08()).RunPart1 input
+                
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+                
+                
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("example2")>]
+    [<InlineData("input")>]
+    let Part2 (name:string) =
+        let input, expected = GetPuzzleInput 2 name
+                
+        let actual = (new Puzzle08()).RunPart2 input
+                
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
