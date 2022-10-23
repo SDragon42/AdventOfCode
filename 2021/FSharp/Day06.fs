@@ -1,6 +1,7 @@
 ﻿namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
+open System
 open Xunit
 
 
@@ -88,10 +89,12 @@ type Puzzle06 () =
         totalLanternFish
 
 
+    // How many lanternfish would there be after 80 days?
     member this.RunPart1 (input: int list) =
         this.RunSimulation(input, 80)
 
 
+    // How many lanternfish would there be after 256 days?
     member this.RunPart2 (input: int list) =
         this.RunSimulation(input, 256)
 
