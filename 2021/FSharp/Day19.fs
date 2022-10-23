@@ -1,20 +1,40 @@
-﻿module Day19
+﻿namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
 open System
+open Xunit
 
 
-type private PuzzleInput (input, expectedAnswer) =
-    inherit InputAnswer<string list, int option> (input, expectedAnswer)
+
+module ``Day 19: Beacon Scanner`` =
+    let day = 19
 
 
-type Day19 (runBenchmarks, runExamples) =
-    inherit PuzzleBase (runBenchmarks, runExamples)
+
+    //-------------------------------------------------------------------------
 
 
-    member private this.GetPuzzleInput (part:int) (name: string) =
-        let day = 19
 
+    type private Puzzle () =
+
+        //How many beacons are there?
+        member this.RunPart1 (input:string list) =
+            let result = 0
+            result
+
+
+        // 
+        //member this.RunPart2 (input:string list) =
+        //    let result = 0
+        //    result
+
+
+
+    //-------------------------------------------------------------------------
+
+
+
+    let private GetPuzzleInput (part:int) (name:string) =
         let input =
             InputHelper.LoadLines (day, name)
             |> Seq.toList
@@ -22,26 +42,32 @@ type Day19 (runBenchmarks, runExamples) =
         let answer = 
             InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
-
-        new PuzzleInput (input, answer)
-
-
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText ("How many beacons are there?", result, puzzleData.ExpectedAnswer)
-
-
-    member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = 0
-        Helper.GetPuzzleResultText ("", result, puzzleData.ExpectedAnswer)
-
-
-    override this.SolvePuzzle _ = seq {
-        yield "Day 19: Beacon Scanner"
-        yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart1 (this.GetPuzzleInput 1 "example1") )
-        //yield this.RunProblem (fun _ -> "Part 1) " + this.RunPart1 (this.GetPuzzleInput 1 "input") )
-
-        //yield ""
-        //yield this.RunExample (fun _ -> " Ex. 1) " + this.RunPart2 (this.GetPuzzleInput 2 "example1") )
-        //yield this.RunProblem (fun _ -> "Part 2) " + this.RunPart2 (this.GetPuzzleInput 2 "input") )
-        }
+        
+        input, answer
+    
+    
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part1 (name:string) =
+        let input, expected = GetPuzzleInput 1 name
+    
+        let actual = (new Puzzle()).RunPart1 input
+    
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+    
+    
+    //[<Theory>]
+    //[<InlineData("example1")>]
+    //[<InlineData("input")>]
+    //let Part2 (name:string) =
+    //    let input, expected = GetPuzzleInput 2 name
+    
+    //    let actual = (new Puzzle()).RunPart2 input
+    
+    //    match expected with
+    //    | None -> Assert.Null actual
+    //    | _ -> Assert.Equal (expected.Value, actual)
+    
