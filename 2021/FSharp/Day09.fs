@@ -14,7 +14,7 @@ module ``Day 09: Smoke Basin`` =
 
 
 
-    type PuzzleInput(input: int list, xMax: int, yMax: int) =
+    type private PuzzleInput(input: int list, xMax: int, yMax: int) =
         member this.input = input
         member this.xMax = xMax
         member this.yMax = yMax
@@ -25,7 +25,7 @@ module ``Day 09: Smoke Basin`` =
     
     
     
-    type Puzzle () =
+    type private Puzzle () =
 
         member private this.offsets = [
             ( 0,-1);
