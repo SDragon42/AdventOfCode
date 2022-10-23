@@ -32,7 +32,6 @@
   <ItemGroup>
     <Content Include="..\Input\**\*.*" CopyToOutputDirectory="PreserveNewest" Link="Input\%(RecursiveDir)\%(Filename)%(Extension)" />
     <Compile Include="template.fs" />
-    <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>

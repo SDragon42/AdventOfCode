@@ -8,10 +8,6 @@
 
   <ItemGroup>
     <Compile Include="GridHelper.fs" />
-    <Compile Include="CmdLineOptions.fs" />
-    <Compile Include="InputAnswer.fs" />
-    <Compile Include="PuzzleBase.fs" />
-    <Compile Include="PuzzleRunner.fs" />
     <Compile Include="Helper.fs" />
     <Compile Include="InputHelper.fs" />
   </ItemGroup>
