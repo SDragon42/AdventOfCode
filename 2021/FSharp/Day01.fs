@@ -6,43 +6,53 @@ open Xunit
 
 
 
-type private Puzzle01 () =
-
-    member private this.CountIncreases = 
-        List.pairwise 
-        >> List.filter (fun (a,b) -> a < b) 
-        >> List.length
-
-
-    // How many measurements are larger than the previous measurement?
-    //member this.RunPart1 (input:int list) =
-    //    input
-    //    |> this.CountIncreases
-
-    // How many measurements are larger than the previous measurement?
-    member this.RunPart1 =
-        this.CountIncreases
-
-
-    // How many sums are larger than the previous sum?
-    //member this.RunPart2 (input:int list) =
-    //    input
-    //    |> List.windowed(3)
-    //    |> List.map List.sum
-    //    |> this.CountIncreases
-
-    // How many sums are larger than the previous sum?
-    member this.RunPart2 =
-        List.windowed(3)
-        >> List.map List.sum
-        >> this.CountIncreases
-
-
-
 module ``Day 01: Sonar Sweep`` =
-    let private GetPuzzleInput (part:int) (name:string) =
-        let day = 1
+    let day = 1
 
+
+
+    //-------------------------------------------------------------------------
+
+
+
+    type private Puzzle () =
+
+        member private this.CountIncreases = 
+            List.pairwise 
+            >> List.filter (fun (a,b) -> a < b) 
+            >> List.length
+
+
+        // How many measurements are larger than the previous measurement?
+        //member this.RunPart1 (input:int list) =
+        //    input
+        //    |> this.CountIncreases
+
+        // How many measurements are larger than the previous measurement?
+        member this.RunPart1 =
+            this.CountIncreases
+
+
+        // How many sums are larger than the previous sum?
+        //member this.RunPart2 (input:int list) =
+        //    input
+        //    |> List.windowed(3)
+        //    |> List.map List.sum
+        //    |> this.CountIncreases
+
+        // How many sums are larger than the previous sum?
+        member this.RunPart2 =
+            List.windowed(3)
+            >> List.map List.sum
+            >> this.CountIncreases
+
+
+
+    //-------------------------------------------------------------------------
+
+
+
+    let private GetPuzzleInput (part:int) (name:string) =
         let input = 
             InputHelper.LoadLines (day, name)
             |> Seq.map int
@@ -51,8 +61,9 @@ module ``Day 01: Sonar Sweep`` =
         let answer = 
             InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
-    
+
         input, answer
+
 
 
     [<Theory>]
@@ -61,7 +72,7 @@ module ``Day 01: Sonar Sweep`` =
     let Part1 (name:string) =
         let input, expected = GetPuzzleInput 1 name
 
-        let actual = (new Puzzle01()).RunPart1 input
+        let actual = (new Puzzle()).RunPart1 input
 
         match expected with
         | None -> Assert.Null actual
@@ -74,7 +85,7 @@ module ``Day 01: Sonar Sweep`` =
     let Part2 (name:string) =
         let input, expected = GetPuzzleInput 2 name
 
-        let actual = (new Puzzle01()).RunPart2 input
+        let actual = (new Puzzle()).RunPart2 input
 
         match expected with
         | None -> Assert.Null actual

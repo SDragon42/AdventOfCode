@@ -6,31 +6,41 @@ open Xunit
 
 
 
-type private Puzzle () =
-
-    member private this.CountIncreases = 
-        List.pairwise 
-        >> List.filter (fun (a,b) -> a < b) 
-        >> List.length
+module ``Day 00: Template`` =
+    let day = 0
 
 
-    member this.RunPart1 (input:string list) =
+
+    //-------------------------------------------------------------------------
+
+
+
+    type private Puzzle () =
+
+        member private this.CountIncreases = 
+            List.pairwise 
+            >> List.filter (fun (a,b) -> a < b) 
+            >> List.length
+
+
         // <Puzzle Question>
-        let result = 0
-        result
+        member this.RunPart1 (input:string list) =
+            let result = 0
+            result
 
 
-    member this.RunPart2 (input:string list) =
         // <Puzzle Question>
-        let result = 0
-        result
+        member this.RunPart2 (input:string list) =
+            let result = 0
+            result
 
 
 
-module Template =
+    //-------------------------------------------------------------------------
+
+
+
     let private GetPuzzleInput (part:int) (name:string) =
-        let day = 0
-
         let input = 
             InputHelper.LoadLines (day, name)
             |> Seq.toList
