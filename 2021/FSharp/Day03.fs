@@ -81,7 +81,7 @@ type Puzzle03 () =
 
 
 
-module ``Day 3: Binary Diagnostic`` =
+module ``Day 03: Binary Diagnostic`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 3
         

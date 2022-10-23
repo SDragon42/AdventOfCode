@@ -66,7 +66,7 @@ type Puzzle07 () =
 
         
         
-module ``Day 7: The Treachery of Whales`` =
+module ``Day 07: The Treachery of Whales`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 7
                 

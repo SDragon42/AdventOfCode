@@ -85,7 +85,7 @@ type Puzzle05 () =
 
 
 
-module ``Day 5: Hydrothermal Venture`` =
+module ``Day 05: Hydrothermal Venture`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 5
         

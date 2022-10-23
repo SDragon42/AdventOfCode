@@ -80,7 +80,7 @@ type private Puzzle02 () =
 
 
 
-module ``Day 2: Dive!`` =
+module ``Day 02: Dive!`` =
 
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 2

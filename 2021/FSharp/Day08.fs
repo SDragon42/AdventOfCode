@@ -127,7 +127,7 @@ type Puzzle08 () =
 
 
 
-module ``Day 8: Seven Segment Search`` =
+module ``Day 08: Seven Segment Search`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 8
                 

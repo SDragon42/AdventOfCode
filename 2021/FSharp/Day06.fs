@@ -100,7 +100,7 @@ type Puzzle06 () =
 
 
 
-module ``Day 6: Lanternfish`` =
+module ``Day 06: Lanternfish`` =
     let private GetPuzzleInput (part:int) (name:string) =
         let day = 6
         
