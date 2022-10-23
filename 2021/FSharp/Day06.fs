@@ -1,30 +1,11 @@
-﻿module Day06
+﻿namespace AdventOfCode.FSharp.Year2021
 
 open FSharp.Common
+open Xunit
 
 
-type private PuzzleInput(input, expectedAnswer) =
-    inherit InputAnswer<int list, uint64 option>(input, expectedAnswer)
 
-
-type Day06 (runBenchmarks, runExamples) =
-    inherit PuzzleBase(runBenchmarks, runExamples)
-
-
-    member private this.GetPuzzleInput (part: int, name: string) =
-        let day = 6
-
-        let input =
-            InputHelper.LoadText(day, name).Split(',')
-            |> Array.toList
-            |> List.map int
-
-        let answer = 
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
-            |> InputHelper.AsUInt64
-
-        new PuzzleInput(input, answer)
-
+type Puzzle06 () =
 
     member private this.FishSpawnTimer: int = 6
     member private this.NewFishSpawnTimer: int = 8
@@ -37,9 +18,11 @@ type Day06 (runBenchmarks, runExamples) =
 
     member private this.DecrementFishSpawningTimer (fishGroup: int * uint64) =
         let group, count = fishGroup
-        if (group > 0)
-            then group - 1, count
-            else this.FishSpawnTimer, count
+        match group with
+        | _ when group > 0 ->
+            group - 1, count
+        | _ ->
+            this.FishSpawnTimer, count
 
 
     member private this.IsSpawningFishGroup (fishGroup: int * uint64) =
@@ -71,21 +54,17 @@ type Day06 (runBenchmarks, runExamples) =
         group, count
 
 
-    member private this.GetTotals (fishGroup: int * uint64) =
-        let _, number = fishGroup
-        number
-
-
     member private this.RunSimulation(input: int list, maxNumDays: int) =
         let newPuzzleData =
             input
             |> List.groupBy (fun f -> f)
             |> List.map this.SumInitialFishGroups
 
-        let rec DoIt (day: int, lanternFish: (int * uint64) list) =
-            if (day = maxNumDays) then
+        let rec DoIt (day: int) (lanternFish: (int * uint64) list) =
+            match day with
+            | _ when day = maxNumDays ->
                 lanternFish
-            else
+            | _ ->
                 let fishListA = 
                     lanternFish 
                     |> List.map this.DecrementFishSpawningTimer
@@ -100,28 +79,61 @@ type Day06 (runBenchmarks, runExamples) =
                     |> List.groupBy this.GetFishGroup
                     |> List.map this.SumFishGroups
 
-                DoIt (day + 1, newLanternFish)
+                DoIt (day + 1) newLanternFish
         
-        let lanternFish = DoIt(0, newPuzzleData)
-        lanternFish |> List.map this.GetTotals |> List.sum
+        let totalLanternFish = 
+            DoIt 0 newPuzzleData
+            |> List.map this.GetFishCount
+            |> List.sum
+        totalLanternFish
 
 
-    member private this.RunPart1 (puzzleData: PuzzleInput) =
-        let result = this.RunSimulation(puzzleData.Input, 80)
-        Helper.GetPuzzleResultText("How many lanternfish would there be after 80 days?", result, puzzleData.ExpectedAnswer)
+    member this.RunPart1 (input: int list) =
+        this.RunSimulation(input, 80)
 
 
-    member private this.RunPart2 (puzzleData: PuzzleInput) =
-        let result = this.RunSimulation(puzzleData.Input, 256)
-        Helper.GetPuzzleResultText("How many lanternfish would there be after 256 days?", result, puzzleData.ExpectedAnswer)
+    member this.RunPart2 (input: int list) =
+        this.RunSimulation(input, 256)
 
 
-    override this.SolvePuzzle _ = seq {
-        yield "Day 6: Lanternfish"
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart1(this.GetPuzzleInput(1, "example1")))
-        yield this.RunProblem(fun _ -> "Part 1) " + this.RunPart1(this.GetPuzzleInput(1, "input")))
 
-        yield ""
-        yield this.RunExample(fun _ -> " Ex. 1) " + this.RunPart2(this.GetPuzzleInput(2, "example1")))
-        yield this.RunProblem(fun _ -> "Part 2) " + this.RunPart2(this.GetPuzzleInput(2, "input")))
-        }
+module ``Day 6: Lanternfish`` =
+    let private GetPuzzleInput (part:int) (name:string) =
+        let day = 6
+        
+        let input =
+            InputHelper.LoadText(day, name).Split(',')
+            |> Seq.map int
+            |> Seq.toList
+        
+        let answer = 
+            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            |> InputHelper.AsUInt64
+            
+        input, answer
+        
+        
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part1 (name:string) =
+        let input, expected = GetPuzzleInput 1 name
+        
+        let actual = (new Puzzle06()).RunPart1 input
+        
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
+        
+        
+    [<Theory>]
+    [<InlineData("example1")>]
+    [<InlineData("input")>]
+    let Part2 (name:string) =
+        let input, expected = GetPuzzleInput 2 name
+        
+        let actual = (new Puzzle06()).RunPart2 input
+        
+        match expected with
+        | None -> Assert.Null actual
+        | _ -> Assert.Equal (expected.Value, actual)
