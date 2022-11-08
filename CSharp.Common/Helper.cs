@@ -2,20 +2,6 @@
 
 public static class Helper
 {
-    public static string GetPuzzleResultText<T>(string message, T foundAnswer, T? expectedAnswer = null) where T : struct
-    {
-        return GetPuzzleResultText(message, foundAnswer.ToString(), expectedAnswer.ToString());
-    }
-    public static string GetPuzzleResultText(string message, string foundAnswer, string expectedAnswer = null)
-    {
-        var answerCheckText = string.Empty;
-        if (!string.IsNullOrEmpty(expectedAnswer))
-            answerCheckText = "    " + (foundAnswer.Equals(expectedAnswer) ? "CORRECT" : "WRONG");
-        return message + answerCheckText;
-    }
-
-
-
     /// <summary>
     /// Gets a single digit from the specified number (right to left).
     /// </summary>
@@ -88,20 +74,6 @@ public static class Helper
             foreach (var result in GetPermutations(nextItems))
                 yield return new T[] { item }.Concat(result);
         }
-    }
-
-    public static string GetFileContent(string filename)
-    {
-        var fullPath = Path.Combine(@"..\..\..\Data", filename);
-        var content = File.ReadAllText(fullPath);
-        return content;
-    }
-
-    public static string[] GetFileContentAsLines(string filename)
-    {
-        var fullPath = Path.Combine(@"..\..\..\Data", filename);
-        var lines = File.ReadAllLines(fullPath);
-        return lines;
     }
 
 
