@@ -39,6 +39,16 @@ public class Day16 : TestBase
         Assert.Equal(expected, result);
     }
 
+    [Theory]
+    [InlineData("input")]
+    public void Part2(string inputName)
+    {
+        var (input, expected) = GetTestData(inputName, 2);
+
+        Assert.Equal(expected, string.Empty);
+    }
+
+
 
     string ListToString(IList<int> l) => string.Join("", l.Select(x => x.ToString()));
 
