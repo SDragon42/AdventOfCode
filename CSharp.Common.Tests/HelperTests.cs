@@ -7,7 +7,7 @@ public class HelperTests
     private ITestOutputHelper _output;
     public HelperTests(ITestOutputHelper output)
     {
-        _output= output;
+        _output = output;
     }
 
     [Theory]
@@ -58,5 +58,14 @@ public class HelperTests
         }
 
         Assert.Equal(expected, results.Count());
+    }
+
+    [Theory]
+    [InlineData(18, 21, 3)]
+    [InlineData(18, 24, 6)]
+    public void FindGreatestCommonFactor(int a, int b, int expected)
+    {
+        var result = Helper.FindGreatestCommonFactor(a, b);
+        Assert.Equal(expected, result);
     }
 }
