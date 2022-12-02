@@ -12,7 +12,6 @@ public class Day01
     private (List<string>, int?) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
-            //.Select(l => l.ToInt32())
             .ToList();
 
         var expected = InputHelper.LoadAnswerFile(DAY, part, inputName)

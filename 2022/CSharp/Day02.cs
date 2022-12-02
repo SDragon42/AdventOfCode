@@ -107,7 +107,7 @@ public class Day02
         "X" => DecodeTheirMove("A"),
         "Y" => DecodeTheirMove("B"),
         "Z" => DecodeTheirMove("C"),
-        _ => throw new Exception("")
+        _ => throw new ApplicationException("Invalid code")
     };
 
 
@@ -139,7 +139,7 @@ public class Day02
             Move.Rock => Move.Scissors,
             Move.Paper => Move.Rock,
             Move.Scissors => Move.Paper,
-            _ => throw new Exception("Invalid Move")
+            _ => throw new ApplicationException("Invalid Move")
         },
         "Y" => theirMove, // Make draw move
         "Z" => theirMove switch // Make winning move
@@ -147,9 +147,9 @@ public class Day02
             Move.Rock => Move.Paper,
             Move.Paper => Move.Scissors,
             Move.Scissors => Move.Rock,
-            _ => throw new Exception("Invalid Move")
+            _ => throw new ApplicationException("Invalid Move")
         },
-        _ => throw new Exception("")
+        _ => throw new ApplicationException("Invalid Code")
     };
 
 
@@ -159,7 +159,7 @@ public class Day02
         "A" => Move.Rock,
         "B" => Move.Paper,
         "C" => Move.Scissors,
-        _ => throw new Exception("")
+        _ => throw new ApplicationException("Invalid Code")
     };
 
     private int PlayRound(RoundMoves plays)
@@ -180,23 +180,23 @@ public class Day02
                 Move.Rock => PlayResult.Draw,
                 Move.Paper => PlayResult.Win,
                 Move.Scissors => PlayResult.Lose,
-                _ => throw new Exception("Invalid Move")
+                _ => throw new ApplicationException("Invalid Move")
             },
             Move.Paper => yourMove switch
             {
                 Move.Rock => PlayResult.Lose,
                 Move.Paper => PlayResult.Draw,
                 Move.Scissors => PlayResult.Win,
-                _ => throw new Exception("Invalid Move")
+                _ => throw new ApplicationException("Invalid Move")
             },
             Move.Scissors => yourMove switch
             {
                 Move.Rock => PlayResult.Win,
                 Move.Paper => PlayResult.Lose,
                 Move.Scissors => PlayResult.Draw,
-                _ => throw new Exception("Invalid Move")
+                _ => throw new ApplicationException("Invalid Move")
             },
-            _ => throw new Exception("Invalid Move")
+            _ => throw new ApplicationException("Invalid Move")
         };
 
         return result;
@@ -209,7 +209,7 @@ public class Day02
             PlayResult.Lose => 0,
             PlayResult.Draw => 3,
             PlayResult.Win => 6,
-            _ => throw new Exception("Invalid Result")
+            _ => throw new ApplicationException("Invalid Result")
         };
         return result;
     }
@@ -221,7 +221,7 @@ public class Day02
             Move.Rock => 1,
             Move.Paper => 2,
             Move.Scissors => 3,
-            _ => throw new Exception("Invalid Move")
+            _ => throw new ApplicationException("Invalid Move")
         };
         return result;
     }
