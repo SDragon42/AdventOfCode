@@ -1,11 +1,11 @@
 namespace AdventOfCode.CSharp.Year2022;
 
-public class Template
+public class Day00
 {
     private const int DAY = 0;
 
     private readonly ITestOutputHelper output;
-    public Template(ITestOutputHelper output) => this.output = output;
+    public Day00(ITestOutputHelper output) => this.output = output;
 
 
 
