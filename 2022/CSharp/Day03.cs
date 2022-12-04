@@ -2,12 +2,12 @@ using System;
 
 namespace AdventOfCode.CSharp.Year2022;
 
-public class Day03
+public class Day03_Rucksack_Reorganization
 {
     private const int DAY = 3;
 
     private readonly ITestOutputHelper output;
-    public Day03(ITestOutputHelper output) => this.output = output;
+    public Day03_Rucksack_Reorganization(ITestOutputHelper output) => this.output = output;
 
 
 

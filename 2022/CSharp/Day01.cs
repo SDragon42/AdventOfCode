@@ -1,11 +1,11 @@
 namespace AdventOfCode.CSharp.Year2022;
 
-public class Day01
+public class Day01_Calorie_Counting
 {
     private const int DAY = 1;
 
     private readonly ITestOutputHelper output;
-    public Day01(ITestOutputHelper output) => this.output = output;
+    public Day01_Calorie_Counting(ITestOutputHelper output) => this.output = output;
 
 
 

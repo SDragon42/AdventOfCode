@@ -1,11 +1,11 @@
 namespace AdventOfCode.CSharp.Year2022;
 
-public class Day02
+public class Day02_Rock_Paper_Scissors
 {
     private const int DAY = 2;
 
     private readonly ITestOutputHelper output;
-    public Day02(ITestOutputHelper output) => this.output = output;
+    public Day02_Rock_Paper_Scissors(ITestOutputHelper output) => this.output = output;
 
 
 
