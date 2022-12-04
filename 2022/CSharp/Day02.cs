@@ -91,7 +91,7 @@ public class Day02
             .Sum();
         return totalScore;
     }
-    
+
     private RoundMoves GetRoundMovesV1(StrategyGuideMoves r)
     {
         var result = new RoundMoves
@@ -171,59 +171,47 @@ public class Day02
         return scoreYouPlay + scoreResults;
     }
 
-    private PlayResult ProcessRound(Move theirMove, Move yourMove)
+    private PlayResult ProcessRound(Move theirMove, Move yourMove) => theirMove switch
     {
-        var result = theirMove switch
+        Move.Rock => yourMove switch
         {
-            Move.Rock => yourMove switch
-            {
-                Move.Rock => PlayResult.Draw,
-                Move.Paper => PlayResult.Win,
-                Move.Scissors => PlayResult.Lose,
-                _ => throw new ApplicationException("Invalid Move")
-            },
-            Move.Paper => yourMove switch
-            {
-                Move.Rock => PlayResult.Lose,
-                Move.Paper => PlayResult.Draw,
-                Move.Scissors => PlayResult.Win,
-                _ => throw new ApplicationException("Invalid Move")
-            },
-            Move.Scissors => yourMove switch
-            {
-                Move.Rock => PlayResult.Win,
-                Move.Paper => PlayResult.Lose,
-                Move.Scissors => PlayResult.Draw,
-                _ => throw new ApplicationException("Invalid Move")
-            },
+            Move.Rock => PlayResult.Draw,
+            Move.Paper => PlayResult.Win,
+            Move.Scissors => PlayResult.Lose,
             _ => throw new ApplicationException("Invalid Move")
-        };
-
-        return result;
-    }
-
-    private int GetResultPoints(PlayResult playResult)
-    {
-        var result = playResult switch
+        },
+        Move.Paper => yourMove switch
         {
-            PlayResult.Lose => 0,
-            PlayResult.Draw => 3,
-            PlayResult.Win => 6,
-            _ => throw new ApplicationException("Invalid Result")
-        };
-        return result;
-    }
-
-    private int GetPlayPoints(Move move)
-    {
-        var result = move switch
-        {
-            Move.Rock => 1,
-            Move.Paper => 2,
-            Move.Scissors => 3,
+            Move.Rock => PlayResult.Lose,
+            Move.Paper => PlayResult.Draw,
+            Move.Scissors => PlayResult.Win,
             _ => throw new ApplicationException("Invalid Move")
-        };
-        return result;
-    }
+        },
+        Move.Scissors => yourMove switch
+        {
+            Move.Rock => PlayResult.Win,
+            Move.Paper => PlayResult.Lose,
+            Move.Scissors => PlayResult.Draw,
+            _ => throw new ApplicationException("Invalid Move")
+        },
+        _ => throw new ApplicationException("Invalid Move")
+    };
+
+
+    private int GetResultPoints(PlayResult playResult) => playResult switch
+    {
+        PlayResult.Lose => 0,
+        PlayResult.Draw => 3,
+        PlayResult.Win => 6,
+        _ => throw new ApplicationException("Invalid Result")
+    };
+
+    private int GetPlayPoints(Move move) => move switch
+    {
+        Move.Rock => 1,
+        Move.Paper => 2,
+        Move.Scissors => 3,
+        _ => throw new ApplicationException("Invalid Move")
+    };
 
 }
