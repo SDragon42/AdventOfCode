@@ -9,7 +9,7 @@ public class Day00
 
 
 
-    private (List<int>, int?) GetTestData(int part, string inputName)
+    private (List<int> input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .Select(l => l.ToInt32())

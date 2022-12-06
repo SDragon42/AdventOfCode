@@ -9,7 +9,7 @@ public class Day06_Tuning_Trouble
 
 
 
-    private (string, int?) GetTestData(int part, string inputName)
+    private (string input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .First();

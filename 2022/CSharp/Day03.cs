@@ -1,5 +1,3 @@
-using System;
-
 namespace AdventOfCode.CSharp.Year2022;
 
 public class Day03_Rucksack_Reorganization
@@ -11,7 +9,7 @@ public class Day03_Rucksack_Reorganization
 
 
 
-    private (List<string>, int?) GetTestData(int part, string inputName)
+    private (List<string> input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .ToList();

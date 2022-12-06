@@ -11,7 +11,7 @@ public class Day05_Supply_Stacks
 
     
 
-    private (List<string>, string?) GetTestData(int part, string inputName)
+    private (List<string> input, string? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .ToList();
@@ -112,7 +112,7 @@ public class Day05_Supply_Stacks
         return new string(chars);
     }
 
-    private (CreateDictionary, List<string>) ParseInput(List<string> input)
+    private (CreateDictionary crates, List<string> instructions) ParseInput(List<string> input)
     {
         var blankIndex = input.IndexOf(string.Empty);
 
@@ -157,7 +157,7 @@ public class Day05_Supply_Stacks
 
     private Regex instructionRegex = new Regex("move (?<x>.*) from (?<y>.*) to (?<z>.*)", RegexOptions.Compiled);
 
-    private (int, int, int) ParseInstruction(string instruction)
+    private (int number, int from, int to) ParseInstruction(string instruction)
     {
         var match = instructionRegex.Match(instruction);
         if (!match.Success)

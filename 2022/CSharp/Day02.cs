@@ -33,7 +33,7 @@ public class Day02_Rock_Paper_Scissors
 
 
 
-    private (List<StrategyGuideMoves>, int?) GetTestData(int part, string inputName)
+    private (List<StrategyGuideMoves> input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries))

@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
-
 namespace AdventOfCode.CSharp.Year2022;
 
 public class Day04_Camp_Cleanup
@@ -11,7 +8,7 @@ public class Day04_Camp_Cleanup
     public Day04_Camp_Cleanup(ITestOutputHelper output) => this.output = output;
 
 
-    private (List<(Range, Range)>, int?) GetTestData(int part, string inputName)
+    private (List<(Range, Range)> input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .Select(LineToRanges)

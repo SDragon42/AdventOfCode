@@ -9,7 +9,7 @@ public class Day01_Calorie_Counting
 
 
 
-    private (List<string>, int?) GetTestData(int part, string inputName)
+    private (List<string> input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .ToList();
