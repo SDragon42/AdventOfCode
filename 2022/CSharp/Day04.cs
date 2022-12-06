@@ -8,7 +8,7 @@ public class Day04_Camp_Cleanup
     public Day04_Camp_Cleanup(ITestOutputHelper output) => this.output = output;
 
 
-    private (List<(Range, Range)> input, int? expected) GetTestData(int part, string inputName)
+    private (List<RPair> input, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.LoadInputFile(DAY, inputName)
             .Select(LineToRanges)
@@ -21,14 +21,19 @@ public class Day04_Camp_Cleanup
         return (input, expected);
     }
 
-    private (Range, Range) LineToRanges(string line)
+    private RPair LineToRanges(string line)
     {
         var split = line.IndexOf(',');
 
-        var pair1 = line.AsSpan(0, split);
-        var pair2 = line.AsSpan(split + 1);
+        var r1 = line.AsSpan(0, split);
+        var r2 = line.AsSpan(split + 1);
 
-        return (MakeRange(pair1), MakeRange(pair2));
+        var pair = new RPair()
+        {
+            A = MakeRange(r1),
+            B = MakeRange(r2)
+        };
+        return pair;
 
         Range MakeRange(ReadOnlySpan<char> data)
         {
@@ -73,7 +78,7 @@ public class Day04_Camp_Cleanup
 
 
 
-    private int GetNumberOfFullyContainedPairs(List<(Range, Range)> input)
+    private int GetNumberOfFullyContainedPairs(List<RPair> input)
     {
         var result = input
             .Where(IsFullyContained)
@@ -81,7 +86,7 @@ public class Day04_Camp_Cleanup
         return result;
     }
 
-    private int GetNumberOfOverlappedPairs(List<(Range, Range)> input)
+    private int GetNumberOfOverlappedPairs(List<RPair> input)
     {
         var result = input
             .Where(IsOverlapped)
@@ -91,29 +96,33 @@ public class Day04_Camp_Cleanup
 
     
 
-    private bool IsFullyContained((Range, Range) pair)
+    private bool IsFullyContained(RPair pair)
     {
-        var (a, b) = pair;
-        if (a.Start.Value <= b.Start.Value && a.End.Value >= b.End.Value)
+        if (pair.A.Start.Value <= pair.B.Start.Value && pair.A.End.Value >= pair.B.End.Value)
             return true;
-        if (b.Start.Value <= a.Start.Value && b.End.Value >= a.End.Value)
+        if (pair.B.Start.Value <= pair.A.Start.Value && pair.B.End.Value >= pair.A.End.Value)
             return true;
         return false;
     }
 
-    private bool IsOverlapped((Range, Range) pair)
+    private bool IsOverlapped(RPair pair)
     {
-        var (a, b) = pair;
-        if (a.Start.Value <= b.Start.Value && b.Start.Value <= a.End.Value)
+        if (pair.A.Start.Value <= pair.B.Start.Value && pair.B.Start.Value <= pair.A.End.Value)
             return true;
-        if (a.Start.Value <= b.End.Value && b.End.Value <= a.End.Value)
+        if (pair.A.Start.Value <= pair.B.End.Value && pair.B.End.Value <= pair.A.End.Value)
             return true;
-        if (b.Start.Value <= a.Start.Value && a.Start.Value <= b.End.Value)
+        if (pair.B.Start.Value <= pair.A.Start.Value && pair.A.Start.Value <= pair.B.End.Value)
             return true;
-        if (b.Start.Value <= a.End.Value && a.End.Value <= b.End.Value)
+        if (pair.B.Start.Value <= pair.A.End.Value && pair.A.End.Value <= pair.B.End.Value)
             return true;
         return false;
     }
 
+
+    private record RPair
+    {
+        public required Range A { get; init; }
+        public required Range B { get; init; }
+    }
 }
 
