@@ -1,15 +1,17 @@
-﻿namespace AdventOfCode.CSharp.Common;
+﻿using System.Xml.Linq;
+
+namespace AdventOfCode.CSharp.Common;
 
 public static class InputHelper
 {
-    [Obsolete]
+    [Obsolete("Replace with: ReadLines(day, name)")]
     public static IEnumerable<string> LoadInputFile(int day, string name)
     {
         var filename = GetDataFilePath(day, name);
         return File.ReadLines(filename);
     }
 
-    [Obsolete]
+    [Obsolete("Replace with: ReadLines(day, $\"{name}-answer{part}\")")]
     public static IEnumerable<string> LoadAnswerFile(int day, int part, string name)
     {
         try
@@ -21,27 +23,48 @@ public static class InputHelper
     }
 
 
-    public static string GetDataFilePath(int day, string name)
+    /// <summary>
+    /// Creates a 
+    /// </summary>
+    /// <param name="day">The puzzle day for the data files.</param>
+    /// <param name="name">The name of the data file without extension.</param>
+    /// <returns></returns>
+    private static string GetDataFilePath(int day, string name)
     {
         var filename = $@".\input\Day{day:00}\{name}.txt";
         return filename;
     }
 
-    public static IEnumerable<string> ReadLines(string path)
+    /// <summary>
+    /// Reads all lines from the input file.
+    /// </summary>
+    /// <param name="day">The puzzle day for the data files.</param>
+    /// <param name="name">The name of the data file without extension.</param>
+    /// <returns></returns>
+    public static IEnumerable<string> ReadLines(int day, string name)
     {
         try
         {
+            var path = GetDataFilePath(day, name);
             return File.ReadLines(path);
         }
         catch { return null; }
     }
 
-    public static string ReadText(string path)
+    /// <summary>
+    /// Reads all text from the input file.
+    /// </summary>
+    /// <param name="day">The puzzle day for the data files.</param>
+    /// <param name="name">The name of the data file without extension.</param>
+    /// <returns></returns>
+    public static string ReadText(int day, string name)
     {
         try
         {
+            var path = GetDataFilePath(day, name);
             return File.ReadAllText(path);
         }
         catch { return null; }
     }
+
 }
