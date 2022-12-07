@@ -1,24 +1,44 @@
-param
-(
-    # [Parameter(Mandatory=$true)]
+param (
+    [Parameter(Mandatory = $false)]
+    [Alias('y')]
     [int] $year,
-    # [Parameter(Mandatory=$true)]
-    [int] $day
+
+    [Parameter(Mandatory = $false)]
+    [Alias('d')]
+    [int] $day,
+    
+    [Parameter(Mandatory = $false)]
+    [Alias('e')]
+    [int] $numExamples
 )
+
 $errorMessage = ""
 $minYear = 2015
 $currYear = (Get-Date).year
 
+
+############################################################
 # Validate parameters
-if ($year -lt 2015 || $year -gt $currYear)
-{
-    $errorMessage += "Invalid year ($year)! Must be a year between $minYear and $currYear.`r`n"
+############################################################
+if (!$year) {
+    $year = $currYear
 }
 
-if ($day -lt 1 || $year -gt 25)
+if ($year -lt 2015 || $year -gt $currYear)
 {
-    $errorMessage += "Invalid day ($day)! Must be a day between 0 and 25.`r`n"
+    $errorMessage += "Invalid year ($year)! The year must be between $minYear and $currYear.`r`n"
 }
+
+if ($day) {
+    if ($day -lt 1 -or $day -gt 25) {
+        $errorMessage += "Invalid day ($day)! Must be a day between 1 and 25.`r`n"
+    }
+}
+
+if (!$numExamples) {
+    $numExamples = 1
+}
+
 
 if ($errorMessage.Length -gt 0)
 {
@@ -28,39 +48,56 @@ if ($errorMessage.Length -gt 0)
 }
 
 
-if ($args.Length -gt 0)
-{
-    $filenameParts = $args
+############################################################
+# Build Filename list
+############################################################
+$filenameParts = @()
+$filenameParts += "input"
+
+for ($i = 1; $i -le $numExamples; $i++) {
+    $filenameParts += "example$i"
 }
-else
-{
-    $filenameParts = @("input", "example1", "example2")
+
+
+############################################################
+# Build Day range
+############################################################
+$dayStart = 1
+$dayEnd = 25
+
+if ($day) {
+    $dayStart = $day
+    $dayEnd = $day
 }
 
-# Create the input file path
-$path = "$year\Input\day{0:00}" -f $day
-New-Item -ItemType Directory -Force -Path $path | Out-Null
 
-# Create the input files
-function CreateInputFile
-{
-    param ([string] $filename)
+############################################################
+# Create input files
+############################################################
+function CreateInputFile {
+    param (
+        [string] $dayPath,
+        [string] $filename
+    )
 
-    $filename = "$path\$filename.txt"
+    $filePath = "$dayPath\$filename.txt"
     
-    $fileExists = Test-Path $filename
+    $fileExists = Test-Path $filePath
     if (-not $fileExists)
     {
-        New-Item -ItemType File -Path $filename | Out-Null
+        New-Item -ItemType File -Path $filePath | Out-Null
     }
 }
 
-foreach ($name in $filenameParts)
-{
-    CreateInputFile("$name")
-    CreateInputFile("$name-answer1")
-    CreateInputFile("$name-answer2")
-}
 
-# Show folder path contents
-Get-ChildItem $path 
+for ($i = $dayStart; $i -le $dayEnd; $i++) {
+    $dayPath = "$year\Input\day{0:00}" -f $i
+
+    New-Item -ItemType Directory -Force -Path $dayPath | Out-Null
+
+    foreach ($name in $filenameParts) {
+        CreateInputFile $dayPath "$name"
+        CreateInputFile $dayPath "$name-answer1"
+        CreateInputFile $dayPath "$name-answer2"
+    }
+}
