@@ -11,12 +11,11 @@ public class Day01_Calorie_Counting
 
     private (List<string> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.LoadInputFile(DAY, inputName)
+        var input = InputHelper.ReadLines(DAY, inputName)
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, inputName)
-            ?.FirstOrDefault()
-            ?.ToInt32();
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+            .ToInt32();
 
         return (input, expected);
     }

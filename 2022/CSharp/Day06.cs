@@ -11,12 +11,10 @@ public class Day06_Tuning_Trouble
 
     private (string input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.LoadInputFile(DAY, inputName)
-            .First();
+        var input = InputHelper.ReadText(DAY, inputName);
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, inputName)
-            ?.FirstOrDefault()
-            ?.ToInt32();
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+            .ToInt32();
 
         return (input, expected);
     }

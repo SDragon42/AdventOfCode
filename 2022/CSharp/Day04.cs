@@ -10,13 +10,12 @@ public class Day04_Camp_Cleanup
 
     private (List<RPair> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.LoadInputFile(DAY, inputName)
+        var input = InputHelper.ReadLines(DAY, inputName)
             .Select(LineToRanges)
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, inputName)
-            ?.FirstOrDefault()
-            ?.ToInt32();
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+            .ToInt32();
 
         return (input, expected);
     }

@@ -13,11 +13,10 @@ public class Day05_Supply_Stacks
 
     private (List<string> input, string? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.LoadInputFile(DAY, inputName)
+        var input = InputHelper.ReadLines(DAY, inputName)
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, inputName)
-            ?.FirstOrDefault();
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}");
 
         return (input, expected);
     }
