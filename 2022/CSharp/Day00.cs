@@ -15,8 +15,9 @@ public class Day00
             .Select(l => l.ToInt32())
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            .ToInt32();
+        var expected = InputHelper.ReadLines(DAY, $"{inputName}-answer{part}")
+            ?.FirstOrDefault()
+            ?.ToInt32();
 
         return (input, expected);
     }
