@@ -24,39 +24,39 @@ public class Day00
 
 
 
-    //[Theory]
-    //[InlineData(1, "example1")]
-    //[InlineData(1, "input")]
-    //public void Part1(int part, string inputName)
-    //{
-    //    var (input, expected) = GetTestData(part, inputName);
+    [Theory]
+    [InlineData(1, "example1")]
+    [InlineData(1, "input")]
+    public void Part1(int part, string inputName)
+    {
+        var (input, expected) = GetTestData(part, inputName);
 
-    //    var value = DoWork(input);
+        var value = DoWork(input);
 
-    //    output.WriteLine($"Answer: {value}");
+        output.WriteLine($"Answer: {value}");
 
-    //    Assert.Equal(expected, value);
-    //}
-
-
-    //[Theory]
-    //[InlineData(2, "example1")]
-    //[InlineData(2, "input")]
-    //public void Part2(int part, string inputName)
-    //{
-    //    var (input, expected) = GetTestData(part, inputName);
-
-    //    var value = DoWork(input);
-
-    //    output.WriteLine($"Answer: {value}");
-
-    //    Assert.Equal(expected, value);
-    //}
+        Assert.Equal(expected, value);
+    }
 
 
+    [Theory]
+    [InlineData(2, "example1")]
+    [InlineData(2, "input")]
+    public void Part2(int part, string inputName)
+    {
+        var (input, expected) = GetTestData(part, inputName);
 
-    //private int DoWork(List<int> input)
-    //{
-    //    return -1;
-    //}
+        var value = DoWork(input);
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
+    }
+
+
+
+    private int DoWork(List<int> input)
+    {
+        return -1;
+    }
 }
