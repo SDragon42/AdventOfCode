@@ -1,6 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.ExceptionServices;
-
 namespace AdventOfCode.CSharp.Year2022;
 
 public class Day09_Rope_Bridge
@@ -60,25 +57,42 @@ public class Day09_Rope_Bridge
 
     private int GetNumOfPositionsTheTailVisits(List<string> input, int numKnots)
     {
-        var visited = new HashSet<Coordinate>();
-        var head = new Coordinate() { X = 0, Y = 0 };
-        var tail = new Coordinate() { X = 0, Y = 0 };
-        visited.Add(tail);
+        var visited = new HashSet<Point>();
+        var knots = MakeKnots(numKnots);
+        visited.Add(knots.First());
 
         var instructions = input.Select(ParseInstruction);
         foreach (var (dir, steps) in instructions)
         {
+            //var xx = 0;
             for (int i = 0; i < steps; i++)
             {
-                var headWas = head;
-                head = MoveHead(head, dir);
-                tail = MoveTail(head, tail, headWas);
-                visited.Add(tail);
+                // Move head
+                knots[0] = MoveKnot(knots[0], dir);
+                //var map = OutputPoints(knots);
+
+                // Move trailing knots
+                for (int k = 1; k < knots.Count; k++)
+                {
+                    knots[k] = MoveKnot(knots[k], knots[k - 1]);
+                    //map = OutputPoints(knots);
+                }
+
+                //var map = OutputPoints(knots);
+                visited.Add(knots.Last());
             }
         }
 
         var result = visited.Count;
         return result;
+    }
+
+    private List<Point> MakeKnots(int numKnots)
+    {
+        var knots = new List<Point>();
+        for (int i = 0; i < numKnots; i++)
+            knots.Add(new Point());
+        return knots;
     }
 
 
@@ -92,28 +106,56 @@ public class Day09_Rope_Bridge
 
     private enum Direction { U, D, L, R }
 
-    private Coordinate MoveHead(Coordinate head, Direction direction) => direction switch
+    private Point MoveKnot(Point knot, Direction direction) => direction switch
     {
-        Direction.U => new Coordinate() { X = head.X, Y = head.Y + 1 },
-        Direction.D => new Coordinate() { X = head.X, Y = head.Y - 1 },
-        Direction.L => new Coordinate() { X = head.X - 1, Y = head.Y },
-        Direction.R => new Coordinate() { X = head.X + 1, Y = head.Y },
+        Direction.U => new Point(knot.X, knot.Y + 1),
+        Direction.D => new Point(knot.X, knot.Y - 1),
+        Direction.L => new Point(knot.X - 1, knot.Y),
+        Direction.R => new Point(knot.X + 1, knot.Y),
         _ => throw new ApplicationException($"Invalid direction: {direction}")
     };
 
-    private Coordinate MoveTail(Coordinate head, Coordinate tail, Coordinate headWas)
+    private Point MoveKnot(Point knot, Point prevKnot)
     {
-        var xDist = Math.Abs(head.X - tail.X);
-        var yDist = Math.Abs(head.Y - tail.Y);
-        if (xDist <= 1 && yDist <= 1)
-            return tail;
-        return headWas;
-        //throw new NotImplementedException();
+        var xOffset = prevKnot.X - knot.X;
+        var yOffset = prevKnot.Y - knot.Y;
+
+        var xDist = Math.Abs(xOffset);
+        var yDist = Math.Abs(yOffset);
+
+        var newPt = 0 switch
+        {
+            _ when (xDist <= 1 && yDist <= 1) => knot,
+            _ when (xDist > 1 && yDist <= 1) => new Point(knot.X + (xOffset / 2), prevKnot.Y),
+            _ when (xDist <= 1 && yDist > 1) => new Point(prevKnot.X, knot.Y + (yOffset / 2)),
+            _ => new Point(knot.X + (xOffset / 2), knot.Y + (yOffset / 2)),
+        };
+
+        return newPt;
     }
 
-    private record Coordinate
+    private string OutputPoints(List<Point> knots)
     {
-        public required int X { get; init; }
-        public required int Y { get; init; }
+        var start = new Point(0, 0);
+        var knotDict = new Dictionary<Point, string>();
+        for (var i = 0; i < knots.Count; i++)
+        {
+            if (!knotDict.ContainsKey(knots[i])) 
+            {
+                var value = (i > 0) ? i.ToString() : "H";
+                knotDict.Add(knots[i], value);
+            }
+        }
+        if (!knotDict.ContainsKey(start))
+            knotDict.Add(start, "S");
+
+        var result = Helper.DrawPointGrid2D(
+            knotDict,
+            (v) => v ?? "."
+            ,new Size(5, 5)
+            );
+
+        return result;
     }
+
 }
