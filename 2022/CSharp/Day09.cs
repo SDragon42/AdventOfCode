@@ -64,21 +64,15 @@ public class Day09_Rope_Bridge
         var instructions = input.Select(ParseInstruction);
         foreach (var (dir, steps) in instructions)
         {
-            //var xx = 0;
             for (int i = 0; i < steps; i++)
             {
                 // Move head
                 knots[0] = MoveKnot(knots[0], dir);
-                //var map = OutputPoints(knots);
 
                 // Move trailing knots
                 for (int k = 1; k < knots.Count; k++)
-                {
                     knots[k] = MoveKnot(knots[k], knots[k - 1]);
-                    //map = OutputPoints(knots);
-                }
 
-                //var map = OutputPoints(knots);
                 visited.Add(knots.Last());
             }
         }
@@ -123,39 +117,40 @@ public class Day09_Rope_Bridge
         var xDist = Math.Abs(xOffset);
         var yDist = Math.Abs(yOffset);
 
-        var newPt = 0 switch
-        {
-            _ when (xDist <= 1 && yDist <= 1) => knot,
-            _ when (xDist > 1 && yDist <= 1) => new Point(knot.X + (xOffset / 2), prevKnot.Y),
-            _ when (xDist <= 1 && yDist > 1) => new Point(prevKnot.X, knot.Y + (yOffset / 2)),
-            _ => new Point(knot.X + (xOffset / 2), knot.Y + (yOffset / 2)),
-        };
+        xOffset = (xDist <= 1) ? xOffset : xOffset / 2;
+        yOffset = (yDist <= 1) ? yOffset : yOffset / 2;
 
-        return newPt;
+        if (xDist <= 1 && yDist <= 1)
+            return knot;
+        if (xDist > 1 && yDist == 0)
+            return new Point(knot.X + xOffset, knot.Y);
+        if (xDist == 0 && yDist > 1)
+            return new Point(knot.X, knot.Y + yOffset);
+        return new Point(knot.X + xOffset, knot.Y + yOffset);
     }
 
-    private string OutputPoints(List<Point> knots)
-    {
-        var start = new Point(0, 0);
-        var knotDict = new Dictionary<Point, string>();
-        for (var i = 0; i < knots.Count; i++)
-        {
-            if (!knotDict.ContainsKey(knots[i])) 
-            {
-                var value = (i > 0) ? i.ToString() : "H";
-                knotDict.Add(knots[i], value);
-            }
-        }
-        if (!knotDict.ContainsKey(start))
-            knotDict.Add(start, "S");
+    //private string OutputPoints(List<Point> knots)
+    //{
+    //    var start = new Point(0, 0);
+    //    var knotDict = new Dictionary<Point, string>();
+    //    for (var i = 0; i < knots.Count; i++)
+    //    {
+    //        if (!knotDict.ContainsKey(knots[i]))
+    //        {
+    //            var value = (i > 0) ? i.ToString() : "H";
+    //            knotDict.Add(knots[i], value);
+    //        }
+    //    }
+    //    if (!knotDict.ContainsKey(start))
+    //        knotDict.Add(start, "S");
 
-        var result = Helper.DrawPointGrid2D(
-            knotDict,
-            (v) => v ?? "."
-            ,new Size(5, 5)
-            );
+    //    var result = Helper.DrawPointGrid2D(
+    //        knotDict,
+    //        (v) => v ?? "."
+    //        , new Size(5, 5)
+    //        );
 
-        return result;
-    }
+    //    return result;
+    //}
 
 }
