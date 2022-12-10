@@ -59,12 +59,12 @@ public static class InputHelper
     /// <returns></returns>
     public static string ReadText(int day, string name)
     {
-        try
-        {
-            var path = GetDataFilePath(day, name);
-            return File.ReadAllText(path);
-        }
-        catch { return null; }
+        var lines = ReadLines(day, name);
+        if (lines == null)
+            return null;
+
+        var text = string.Join(Environment.NewLine, lines);
+        return text?.Length > 0 ? text : null;
     }
 
 }
