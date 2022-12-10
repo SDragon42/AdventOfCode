@@ -15,7 +15,7 @@ public class Day03_Rucksack_Reorganization
             .ToList();
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            .ToInt32();
+            ?.ToInt32();
 
         return (input, expected);
     }

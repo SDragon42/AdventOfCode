@@ -17,8 +17,7 @@ public class Day10_Cathode_Ray_Tube
         var input = InputHelper.ReadLines(DAY, inputName)
             .ToList();
 
-        var expected = InputHelper.ReadLines(DAY, $"{inputName}-answer{part}")
-            ?.FirstOrDefault()
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);
@@ -29,9 +28,7 @@ public class Day10_Cathode_Ray_Tube
         var input = InputHelper.ReadLines(DAY, inputName)
             .ToList();
 
-        var expected = string.Join(
-            Environment.NewLine,
-            InputHelper.ReadLines(DAY, $"{inputName}-answer{part}"));
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}");
 
         return (input, expected);
     }

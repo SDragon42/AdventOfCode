@@ -15,7 +15,7 @@ public class Day01_Calorie_Counting
             .ToList();
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            .ToInt32();
+            ?.ToInt32();
 
         return (input, expected);
     }

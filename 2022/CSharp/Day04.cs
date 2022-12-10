@@ -15,7 +15,7 @@ public class Day04_Camp_Cleanup
             .ToList();
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            .ToInt32();
+            ?.ToInt32();
 
         return (input, expected);
     }

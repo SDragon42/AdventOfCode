@@ -14,7 +14,7 @@ public class Day06_Tuning_Trouble
         var input = InputHelper.ReadText(DAY, inputName);
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            .ToInt32();
+            ?.ToInt32();
 
         return (input, expected);
     }

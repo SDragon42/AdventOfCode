@@ -45,7 +45,7 @@ public class Day02_Rock_Paper_Scissors
             .ToList();
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            .ToInt32();
+            ?.ToInt32();
 
         return (input, expected);
     }
