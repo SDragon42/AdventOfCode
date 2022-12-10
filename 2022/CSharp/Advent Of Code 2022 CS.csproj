@@ -29,11 +29,5 @@
   <ItemGroup>
     <Content Include="..\Input\**\*.*" CopyToOutputDirectory="PreserveNewest" Link="Input\%(RecursiveDir)\%(Filename)%(Extension)" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Content Remove="..\Input\Day01\example2-answer1.txt" />
-    <Content Remove="..\Input\Day01\example2-answer2.txt" />
-    <Content Remove="..\Input\Day01\example2.txt" />
-  </ItemGroup>
 
 </Project>
