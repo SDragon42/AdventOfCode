@@ -1,5 +1,11 @@
-namespace AdventOfCode.CSharp.Year2022;
+using Newtonsoft.Json.Linq;
 
+namespace AdventOfCode.CSharp.Year2022;
+/// <summary>
+/// I used this example for day 15 to figure out Part 2:
+/// https://gist.github.com/nathanbelles/30adf58fe199759590bf41dc7a471d01
+/// Their code is still faster by far.
+/// </summary>
 public class Day15_Beacon_Exclusion_Zone
 {
     private const int DAY = 15;
@@ -9,14 +15,14 @@ public class Day15_Beacon_Exclusion_Zone
 
 
 
-    private (List<SensorBeaconInfo> input, int? expected) GetTestData(int part, string inputName)
+    private (List<SensorBeaconInfo> input, long? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.ReadLines(DAY, inputName)
             .Select(ParseInput)
             .ToList();
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            ?.ToInt32();
+            ?.ToInt64();
 
         return (input, expected);
     }
@@ -27,13 +33,20 @@ public class Day15_Beacon_Exclusion_Zone
         var match = inputRegex.Match(instruction);
         if (!match.Success)
             throw new ApplicationException("Input line does not match the pattern");
-        var sensorPosition = new Point(
+
+        var sensor = new Point(
             (int)Convert.ChangeType(match.Groups[1].Value, typeof(int)),
             (int)Convert.ChangeType(match.Groups[2].Value, typeof(int)));
-        var nearestBeacon = new Point(
+        
+        var beacon = new Point(
             (int)Convert.ChangeType(match.Groups[3].Value, typeof(int)),
             (int)Convert.ChangeType(match.Groups[4].Value, typeof(int)));
-        return new SensorBeaconInfo(sensorPosition, nearestBeacon);
+        
+        return new SensorBeaconInfo() {
+            Sensor = sensor,
+            Beacon = beacon,
+            Distance = CalcManhattenDistance(sensor, beacon)
+        };
     }
 
 
@@ -71,52 +84,53 @@ public class Day15_Beacon_Exclusion_Zone
 
     private int GetHowManyPositionsCantContainBeacon(List<SensorBeaconInfo> input, int yPosition)
     {
-        var (x1, x2) = GetXMinMax(input.Select(l => (l.SensorLocation.X, l.Distance)));
+        var (x1, x2) = GetMinMaxValues(input.Select(l => (l.Sensor.X, l.Distance)));
         var startPoint = new Point(x1, yPosition);
         var endPoint = new Point(x2, yPosition);
 
         var numPointsNotPresent = GetAllPointsBetween(startPoint, endPoint)
-            .Where(PointIsInDetectionRange)
+            .Where(p => PointIsInDetectionRange(input, p))
             .Count();
         return numPointsNotPresent;
 
-        bool PointIsInDetectionRange(Point point)
+        bool PointIsInDetectionRange(List<SensorBeaconInfo> input, Point point)
         {
             return input
-                .Where(l => l.BeaconLocation != point)
-                .Select(l => new { l.SensorLocation, l.Distance, myDist = l.DistanceFromSensor(point) })
+                .Where(l => l.Beacon != point)
+                .Select(l => new { l.Sensor, l.Distance, myDist = CalcManhattenDistance(l.Sensor, point) })
                 .Any(l => l.Distance >= l.myDist);
         }
     }
 
-    private int GetTuningFreqencyOfDistressBeacon(List<SensorBeaconInfo> input, int lowerValue, int upperValue)
+    private long GetTuningFreqencyOfDistressBeacon(List<SensorBeaconInfo> input, int lowerValue, int upperValue)
     {
-        var (x1, x2) = GetXMinMax(input.Select(l => (l.SensorLocation.X, l.Distance)));
+        var (x1, x2) = GetMinMaxValues(input.Select(l => (l.Sensor.X, l.Distance)));
         x1 = Math.Clamp(x1, lowerValue, upperValue);
         x2 = Math.Clamp(x2, lowerValue, upperValue);
         var startPoint = new Point(x1, lowerValue);
         var endPoint = new Point(x2, upperValue);
 
-        var DistressBeaconLocation = GetAllPointsBetween(startPoint, endPoint)
-            .Where(IsPossibleBeaconLocation)
-            .First();
+        var list1 = GetAllPointsToCheck(input, startPoint, endPoint, lowerValue, upperValue);
+        var list2 = list1.Where(IsPossibleBeaconLocation).ToList();
 
-        var tuningFrequency = (DistressBeaconLocation.X * 4000000) + DistressBeaconLocation.Y;
+        var DistressBeaconLocation = list2.First();
+
+        var tuningFrequency = (DistressBeaconLocation.X * 4000000L) + DistressBeaconLocation.Y;
         return tuningFrequency;
 
         bool IsPossibleBeaconLocation(Point point)
         {
             return input
-                .Select(l => new { l.SensorLocation, l.Distance, myDist = l.DistanceFromSensor(point) })
+                .Select(l => new { l.Sensor, l.Distance, myDist = CalcManhattenDistance(l.Sensor, point) })
                 .All(l => l.Distance < l.myDist);
         }
     }
 
-    private static (int start, int end) GetXMinMax(IEnumerable<(int xPosition, int distance)> input)
+    private static (int min, int max) GetMinMaxValues(IEnumerable<(int value, int distance)> input)
     {
         var allXindexes = input
-            .Select(i => i.xPosition - i.distance)
-            .Union(input.Select(i => i.xPosition + i.distance))
+            .Select(i => i.value - i.distance)
+            .Union(input.Select(i => i.value + i.distance))
             .ToList();
 
         return (
@@ -136,31 +150,68 @@ public class Day15_Beacon_Exclusion_Zone
         }
     }
 
+    private static HashSet<Point> GetAllPointsToCheck(List<SensorBeaconInfo> input, Point start, Point end, int lowerValue, int upperValue)
+    {
+        var toCheck = new HashSet<Point>();
+
+        for (int i = 0; i < input.Count; i++)
+        {
+            var circle = input[i];
+
+            for (int j = 0; j < input.Count; j++)
+            {
+                if (i == j)
+                    continue;
+
+                var circle2 = input[j];
+                
+                if (CalcManhattenDistance(circle.Sensor, circle2.Sensor) != circle.Distance + circle2.Distance + 2)
+                    continue;
+
+                var endY = Math.Max(circle.Sensor.X + circle.Distance, circle2.Sensor.X + circle2.Distance);
+                var startY = Math.Max(circle.Sensor.X - circle.Distance, circle2.Sensor.X - circle2.Distance);
+
+                var startX = Math.Max(circle.Sensor.X - circle.Distance, circle2.Sensor.X - circle2.Distance);
+                var endX = Math.Max(circle.Sensor.X + circle.Distance, circle2.Sensor.X + circle2.Distance);
+
+
+                for (var y = startY; y < endY; y++)
+                {
+                    var xOffset = circle.Distance + 1 - Math.Abs(y - circle.Sensor.Y);
+                    var x1 = circle.Sensor.X + xOffset;
+                    var x2 = circle.Sensor.X - xOffset;
+
+                    if (InValidRange(x1, startX, endX))
+                        toCheck.Add(new Point(x1, y));
+
+                    if (InValidRange(x2, startX, endX))
+                        toCheck.Add(new Point(x2, y));
+                }
+            }
+        }
+
+        return toCheck;
+
+        bool InValidRange(int value, int min, int max)
+        {
+            return (value >= lowerValue && value <= upperValue && value >= min && value <= max);
+        }
+    }
+
+
+    private static int CalcManhattenDistance(Point a, Point b)
+    {
+        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+    }
+
+
+
 
 
     private record SensorBeaconInfo
     {
-        public SensorBeaconInfo(Point sensorLocation, Point beaconLocation)
-        {
-            SensorLocation = sensorLocation;
-            BeaconLocation = beaconLocation;
-            Distance = CalcManhattenDistance(sensorLocation, beaconLocation);
-        }
-
-
-        public Point SensorLocation { get; private set; }
-        public Point BeaconLocation { get; private set; }
-
+        public Point Sensor { get; init; }
+        public Point Beacon { get; init; }
         public int Distance { get; init; }
-
-        private int CalcManhattenDistance(Point a, Point b)
-        {
-            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-        }
-
-        public int DistanceFromSensor(Point a)
-        {
-            return CalcManhattenDistance(a, SensorLocation);
-        }
     }
 }
