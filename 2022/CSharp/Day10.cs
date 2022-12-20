@@ -3,6 +3,10 @@ using System.Text;
 
 namespace AdventOfCode.CSharp.Year2022;
 
+/// <summary>
+/// There is a more elegant implementation was found here:
+/// https://github.com/encse/adventofcode/blob/master/2022/Day10/Solution.cs
+/// </summary>
 public class Day10_Cathode_Ray_Tube
 {
     private const int DAY = 10;
