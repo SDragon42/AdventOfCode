@@ -1,22 +1,21 @@
 namespace AdventOfCode.CSharp.Year2022;
 
-public class Template
+public class Day00
 {
     private const int DAY = 0;
 
     private readonly ITestOutputHelper output;
-    public Template(ITestOutputHelper output) => this.output = output;
+    public Day00(ITestOutputHelper output) => this.output = output;
 
 
 
-    private (List<int>, int?) GetTestData(int part, string inputName)
+    private (List<int> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.LoadInputFile(DAY, inputName)
+        var input = InputHelper.ReadLines(DAY, inputName)
             .Select(l => l.ToInt32())
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, inputName)
-            ?.FirstOrDefault()
+        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);
