@@ -4,10 +4,10 @@
 			"path": "Python.Common"
 		},
 		{
-			"path": "2020\\Python"
+			"path": "2022\\Python"
 		},
 		{
-			"path": "2020\\Input"
+			"path": "2022\\Input"
 		}
 	],
 	"settings": {
@@ -22,11 +22,11 @@
 	"launch": {
 		"configurations": [
 			{
-				"name": "AOC2020",
+				"name": "AOC2022",
 				"type": "python",
 				"request": "launch",
 				"cwd": "${workspaceFolder:Python}",
-				"program": "",
+				"program": "src/day16.py",
 				"args": [],
 				"console": "integratedTerminal",
 				"env": {

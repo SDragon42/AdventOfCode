@@ -201,7 +201,7 @@ public class Day10_Cathode_Ray_Tube
                 {
                     X += _CachedInstruction switch
                     {
-                        CpuInstruction.addx => _CachedValue.Value,
+                        CpuInstruction.addx => _CachedValue!.Value,
                         _ => 0
                     };
 

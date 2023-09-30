@@ -161,10 +161,10 @@ public class Day11_Monkey_in_the_Middle
     {
         public Queue<ItemType> HeldItems { get; private set; } = new Queue<ItemType>();
 
-        public OperationDelegate OperationFunc { get; set; }
-        public OperationDelegate WorryReductionFunc { get; set; }
-        public TestDelegate GetMonkeyIdToThrowTo { get; set; }
-        public ThrowToDelegate ThrowToMonkey { get; set; }
+        public OperationDelegate OperationFunc { get; set; } = (a) => a;
+        public OperationDelegate WorryReductionFunc { get; set; } = (a) => a;
+        public TestDelegate GetMonkeyIdToThrowTo { get; set; } = (a) => 0;
+        public ThrowToDelegate ThrowToMonkey { get; set; } = (a, b) => { };
 
         public ItemType InspectionCount { get; private set; } = 0;
 
