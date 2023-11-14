@@ -1,4 +1,5 @@
 import sys, re
+from typing import Dict
 # import config
 # import inputHelper
 
@@ -21,6 +22,22 @@ def load_file(day: int, name: str) -> str:
         return None
 
 
+
+def RenderMap(map: Dict[str, Dict[str, float]]) -> str:
+    keys = [k for k in map]
+    result = ''
+
+    for title in keys:
+        result += "|" + title
+    result += "="
+
+    for row in keys:
+        result += row
+        for col in keys:
+            result += "|" + f'{map[row][col]}'
+        result += "="
+
+    return result
 
 
 
@@ -47,6 +64,7 @@ def main():
             for j in T:
                 T[i][j] = min(T[i][j], T[i][k]+T[k][j])
 
+    # RenderMap(T)
 
     def visit(v, budget, state, flow, answer):
         answer[state] = max(answer.get(state, 0), flow)
