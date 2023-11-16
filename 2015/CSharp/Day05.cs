@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace AdventOfCode.CSharp.Year2015
 {
+    [TestFixture]
     internal class Day05 : TestBase
     {
         private const int DAY = 5;

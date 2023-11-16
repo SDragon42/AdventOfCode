@@ -8,7 +8,8 @@ using System.Text;
 
 namespace AdventOfCode.CSharp.Year2015
 {
-    public class Day04 : TestBase
+    [TestFixture]
+    internal class Day04 : TestBase
     {
         private const int DAY = 4;
 

@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace AdventOfCode.CSharp.Year2015
 {
     [TestFixture]
-    public class Day01 : TestBase
+    internal class Day01 : TestBase
     {
         private const int DAY = 1;
 
