@@ -10,5 +10,10 @@ namespace AdventOfCode.CSharp.Year2015
     public abstract class TestBase
     {
         protected readonly string _rootPath = TestContext.CurrentContext.TestDirectory;
+
+        protected void Output(string text)
+        {
+            TestContext.Out.WriteLine(text);
+        }
     }
 }

@@ -43,6 +43,7 @@ namespace AdventOfCode.CSharp.Year2015
 
             var result = GetFloorTakenTo(input);
 
+            Output($"Answer: {result}");
             Assert.AreEqual(expected, result);
         }
 
@@ -56,6 +57,7 @@ namespace AdventOfCode.CSharp.Year2015
 
             var result = GetPositionFirstEnteringBasement(input);
 
+            Output($"Answer: {result}");
             Assert.AreEqual(expected, result);
         }
 
