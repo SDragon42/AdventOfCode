@@ -6,16 +6,10 @@ using NUnit.Framework;
 
 namespace AdventOfCode.CSharp.Year2015
 {
-    public class Day01
+    [TestFixture]
+    public class Day01 : TestBase
     {
         private const int DAY = 1;
-
-        private readonly string rootPath = TestContext.CurrentContext.TestDirectory;
-
-        [SetUp]
-        public void Setup()
-        {
-        }
 
 
 
