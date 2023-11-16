@@ -24,7 +24,7 @@ if (!$year) {
     $year = $currYear
 }
 
-if ($year -lt 2015 || $year -gt $currYear)
+if ($year -lt 2015 -or $year -gt $currYear)
 {
     $errorMessage += "Invalid year ($year)! The year must be between $minYear and $currYear.`r`n"
 }
