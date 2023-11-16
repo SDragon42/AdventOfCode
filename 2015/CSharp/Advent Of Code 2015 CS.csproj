@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <AssemblyName>AOC2015</AssemblyName>
+
+    <RootNamespace>AdventOfCode.CSharp.Year2015</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CSharp.Common\CSharp.Common.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="..\Input\**\*.*" CopyToOutputDirectory="PreserveNewest" Link="Input\%(RecursiveDir)\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

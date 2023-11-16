@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Advent Of Code 2015 CS", "2015\CSharp\Advent Of Code 2015 CS.csproj", "{22FF5AFA-C2E3-4248-809B-CB1B3EEFA79D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp.Common", "CSharp.Common\CSharp.Common.csproj", "{20A6E17A-3F36-44AD-90A0-CD65AFAE1956}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22FF5AFA-C2E3-4248-809B-CB1B3EEFA79D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22FF5AFA-C2E3-4248-809B-CB1B3EEFA79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22FF5AFA-C2E3-4248-809B-CB1B3EEFA79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22FF5AFA-C2E3-4248-809B-CB1B3EEFA79D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20A6E17A-3F36-44AD-90A0-CD65AFAE1956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20A6E17A-3F36-44AD-90A0-CD65AFAE1956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20A6E17A-3F36-44AD-90A0-CD65AFAE1956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20A6E17A-3F36-44AD-90A0-CD65AFAE1956}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26C2FD98-F48D-47EE-AD04-43B93D431C4B}
+	EndGlobalSection
+EndGlobal
