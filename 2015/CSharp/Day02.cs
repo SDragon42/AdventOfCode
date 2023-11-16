@@ -26,6 +26,7 @@ namespace AdventOfCode.CSharp.Year2015
         }
 
 
+
         [TestCase(1, "example1")]
         [TestCase(1, "example2")]
         [TestCase(1, "input")]
@@ -38,8 +39,6 @@ namespace AdventOfCode.CSharp.Year2015
             Output($"Answer: {result}");
             Assert.AreEqual(expected, result);
         }
-
-
 
         [TestCase(2, "example1")]
         [TestCase(2, "example2")]
@@ -90,7 +89,6 @@ namespace AdventOfCode.CSharp.Year2015
 
             return ribbonNeeded;
         }
-
 
 
         private static IEnumerable<int> GetSideAreas(Box box)

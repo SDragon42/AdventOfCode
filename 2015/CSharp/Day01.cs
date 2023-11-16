@@ -47,7 +47,6 @@ namespace AdventOfCode.CSharp.Year2015
             Assert.AreEqual(expected, result);
         }
 
-
         [TestCase(2, "example10")]
         [TestCase(2, "example11")]
         [TestCase(2, "input")]
