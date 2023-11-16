@@ -9,6 +9,6 @@ namespace AdventOfCode.CSharp.Year2015
 {
     public abstract class TestBase
     {
-        protected readonly string rootPath = TestContext.CurrentContext.TestDirectory;
+        protected readonly string _rootPath = TestContext.CurrentContext.TestDirectory;
     }
 }

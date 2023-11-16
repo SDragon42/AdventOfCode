@@ -15,11 +15,11 @@ namespace AdventOfCode.CSharp.Year2015
 
         private (List<char> input, int? expected) GetTestData(int part, string inputName)
         {
-            var input = InputHelper.ReadText(DAY, inputName, rootPath)
+            var input = InputHelper.ReadText(DAY, inputName, _rootPath)
                 .Select(c => c)
                 .ToList();
 
-            var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}", rootPath)
+            var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}", _rootPath)
                 ?.ToInt32();
 
             return (input, expected);
