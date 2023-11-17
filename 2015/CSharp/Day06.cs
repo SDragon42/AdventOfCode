@@ -17,6 +17,20 @@ namespace AdventOfCode.CSharp.Year2015
 
 
 
+        private class Instruction
+        {
+            public Instruction(string command, Point from, Point to)
+            {
+                Command = command;
+                From = from;
+                To = to;
+            }
+
+            public string Command { get; private set; }
+            public Point From { get; private set; }
+            public Point To { get; private set; }
+        }
+
         private (List<Instruction> input, int? expected) GetTestData(int part, string inputName)
         {
             var inputRegex = new Regex("(?<cmd>.*) (?<x>.*),(?<y>.*) through (?<x2>.*),(?<y2>.*)");
@@ -133,20 +147,5 @@ namespace AdventOfCode.CSharp.Year2015
             return lights.Sum();
         }
 
-
-
-        private class Instruction
-        {
-            public Instruction(string command, Point from, Point to)
-            {
-                Command = command;
-                From = from;
-                To = to;
-            }
-
-            public string Command { get; private set; }
-            public Point From { get; private set; }
-            public Point To { get; private set; }
-        }
     }
 }
