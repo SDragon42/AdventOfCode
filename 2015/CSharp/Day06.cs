@@ -19,7 +19,7 @@ namespace AdventOfCode.CSharp.Year2015
 
         private (List<Instruction> input, int? expected) GetTestData(int part, string inputName)
         {
-            Regex inputRegex = new Regex("(?<cmd>.*) (?<x>.*),(?<y>.*) through (?<x2>.*),(?<y2>.*)", RegexOptions.Compiled);
+            var inputRegex = new Regex("(?<cmd>.*) (?<x>.*),(?<y>.*) through (?<x2>.*),(?<y2>.*)");
 
             var input = InputHelper.ReadLines(DAY, inputName, _rootPath)
                 .Select(ParseInput)
@@ -36,15 +36,15 @@ namespace AdventOfCode.CSharp.Year2015
                 if (!match.Success)
                     throw new ApplicationException("Input line does not match the pattern");
 
-                var cmd = match.Groups[1].Value;
+                var cmd = match.Groups["cmd"].Value;
 
                 var p1 = new Point(
-                    (int)Convert.ChangeType(match.Groups[2].Value, typeof(int)),
-                    (int)Convert.ChangeType(match.Groups[3].Value, typeof(int)));
+                    (int)Convert.ChangeType(match.Groups["x"].Value, typeof(int)),
+                    (int)Convert.ChangeType(match.Groups["y"].Value, typeof(int)));
 
                 var p2 = new Point(
-                    (int)Convert.ChangeType(match.Groups[4].Value, typeof(int)),
-                    (int)Convert.ChangeType(match.Groups[5].Value, typeof(int)));
+                    (int)Convert.ChangeType(match.Groups["x2"].Value, typeof(int)),
+                    (int)Convert.ChangeType(match.Groups["y2"].Value, typeof(int)));
 
                 return new Instruction(cmd, p1, p2);
             }
