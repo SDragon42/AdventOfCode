@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Linq;
+using System.Text;
 using AdventOfCode.CSharp.Common;
 using NUnit.Framework;
-using System.Text;
 
 namespace AdventOfCode.CSharp.Year2015
 {

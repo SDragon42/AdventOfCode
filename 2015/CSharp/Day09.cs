@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using AdventOfCode.CSharp.Common;
 using NUnit.Framework;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AdventOfCode.CSharp.Year2015
 {
