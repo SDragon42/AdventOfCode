@@ -1,9 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using System.Text;
-using AdventOfCode.CSharp.Common;
-using Xunit.Abstractions;
-
-namespace AdventOfCode.CSharp.Year2023;
+﻿namespace AdventOfCode.CSharp.Year2023;
 
 public class Day01
 {
