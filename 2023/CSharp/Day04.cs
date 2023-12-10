@@ -1,5 +1,4 @@
-﻿
-namespace AdventOfCode.CSharp.Year2023;
+﻿namespace AdventOfCode.CSharp.Year2023;
 
 public class Day04
 {
