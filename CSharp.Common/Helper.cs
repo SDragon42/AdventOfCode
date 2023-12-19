@@ -50,9 +50,16 @@ namespace AdventOfCode.CSharp.Common
         /// <returns></returns>
         public static int GetDigitLeft(int value, int position)
         {
-            var result = Math.Truncate(value / Math.Pow(10, 6 - position)) - (Math.Truncate(value / Math.Pow(10, 6 - position + 1)) * 10);
-            return Convert.ToInt32(result);
+            var digit = value.ToString()[position - 1];
+            return (int)digit - 48;
         }
+        //public static int GetDigitLeft(int value, int position)
+        //{
+        //    const int MaxPosition = 6;
+        //    var result = Math.Truncate(value / Math.Pow(10, MaxPosition - position))
+        //        - (Math.Truncate(value / Math.Pow(10, MaxPosition - position + 1)) * 10);
+        //    return Convert.ToInt32(result);
+        //}
 
 
         /// <summary>
@@ -115,6 +122,13 @@ namespace AdventOfCode.CSharp.Common
         public static long FindLeastCommonMultiple(long a, long b)
         {
             return (a / FindGreatestCommonFactor(a, b)) * b;
+        }
+
+
+        public static long FindLeastCommonMultiple(params long[] nums)
+        {
+            //return (a / FindGreatestCommonFactor(a, b)) * b;
+            throw new NotImplementedException();
         }
 
 
