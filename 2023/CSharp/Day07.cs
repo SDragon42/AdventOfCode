@@ -15,11 +15,11 @@ public class Day07
     public Day07(ITestOutputHelper output) => this.output = output;
 
 
+
     private record CamalHand(string Cards, int Bid)
     {
         public long Rank { get; set; } = 0;
     }
-
 
     private (List<CamalHand> input, int? expected) GetTestData(int part, string inputName)
     {
@@ -36,7 +36,6 @@ public class Day07
 
 
 
-    [Trait("Puzzle", "")]
     [Theory]
     [InlineData(1, "example1")]
     [InlineData(1, "input")]
@@ -57,14 +56,13 @@ public class Day07
         Assert.Equal(expected, value);
     }
 
-    [Trait("Puzzle", "")]
     [Theory]
     [InlineData(2, "example1")]
     [InlineData(2, "input")]
     public void Part2(int part, string inputName)
     {
         useJokers = true;
-        SetCardAndHandTypes(replaceJacksWithJokers: true);
+        SetCardAndHandTypes();
 
         var (input, expected) = GetTestData(part, inputName);
 
@@ -75,14 +73,12 @@ public class Day07
             .Select((h, i) => (i + 1) * h.Bid)
             .Sum();
 
-        output.WriteLine("   Low: 253148077");
         output.WriteLine($"Answer: {value}");
         Assert.Equal(expected, value);
     }
 
 
     #region Hand Type Tests
-    [Trait("Method Tests", "")]
     [Theory]
     [InlineData("AAAAA", 5, false, true)]
     [InlineData("AAAJA", 5, false, false)]
@@ -110,7 +106,6 @@ public class Day07
     }
 
 
-    [Trait("Method Tests", "")]
     [Theory]
     [InlineData("23332", false, true)]
     [InlineData("23331", false, false)]
@@ -128,7 +123,6 @@ public class Day07
     }
 
 
-    [Trait("Method Tests", "")]
     [Theory]
     [InlineData("23432", false, true)]
     [InlineData("2343J", false, false)]
@@ -142,7 +136,6 @@ public class Day07
     }
 
 
-    [Trait("Method Tests", "")]
     [Theory]
     [InlineData("A23A4", false, true)]
     [InlineData("A23J4", false, false)]
@@ -159,7 +152,7 @@ public class Day07
 
 
 
-    private void SetCardAndHandTypes(bool replaceJacksWithJokers = false)
+    private void SetCardAndHandTypes()
     {
         cardTypes.Clear();
         cardTypes.Add('A', 14);
@@ -176,7 +169,7 @@ public class Day07
         cardTypes.Add('3', 3);
         cardTypes.Add('2', 2);
 
-        if (replaceJacksWithJokers)
+        if (useJokers)
             cardTypes[JOKER] = 1;
 
         handTypes.Clear();
