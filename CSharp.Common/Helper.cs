@@ -206,5 +206,20 @@ namespace AdventOfCode.CSharp.Common
 
             return text.ToString();
         }
+
+        /// <summary>
+        /// Converts an array index to a grid x,y point.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="xMax"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static Point IndexToPoint(int index, int xMax, Point? origin = null)
+        {
+            var x = (index % xMax) + (origin?.X ?? 0);
+            var y = (index / xMax) + (origin?.Y ?? 0);
+
+            return new Point(x, y);
+        }
     }
 }
