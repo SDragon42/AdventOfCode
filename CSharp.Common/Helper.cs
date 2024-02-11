@@ -50,9 +50,16 @@ namespace AdventOfCode.CSharp.Common
         /// <returns></returns>
         public static int GetDigitLeft(int value, int position)
         {
-            var result = Math.Truncate(value / Math.Pow(10, 6 - position)) - (Math.Truncate(value / Math.Pow(10, 6 - position + 1)) * 10);
-            return Convert.ToInt32(result);
+            var digit = value.ToString()[position - 1];
+            return (int)digit - 48;
         }
+        //public static int GetDigitLeft(int value, int position)
+        //{
+        //    const int MaxPosition = 6;
+        //    var result = Math.Truncate(value / Math.Pow(10, MaxPosition - position))
+        //        - (Math.Truncate(value / Math.Pow(10, MaxPosition - position + 1)) * 10);
+        //    return Convert.ToInt32(result);
+        //}
 
 
         /// <summary>
@@ -115,6 +122,13 @@ namespace AdventOfCode.CSharp.Common
         public static long FindLeastCommonMultiple(long a, long b)
         {
             return (a / FindGreatestCommonFactor(a, b)) * b;
+        }
+
+
+        public static long FindLeastCommonMultiple(params long[] nums)
+        {
+            //return (a / FindGreatestCommonFactor(a, b)) * b;
+            throw new NotImplementedException();
         }
 
 
@@ -191,6 +205,21 @@ namespace AdventOfCode.CSharp.Common
             }
 
             return text.ToString();
+        }
+
+        /// <summary>
+        /// Converts an array index to a grid x,y point.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="xMax"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static Point IndexToPoint(int index, int xMax, Point? origin = null)
+        {
+            var x = (index % xMax) + (origin?.X ?? 0);
+            var y = (index / xMax) + (origin?.Y ?? 0);
+
+            return new Point(x, y);
         }
     }
 }
