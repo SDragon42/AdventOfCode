@@ -74,20 +74,10 @@ namespace AdventOfCode.CSharp.Common
         /// Sourced and modified from:
         /// https://stackoverflow.com/questions/5132758/words-combinations-without-repetition
         /// </remarks>
+        [Obsolete("Converted into an extension method for IEnumerable<T>.")]
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
         {
-            if (items.Count() == 1)
-            {
-                yield return new T[] { items.First() };
-                yield break;
-            }
-
-            foreach (var item in items)
-            {
-                var nextItems = items.Where(i => !i.Equals(item));
-                foreach (var result in GetPermutations(nextItems))
-                    yield return new T[] { item }.Concat(result);
-            }
+            return items.GetPermutations();
         }
 
 

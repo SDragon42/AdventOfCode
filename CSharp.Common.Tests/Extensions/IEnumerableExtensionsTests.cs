@@ -2,6 +2,13 @@
 
 public class IEnumerableExtensionsTests
 {
+    private readonly ITestOutputHelper TestOutput;
+
+    public IEnumerableExtensionsTests(ITestOutputHelper output)
+    {
+        TestOutput = output;
+    }
+
 
     private static IList<int> GetTestData()
     {
@@ -140,6 +147,30 @@ public class IEnumerableExtensionsTests
         }
 
         Assert.Throws<ArgumentOutOfRangeException>(action); ;
+    }
+
+    #endregion
+
+
+    #region
+
+    [Fact]
+    public void GetPermutations_ValidSource_Returns()
+    {
+        var input = new[] { 1, 2, 3 };
+        var expected = 6;
+
+        var results = IEnumerableExtensions.GetPermutations(input)
+            .ToList();
+
+        // Show results in the test output
+        foreach (var item in results)
+        {
+            var text = string.Join(",", item);
+            TestOutput.WriteLine($"({text})");
+        }
+
+        Assert.Equal(expected, results.Count());
     }
 
     #endregion

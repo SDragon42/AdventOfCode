@@ -2,11 +2,6 @@
 
 public class HelperTests
 {
-    private ITestOutputHelper _output;
-    public HelperTests(ITestOutputHelper output)
-    {
-        _output = output;
-    }
 
     [Theory]
     [InlineData(123456789, 1, 9)]
@@ -38,24 +33,6 @@ public class HelperTests
         var result = Helper.GetDigitLeft(value, offset);
 
         Assert.Equal(expected, result);
-    }
-
-    [Fact]
-    public void GetPermutations()
-    {
-        var input = new[] { 1, 2, 3 };
-        var expected = 6;
-
-        var results = Helper.GetPermutations(input)
-            .ToList();
-
-        foreach (var item in results)
-        {
-            var text = string.Join(",", item);
-            _output.WriteLine($"({text})");
-        }
-
-        Assert.Equal(expected, results.Count());
     }
 
     [Theory]
