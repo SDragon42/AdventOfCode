@@ -51,7 +51,8 @@ namespace AdventOfCode.CSharp.Common
         public static int GetDigitLeft(int value, int position)
         {
             var digit = value.ToString()[position - 1];
-            return (int)digit - 48;
+            var result = digit - 48; // ASCII number offset
+            return result;
         }
         //public static int GetDigitLeft(int value, int position)
         //{
@@ -122,13 +123,6 @@ namespace AdventOfCode.CSharp.Common
         public static long FindLeastCommonMultiple(long a, long b)
         {
             return (a / FindGreatestCommonFactor(a, b)) * b;
-        }
-
-
-        public static long FindLeastCommonMultiple(params long[] nums)
-        {
-            //return (a / FindGreatestCommonFactor(a, b)) * b;
-            throw new NotImplementedException();
         }
 
 

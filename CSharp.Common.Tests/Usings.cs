@@ -6,5 +6,6 @@ global using System.Linq;
 global using System.Text;
 
 global using Xunit;
+global using Xunit.Abstractions;
 
 global using AdventOfCode.CSharp.Common;

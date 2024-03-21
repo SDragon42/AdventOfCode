@@ -1,6 +1,4 @@
-﻿using Xunit.Abstractions;
-
-namespace CSharp.Common.Tests;
+﻿namespace CSharp.Common.Tests;
 
 public class HelperTests
 {
@@ -68,4 +66,15 @@ public class HelperTests
         var result = Helper.FindGreatestCommonFactor(a, b);
         Assert.Equal(expected, result);
     }
+
+    [Theory]
+    [InlineData(3, 5, 15)]
+    [InlineData(5, 10, 10)]
+    [InlineData(10, 15, 30)]
+    public void FindLeastCommonMultiple(long a, long b, long expected)
+    {
+        var result = Helper.FindLeastCommonMultiple(a, b);
+        Assert.Equal(expected, result);
+    }
+
 }
