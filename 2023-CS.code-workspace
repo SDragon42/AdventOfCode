@@ -1,0 +1,81 @@
+{
+	"folders": [
+		{
+			"path": "CSharp.Common"
+		},
+		{
+			"path": "2023\\CSharp"
+		},
+		{
+			"path": "2023\\Input"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.vs": true,
+			"**/bin": true,
+			"**/obj": true
+		}
+	},
+	"extensions": {},
+	"launch": {
+		"configurations": [
+			{
+				"name": "AOC2023",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "build",
+				// If you have changed target frameworks, make sure to update the program path.
+				"program": "${workspaceFolder:CSharp}/bin/Debug/net7.0/Advent Of Code 2023 CS.dll",
+				"args": [],
+				"cwd": "${workspaceFolder:CSharp}/bin/Debug/net7.0",
+				// For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+				"console": "internalConsole",
+				"stopAtEntry": false
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "build",
+				"command": "dotnet",
+				"type": "process",
+				"args": [
+					"build",
+					"${workspaceFolder:CSharp}/Advent Of Code 2023 CS.csproj",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary"
+				],
+				"problemMatcher": "$msCompile"
+			},
+			{
+				"label": "publish",
+				"command": "dotnet",
+				"type": "process",
+				"args": [
+					"publish",
+					"${workspaceFolder:CSharp}/Advent Of Code 2023 CS.csproj",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary"
+				],
+				"problemMatcher": "$msCompile"
+			},
+			{
+				"label": "watch",
+				"command": "dotnet",
+				"type": "process",
+				"args": [
+					"watch",
+					"run",
+					"${workspaceFolder:CSharp}/Advent Of Code 2023 CS.csproj",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary"
+				],
+				"problemMatcher": "$msCompile"
+			}
+		]
+	}
+}
