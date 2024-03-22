@@ -64,24 +64,6 @@ namespace AdventOfCode.CSharp.Common
 
 
         /// <summary>
-        /// Returns a list of all possible combinations of the item list.
-        /// (item list only tested with unique values)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Sourced and modified from:
-        /// https://stackoverflow.com/questions/5132758/words-combinations-without-repetition
-        /// </remarks>
-        [Obsolete("Converted into an extension method for IEnumerable<T>.")]
-        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
-        {
-            return items.GetPermutations();
-        }
-
-
-        /// <summary>
         /// Finds the Greatest Common Factor between two numbers.
         /// </summary>
         /// <param name="a"></param>

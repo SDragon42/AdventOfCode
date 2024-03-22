@@ -10,13 +10,13 @@ public class Day15 : TestBase
 
     private (List<long>, long?) GetTestData(string name, int part)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First()
             .Split(',')
             .Select(v => v.ToInt64())
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault()
             ?.ToInt64();
 
@@ -100,7 +100,7 @@ public class Day15 : TestBase
             .Where(kv => NextToOxygen(kv.Key))
             .Select(kv => kv.Key);
 
-        while (hallTiles.Count() > 0)
+        while (hallTiles.Any())
         {
             minutes++;
             var tmp = tilesToFill.ToList();
@@ -208,9 +208,11 @@ public class Day15 : TestBase
 
     class RepairDroid
     {
-        IntCode cpu;
-        Point startPoint = new Point(0, 0);
-        Point? o2Location = default(Point?);
+        private readonly IntCode cpu;
+        private readonly Map map;
+
+        private Point startPoint = new Point(0, 0);
+        private Point? o2Location = default(Point?);
 
         public RepairDroid(IEnumerable<long> code, Map map)
         {
@@ -221,7 +223,7 @@ public class Day15 : TestBase
             this.map = map;
         }
 
-        private Map map;
+        
 
         public Point Location { get; private set; }
 

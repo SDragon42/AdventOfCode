@@ -76,16 +76,17 @@ namespace AdventOfCode.CSharp.Year2015
             Assert.AreEqual(expected, result);
         }
 
-        
+
 
         private int GetTotalHappiness(DinnerGuestDictionary dict)
         {
-            var b = Helper.GetPermutations(dict.Keys)
+            var result = dict.Keys
+                .GetPermutations()
                 .Select(x => x.ToList())
                 .Select(CalculateHappiness)
                 .Max();
 
-            return b;
+            return result;
 
             int CalculateHappiness(IList<string> people)
             {
@@ -94,11 +95,11 @@ namespace AdventOfCode.CSharp.Year2015
                 {
                     var name = people[i];
 
-                    var prevName = i > 0 
-                        ? people[i - 1] 
+                    var prevName = i > 0
+                        ? people[i - 1]
                         : people[people.Count - 1];
-                    var nextName = i < people.Count - 1 
-                        ? people[i + 1] 
+                    var nextName = i < people.Count - 1
+                        ? people[i + 1]
                         : people[0];
 
                     happiness += dict[name][nextName] + dict[name][prevName];

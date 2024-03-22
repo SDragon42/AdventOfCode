@@ -10,13 +10,13 @@ public class Day09 : TestBase
 
     private (List<long>, string) GetTestData(string name, int part)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First()
             .Split(',')
             .Select(v => v.ToInt64())
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault();
 
         return (input, expected);

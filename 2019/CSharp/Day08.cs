@@ -9,7 +9,7 @@ public class Day08 : TestBase
 
     private List<int> GetInput(string name)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First()
             .Select(c => (int)char.GetNumericValue(c))
             .ToList();
@@ -18,7 +18,7 @@ public class Day08 : TestBase
 
     private int? GetPart1Expected(string name)
     {
-        var expected = InputHelper.LoadAnswerFile(DAY, 1, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer1")
             ?.FirstOrDefault()
             ?.ToInt32();
         return expected;
@@ -26,7 +26,7 @@ public class Day08 : TestBase
 
     private string GetPart2Expected(string name)
     {
-        var expected = InputHelper.LoadAnswerFile(DAY, 2, name);
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer2");
         return string.Join("\r\n", expected);
     }
 
@@ -47,7 +47,7 @@ public class Day08 : TestBase
     {
         var input = GetInput("input");
         var expected = GetPart2Expected("input");
-        var compositeImage = buildCompositImage(input);
+        var compositeImage = BuildCompositImage(input);
 
         Assert.Equal(expected, compositeImage);
     }
@@ -103,7 +103,7 @@ public class Day08 : TestBase
         return result;
     }
 
-    string buildCompositImage(IList<int> imageData)
+    string BuildCompositImage(IList<int> imageData)
     {
         var sb = new StringBuilder();
         for (var pixel = 0; pixel < ImageSize; pixel++)

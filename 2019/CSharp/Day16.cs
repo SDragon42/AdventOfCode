@@ -12,10 +12,10 @@ public class Day16 : TestBase
 
     private (string, string) GetTestData(string name, int part)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault();
 
         return (input, expected);
@@ -43,7 +43,7 @@ public class Day16 : TestBase
     [InlineData("input")]
     public void Part2(string inputName)
     {
-        var (input, expected) = GetTestData(inputName, 2);
+        var (_, expected) = GetTestData(inputName, 2);
 
         Assert.Equal(expected, string.Empty);
     }

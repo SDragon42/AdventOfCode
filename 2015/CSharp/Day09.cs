@@ -16,7 +16,7 @@ namespace AdventOfCode.CSharp.Year2015
 
         private class InputData
         {
-            private static Regex inputRegex = new Regex(
+            private static readonly Regex inputRegex = new Regex(
                 "(?<city1>.*) to (?<city2>.*) = (?<distance>.*)",
                 RegexOptions.Compiled);
 
@@ -102,7 +102,8 @@ namespace AdventOfCode.CSharp.Year2015
 
         private (string city1, string city2)[][] GetAllRouteChains(IList<string> cities)
         {
-            var result = Helper.GetPermutations(cities)
+            var result = cities
+                .GetPermutations()
                 .Select(route => route.Select(city => city)
                                       .Windowed(2)
                                       .Select(a => (a[0], a[1]))

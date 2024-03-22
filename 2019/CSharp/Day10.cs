@@ -10,10 +10,10 @@ public class Day10 : TestBase
 
     private (Dictionary<Point, AsteroidInfo>, Point, int?) GetTestData(string name, int part)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault()
             ?.ToInt32();
 
@@ -49,7 +49,7 @@ public class Day10 : TestBase
     [InlineData("input")]
     public void Part1(string inputName)
     {
-        var (mapData, baseLocation, expected) = GetTestData(inputName, 1);
+        var (mapData, _, expected) = GetTestData(inputName, 1);
 
         var result = RunPart1(mapData);
 
@@ -112,7 +112,7 @@ public class Day10 : TestBase
             .ThenBy(z => z.distance);
 
         var angle = allAsteroids.Select(z => z.angle).Min();
-        while (allAsteroids.Count() > 0)
+        while (allAsteroids.Any())
         {
             var target = allAsteroids
                 .Where(z => z.angle == angle)

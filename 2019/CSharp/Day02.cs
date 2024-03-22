@@ -8,13 +8,13 @@ public class Day02 : TestBase
 
     private (List<long>, long?) GetTestData(string name, int part)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First()
             .Split(',')
             .Select(v => v.ToInt64())
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault()
             ?.ToInt64();
 

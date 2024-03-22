@@ -11,13 +11,13 @@ public class Day17 : TestBase
 
     private (List<long>, long?) GetTestData(string name, int part)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First()
             .Split(',')
             .Select(v => v.ToInt64())
             .ToList();
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault()
             ?.ToInt64();
 
@@ -27,7 +27,7 @@ public class Day17 : TestBase
     private (List<List<char>>, long?) GetMapDataFromInput(string name, int part)
     {
         var map = new List<List<char>>();
-        var lines = InputHelper.LoadInputFile(DAY, name);
+        var lines = InputHelper.ReadLines(DAY, name);
         foreach (var line in lines)
         {
             var t = line.Select(c => c).ToList();
@@ -36,7 +36,7 @@ public class Day17 : TestBase
 
         return (
             map,
-            InputHelper.LoadAnswerFile(DAY, part, name)?.FirstOrDefault()?.ToInt64()
+            InputHelper.ReadLines(DAY, $"{name}-answer{part}")?.FirstOrDefault()?.ToInt64()
         );
     }
 
@@ -237,7 +237,7 @@ public class Day17 : TestBase
                     .Select(o => hasScaffolding(new Point(x, y), o))
                     .Where(o => o)
                     .ToList();
-                if (SidesWithScaffolding.Count() >= 3)
+                if (SidesWithScaffolding.Count >= 3)
                 {
                     map[y][x] = Char_Intersection;
                     intersections.Add(new Point(x, y));

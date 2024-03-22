@@ -9,7 +9,7 @@ public class Day07 : TestBase
 
     private (List<long>, List<long>, long?) GetTestData(string name, int part)
     {
-        var inputData = InputHelper.LoadInputFile(DAY, name)
+        var inputData = InputHelper.ReadLines(DAY, name)
             .ToList();
 
         var input = inputData[0]
@@ -26,7 +26,7 @@ public class Day07 : TestBase
                 .ToList();
         }
 
-        var expected = InputHelper.LoadAnswerFile(DAY, part, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
             ?.FirstOrDefault()
             ?.ToInt64();
 
@@ -173,35 +173,9 @@ public class Day07 : TestBase
             yield break;
         }
 
-        var result = GetPermutations(sourceValues);
+        var result = sourceValues.GetPermutations();
         foreach (var item in result)
             yield return item.ToList();
-    }
-
-    /// <summary>
-    /// Returns a list of all possible combinations of the item list.  (item list only tested with unique values)
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="items"></param>
-    /// <returns></returns>
-    /// <remarks>
-    /// Sourced and modified from:
-    /// https://stackoverflow.com/questions/5132758/words-combinations-without-repetition
-    /// </remarks>
-    static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
-    {
-        if (items.Count() == 1)
-        {
-            yield return new T[] { items.First() };
-            yield break;
-        }
-
-        foreach (var item in items)
-        {
-            var nextItems = items.Where(i => !i.Equals(item));
-            foreach (var result in GetPermutations(nextItems))
-                yield return new T[] { item }.Concat(result);
-        }
     }
 
 }

@@ -10,7 +10,7 @@ public class Day11 : TestBase
 
     private List<long> GetInput(string name)
     {
-        var input = InputHelper.LoadInputFile(DAY, name)
+        var input = InputHelper.ReadLines(DAY, name)
             .First()
             .Split(',')
             .Select(v => v.ToInt64())
@@ -20,7 +20,7 @@ public class Day11 : TestBase
 
     private int? GetPart1Expected(string name)
     {
-        var expected = InputHelper.LoadAnswerFile(DAY, 1, name)
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer1")
             ?.FirstOrDefault()
             ?.ToInt32();
         return expected;
@@ -28,7 +28,7 @@ public class Day11 : TestBase
 
     private string GetPart2Expected(string name)
     {
-        var expected = InputHelper.LoadAnswerFile(DAY, 2, name);
+        var expected = InputHelper.ReadLines(DAY, $"{name}-answer2");
         return string.Join("\r\n", expected);
     }
 
@@ -46,7 +46,7 @@ public class Day11 : TestBase
         robot.PaintHull += (s, e) => SetHullColor(hull, e.Location, e.HullColor);
 
         robot.Start();
-        var result = hull.Count();
+        var result = hull.Count;
 
         Assert.Equal(expected, result);
     }
@@ -201,7 +201,7 @@ public class Day11 : TestBase
 
             myLocation = Point.Add(myLocation, shift);
 
-            var args = new MoveToHullLocationEventArgs(myLocation);
+            //var args = new MoveToHullLocationEventArgs(myLocation);
         }
 
 
