@@ -83,8 +83,19 @@ namespace AdventOfCode.CSharp.Year2015
             Assert.AreEqual(expected, result);
         }
 
+        [TestCase(2, "example1")]
+        [TestCase(2, "input")]
+        public void Part2(int part, string inputName)
+        {
+            var (input, expected) = GetTestData(part, inputName);
 
-        private int GetTotalScoreOfHighestScoringCookie(IList<Ingredient> input)
+            var result = GetTotalScoreOfHighestScoringCookie(input, 500);
+            Output($"Answer: {result}");
+            Assert.AreEqual(expected, result);
+        }
+
+
+        private int GetTotalScoreOfHighestScoringCookie(IList<Ingredient> input, int? targetCalories = null)
         {
             var amountLists = input.Select(i => Enumerable.Range(1, TEASPOONS))
                                    .ToArray();
@@ -92,9 +103,14 @@ namespace AdventOfCode.CSharp.Year2015
             var withScore = ZipN(amountLists)
                 .Where(l => l.Sum() == TEASPOONS)
                 .Select(l => l.Select((amount, index) => (amount, input[index])))
-                .Select(d => (d, CalculateTotalScore(d)));
+                .Select(d => (pair: d, score: CalculateTotalScore(d), calories: CalculateTotalCalories(d)));
 
-            var result = withScore.Select(l => l.Item2)
+            if (targetCalories != null)
+            {
+                withScore = withScore.Where(l => l.calories == targetCalories.Value);
+            }
+
+            var result = withScore.Select(l => l.score)
                                   .Max();
 
             return result;
@@ -123,6 +139,20 @@ namespace AdventOfCode.CSharp.Year2015
             texture = Math.Max(texture, 0);
 
             return capacity * durability * flavor * texture;
+        }
+
+        private int CalculateTotalCalories(IEnumerable<(int amount, Ingredient ingredients)> data)
+        {
+            int calories = 0;
+
+            foreach (var (amount, ingredients) in data)
+            {
+                calories += amount * ingredients.Calories;
+            }
+
+            calories = Math.Max(calories, 0);
+
+            return calories;
         }
 
 
