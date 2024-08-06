@@ -14,7 +14,7 @@ namespace AdventOfCode.CSharp.Year2015
         private const int DAY = 15;
 
 
-        private const int TEASPOONS = 100;
+        private const int TOTAL_TEASPOONS = 100;
 
         private class Ingredient
         {
@@ -34,8 +34,6 @@ namespace AdventOfCode.CSharp.Year2015
             public int Flavor { get; private set; }
             public int Texture { get; private set; }
             public int Calories { get; private set; }
-
-            public override string ToString() => Name;
         }
 
         private (IList<Ingredient> input, int? expected) GetTestData(int part, string inputName)
@@ -97,40 +95,44 @@ namespace AdventOfCode.CSharp.Year2015
 
         private int GetTotalScoreOfHighestScoringCookie(IList<Ingredient> input, int? targetCalories = null)
         {
-            var amountLists = input.Select(i => Enumerable.Range(1, TEASPOONS))
-                                   .ToArray();
-
-            var withScore = ZipN(amountLists)
-                .Where(l => l.Sum() == TEASPOONS)
-                .Select(l => l.Select((amount, index) => (amount, input[index])))
-                .Select(d => (pair: d, score: CalculateTotalScore(d), calories: CalculateTotalCalories(d)));
+            var cookieMixes = GetValidAmounts(input)
+                .Select(l => l.Select((amount, index) => (amount, ingredient: input[index])));
 
             if (targetCalories != null)
-            {
-                withScore = withScore.Where(l => l.calories == targetCalories.Value);
-            }
+                cookieMixes = cookieMixes.Where(portion => CalculateTotalCalories(portion) == targetCalories);
 
-            var result = withScore.Select(l => l.score)
-                                  .Max();
+            var result = cookieMixes
+                .Select(mix => CalculateTotalScore(mix))
+                .Where(s => s > 0)
+                .Max();
 
             return result;
         }
 
+        private IEnumerable<IEnumerable<int>> GetValidAmounts(IList<Ingredient> input)
+        {
+            var possibleAmounts = Enumerable.Range(1, TOTAL_TEASPOONS - (input.Count - 1));
+            var amountLists = input.Select(i => possibleAmounts).ToArray();
 
+            var validAmounts = amountLists.CartesianProduct()
+                .Where(l => l.Sum() == TOTAL_TEASPOONS);
 
-        private int CalculateTotalScore(IEnumerable<(int amount, Ingredient ingredients)> data)
+            return validAmounts;
+        }
+
+        private int CalculateTotalScore(IEnumerable<(int amount, Ingredient ingredients)> mix)
         {
             int capacity = 0;
             int durability = 0;
             int flavor = 0;
             int texture = 0;
 
-            foreach (var (amount, ingredients) in data)
+            foreach (var (amount, ingredient) in mix)
             {
-                capacity += amount * ingredients.Capacity;
-                durability += amount * ingredients.Durability;
-                flavor += amount * ingredients.Flavor;
-                texture += amount * ingredients.Texture;
+                capacity += amount * ingredient.Capacity;
+                durability += amount * ingredient.Durability;
+                flavor += amount * ingredient.Flavor;
+                texture += amount * ingredient.Texture;
             }
 
             capacity = Math.Max(capacity, 0);
@@ -141,13 +143,13 @@ namespace AdventOfCode.CSharp.Year2015
             return capacity * durability * flavor * texture;
         }
 
-        private int CalculateTotalCalories(IEnumerable<(int amount, Ingredient ingredients)> data)
+        private int CalculateTotalCalories(IEnumerable<(int amount, Ingredient ingredients)> mix)
         {
             int calories = 0;
 
-            foreach (var (amount, ingredients) in data)
+            foreach (var (amount, ingredient) in mix)
             {
-                calories += amount * ingredients.Calories;
+                calories += amount * ingredient.Calories;
             }
 
             calories = Math.Max(calories, 0);
@@ -155,31 +157,5 @@ namespace AdventOfCode.CSharp.Year2015
             return calories;
         }
 
-
-        private static IEnumerable<List<T>> ZipN<T>(params IEnumerable<T>[] args)
-        {
-            var firstArg = args.First().ToArray();
-            var remainingArgs = args.Skip(1).ToArray();
-
-            if (remainingArgs.Length > 0)
-            {
-                var subResult = ZipN(remainingArgs).ToArray();
-
-                foreach (var item in firstArg)
-                {
-                    foreach (var sItem in subResult)
-                    {
-                        var result = new List<T>() { item };
-                        result.AddRange(sItem);
-                        yield return result;
-                    }
-                }
-            }
-            else
-            {
-                foreach (var item in firstArg)
-                    yield return new List<T>() { item };
-            }
-        }
     }
 }

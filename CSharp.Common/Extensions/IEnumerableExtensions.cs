@@ -91,5 +91,45 @@ namespace AdventOfCode.CSharp.Common
                     yield return new T[] { item }.Concat(result);
             }
         }
+
+        /// <summary>
+        /// Creates a cartesian product of 2 or more enumerables.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sequences"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sourced and modified from:
+        /// https://ericlippert.com/2010/06/28/computing-a-cartesian-product-with-linq/
+        /// </remarks>
+        public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)
+        {
+            IEnumerable<IEnumerable<T>> result = default;
+
+            IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
+
+            // uses the query comprehension syntax to generate the cartesian product of the all sequences.
+            result = sequences.Aggregate(emptyProduct,
+                                         (accumulator, sequence) => from accseq in accumulator
+                                                                    from item in sequence
+                                                                    select accseq.Concat(new[] { item }));
+
+            //// Same code, but using the "fluent" method style
+            //result = sequences.Aggregate(emptyProduct,
+            //                             (accumulator, sequence) => accumulator.SelectMany((accseq) => sequence,
+            //                                                                               (accseq, item) => accseq.Concat(new[] { item })));
+
+
+            //// Loop over each sequence 
+            //result = emptyProduct;
+            //foreach (IEnumerable<T> sequence in sequences)
+            //{
+            //    result = from accseq in result
+            //             from item in sequence
+            //             select accseq.Concat(new[] { item });
+            //}
+
+            return result;
+        }
     }
 }
