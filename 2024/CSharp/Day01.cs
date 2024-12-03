@@ -1,11 +1,8 @@
 ﻿namespace AdventOfCode.CSharp.Year2024;
 
-public class Day01
+public class Day01(ITestOutputHelper output)
 {
     private const int DAY = 1;
-
-    private readonly ITestOutputHelper output;
-    public Day01(ITestOutputHelper output) => this.output = output;
 
 
 
