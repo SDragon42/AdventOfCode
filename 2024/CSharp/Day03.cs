@@ -25,7 +25,7 @@ public class Day03(ITestOutputHelper output)
     {
         var (input, expected) = GetTestData(part, inputName);
 
-        var instructions = GetUncorreptedInstructions(input);
+        var instructions = GetInstructions(input);
 
         int value = instructions.Select(i => i.Value1 * i.Value2)
                                 .Sum();
@@ -43,7 +43,7 @@ public class Day03(ITestOutputHelper output)
     {
         var (input, expected) = GetTestData(part, inputName);
 
-        var instructions = GetUncorreptedAndEnabledInstructions(input);
+        var instructions = GetInstructions(input, enabledOnly: true);
 
         int value = instructions.Select(i => i.Value1 * i.Value2)
                                 .Sum();
@@ -54,41 +54,35 @@ public class Day03(ITestOutputHelper output)
     }
 
 
-    
+
     private const string DO_INSTRUCTION = "do()";
     private const string DONT_INSTRUCTION = "don't()";
     private readonly Regex mulPattern = new Regex(@"mul\((?<x>\d+),(?<y>\d+)\)");
 
-    private IList<InstructionData> GetUncorreptedInstructions(string memory)
+    private IList<InstructionData> GetInstructions(string memory, bool enabledOnly = false)
     {
+        if (enabledOnly)
+        {
+            memory = string.Join(string.Empty, GetEnabledSegmentsOnly(memory));
+        }
+
         var instructions = mulPattern
-            .Matches(memory)
-            .Select(m => new InstructionData(
-                                m.Groups["x"].Value.ToInt32(),
-                                m.Groups["y"].Value.ToInt32()))
-            .ToList();
+                .Matches(memory)
+                .Select(m => new InstructionData(m.Groups["x"].Value.ToInt32(),
+                                                 m.Groups["y"].Value.ToInt32()))
+                .ToList();
 
         return instructions;
     }
-
-    private IList<InstructionData> GetUncorreptedAndEnabledInstructions(string memory)
+    private static IEnumerable<string> GetEnabledSegmentsOnly(string memory)
     {
         var enabledMemoryParts = memory.Split(DO_INSTRUCTION);
 
-        var instructions = new List<InstructionData>();
         foreach (var line in enabledMemoryParts)
         {
-            var xx = line.Split(DONT_INSTRUCTION, 2)[0];
-
-            var foundInstructions = mulPattern
-                .Matches(xx)
-                .Select(m => new InstructionData(
-                                    m.Groups["x"].Value.ToInt32(),
-                                    m.Groups["y"].Value.ToInt32()));
-            instructions.AddRange(foundInstructions);
+            var enabledMemory = line.Split(DONT_INSTRUCTION, 2)[0];
+            yield return enabledMemory;
         }
-
-        return instructions;
     }
 
 
