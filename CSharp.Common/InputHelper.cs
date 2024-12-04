@@ -7,13 +7,13 @@ namespace AdventOfCode.CSharp.Common
     public static class InputHelper
     {
         /// <summary>
-        /// Creates a 
+        /// Builds the path for an input data file.
         /// </summary>
         /// <param name="day">The puzzle day for the data files.</param>
         /// <param name="name">The name of the data file without extension.</param>
         /// <param name="rootPath">The root path.</param>
         /// <returns></returns>
-        private static string GetDataFilePath(int day, string name, string rootPath = ".")
+        private static string BuildDataFilePath(int day, string name, string rootPath = ".")
         {
             var filename = $@"{rootPath}\input\Day{day:00}\{name}.txt";
             return filename;
@@ -30,7 +30,7 @@ namespace AdventOfCode.CSharp.Common
         {
             try
             {
-                var path = GetDataFilePath(day, name, rootPath);
+                var path = BuildDataFilePath(day, name, rootPath);
                 return File.ReadLines(path);
             }
             catch { return null; }
