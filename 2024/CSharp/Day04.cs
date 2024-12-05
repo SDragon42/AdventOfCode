@@ -21,18 +21,6 @@ public class Day04(ITestOutputHelper output)
     }
 
 
-    private readonly IReadOnlyList<(int xOffset, int yOffset)> directions = [
-        (-1, -1),
-        (0, -1),
-        (1, -1),
-        (1, 0),
-        (1, 1),
-        (0, 1),
-        (-1, 1),
-        (-1, 0)
-        ];
-
-
     [Theory]
     [InlineData(1, "example1")]
     [InlineData(1, "input")]
@@ -40,7 +28,15 @@ public class Day04(ITestOutputHelper output)
     {
         var (input, expected) = GetTestData(part, inputName);
 
-        int value = CountPatternInPuzzle(input, "XMAS".ToArray());
+        var textArrary = "XMAS".ToArray();
+
+        IList<OffsetPoint[]> offsetPatterns = [
+            CreatePatternArray(new(0,0), textArrary.Length, new(1,-1)),
+            CreatePatternArray(new(0,0), textArrary.Length, new(1,1)),
+            CreatePatternArray(new(0,0), textArrary.Length, new(1,0)),
+            CreatePatternArray(new(0,0), textArrary.Length, new(0,1))
+        ];
+        int value = CountPatternInPuzzle(input, textArrary, offsetPatterns, MatchType.Any);
 
         output.WriteLine($"Answer: {value}");
 
@@ -48,8 +44,28 @@ public class Day04(ITestOutputHelper output)
     }
 
 
+    [Theory]
+    [InlineData(2, "example1")]
+    [InlineData(2, "input")]
+    public void Part2(int part, string inputName)
+    {
+        var (input, expected) = GetTestData(part, inputName);
 
-    private int CountPatternInPuzzle(char[][] puzzle, IReadOnlyList<char> pattern)
+        var textArrary = "MAS".ToArray();
+        IList<OffsetPoint[]> patterns = [
+            [new(-1,-1), new(0,0), new(1,1)],
+            [new(-1,1),  new(0,0), new(1,-1)]
+        ];
+
+        int value = CountPatternInPuzzle(input, textArrary, patterns, MatchType.All);
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
+    }
+
+
+    private int CountPatternInPuzzle(char[][] puzzle, IEnumerable<char> characters, IList<OffsetPoint[]> offsetPatterns, MatchType matchType)
     {
         var bounds = new Bounds(xLower: 0,
                                 xUpper: puzzle[0].Length - 1,
@@ -61,22 +77,41 @@ public class Day04(ITestOutputHelper output)
         {
             for (int x = bounds.xLower; x <= bounds.xUpper; x++)
             {
-                var paths = GetSearchPaths(x, y, pattern.Count, bounds).ToArray();
-                result += paths.Where(p => MatchesPattern(puzzle, pattern, p))
-                               .Count();
+                var validPaths = GetValidPaths(new Point(x, y), offsetPatterns, bounds);
+
+                switch (matchType)
+                {
+                    case MatchType.Any:
+                        result += validPaths.Where(p => MatchesPattern(puzzle, characters, p)
+                                                     || MatchesPattern(puzzle, characters.Reverse(), p))
+                                    .Count();
+                        break;
+                    case MatchType.All:
+                        if (validPaths.Count != offsetPatterns.Count)
+                            break;
+                        var matches = validPaths.All(p => MatchesPattern(puzzle, characters, p)
+                                                     || MatchesPattern(puzzle, characters.Reverse(), p));
+                        result += matches ? 1 : 0;
+                        break;
+                }
             }
         }
 
         return result;
     }
 
-    private bool MatchesPattern(char[][] puzzle, IReadOnlyList<char> pattern, Point[] searchPath)
+    private bool MatchesPattern(char[][] puzzle, IEnumerable<char> characters, Point[] searchPath)
     {
+        var characterEnumerator = characters.GetEnumerator();
         for (int i = 0; i < searchPath.Length; i++)
         {
-            var a = puzzle[searchPath[i].Y][searchPath[i].X];
-            var b = pattern[i];
-            if (a != b)
+            var gridCharacter = puzzle[searchPath[i].Y][searchPath[i].X];
+            if (!characterEnumerator.MoveNext())
+            {
+                return false;
+            }
+            var character = characterEnumerator.Current;
+            if (gridCharacter != character)
             {
                 return false;
             }
@@ -84,30 +119,22 @@ public class Day04(ITestOutputHelper output)
         return true;
     }
 
-    private IEnumerable<Point[]> GetSearchPaths(int x, int y, int length, Bounds bounds)
+    private IList<Point[]> GetValidPaths(Point origin, IList<OffsetPoint[]> offsetPatterns, Bounds bounds)
     {
-        foreach (var offset in directions)
+        var x = offsetPatterns.Select(offsets => OffsetsToPath(origin, offsets))
+                              .Where(path => path.All(p => IsInBounds(p, bounds)));
+        return x?.ToList() ?? [];
+    }
+
+    private Point[] OffsetsToPath(Point origin, OffsetPoint[] offsets)
+    {
+        var path = new Point[offsets.Length];
+        for (int i = 0; i < offsets.Length; i++)
         {
-            var xPathValues = CreateArray(x, length, offset.xOffset);
-            var yPathValues = CreateArray(y, length, offset.yOffset);
-
-            var path = xPathValues.Zip(yPathValues)
-                                  .Select((pair) => new Point(pair.First, pair.Second))
-                                  .ToArray();
-            if (path.All(p => IsInBounds(p, bounds)))
-            {
-                yield return path;
-            }
+            path[i] = new Point(origin.X + offsets[i].xOffset,
+                                origin.Y + offsets[i].yOffset);
         }
-
-
-        static IEnumerable<int> CreateArray(int start, int length, int step)
-        {
-            for (var i = 0; i < length; i++)
-            {
-                yield return start + (step * i);
-            }
-        }
+        return path;
     }
 
     private bool IsInBounds(Point point, Bounds bounds)
@@ -119,8 +146,31 @@ public class Day04(ITestOutputHelper output)
         return true;
     }
 
+    private static OffsetPoint[] CreatePatternArray(Point origin, int length, OffsetPoint step)
+    {
+        var xPathValues = CreateArray(origin.X, length, step.xOffset);
+        var yPathValues = CreateArray(origin.Y, length, step.yOffset);
+
+        var path = xPathValues.Zip(yPathValues)
+                              .Select((pair) => new OffsetPoint(pair.First, pair.Second))
+                              .ToArray();
+        return path;
+    }
+    private static int[] CreateArray(int start, int length, int step)
+    {
+        int[] array = new int[length];
+        for (var i = 0; i < length; i++)
+        {
+            array[i] = start + (step * i);
+        }
+        return array;
+    }
+
+    private enum MatchType { Any, All }
     private record Bounds(int xLower,
                           int xUpper,
                           int yLower,
                           int yUpper);
+
+    public record OffsetPoint(int xOffset, int yOffset);
 }
