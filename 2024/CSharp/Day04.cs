@@ -42,8 +42,6 @@ public class Day04(ITestOutputHelper output)
 
         int value = CountPatternInPuzzle(input, "XMAS".ToArray());
 
-        int value = CountPatternInPuzzle(input, pattern);
-
         output.WriteLine($"Answer: {value}");
 
         Assert.Equal(expected, value);
