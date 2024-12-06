@@ -1,119 +1,128 @@
-﻿namespace AdventOfCode.CSharp.Year2019;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using AdventOfCode.CSharp.Common;
+using Xunit;
+using Xunit.Abstractions;
 
-/// <summary>
-/// https://adventofcode.com/2019/day/16
-/// </summary>
-public class Day16 : TestBase
+namespace AdventOfCode.CSharp.Year2019
 {
-    public Day16(ITestOutputHelper output) : base(output, 16) { }
-
-    private readonly IReadOnlyList<int> basePattern = new List<int>() { 0, 1, 0, -1 };
-
-
-    private (string, string) GetTestData(string name, int part)
+    /// <summary>
+    /// https://adventofcode.com/2019/day/16
+    /// </summary>
+    public class Day16 : TestBase
     {
-        var input = InputHelper.ReadLines(DAY, name)
-            .First();
+        public Day16(ITestOutputHelper output) : base(output, 16) { }
 
-        var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
-            ?.FirstOrDefault();
-
-        return (input, expected);
-    }
+        private readonly IReadOnlyList<int> basePattern = new List<int>() { 0, 1, 0, -1 };
 
 
-    [Theory]
-    [InlineData("example1")]
-    [InlineData("example2")]
-    [InlineData("example3")]
-    [InlineData("example4")]
-    [InlineData("input")]
-    public void Part1(string inputName)
-    {
-        var (input, expected) = GetTestData(inputName, 1);
-
-        var numPhases = 100;
-        var result = RunPart1(input, numPhases);
-        output.WriteLine($"first 8 digits after {numPhases} phases : {result}");
-
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("input")]
-    public void Part2(string inputName)
-    {
-        var (_, expected) = GetTestData(inputName, 2);
-
-        Assert.Equal(expected, string.Empty);
-    }
-
-
-
-    string ListToString(IList<int> l) => string.Join("", l.Select(x => x.ToString()));
-
-    Action<string> Debug = (t) => Console.WriteLine(t);
-
-    string RunPart1(string input, int numPhases)
-    {
-        var phase = 0;
-
-        var signal = input.Select(c => c.ToString().ToInt32()).ToList();
-        var maxDigits = signal.Count;
-
-        Debug("Input Signal: " + ListToString(signal));
-        Debug("");
-
-        var line = new StringBuilder();
-        while (phase < numPhases)
+        private (string, string) GetTestData(string name, int part)
         {
-            phase++;
+            var input = InputHelper.ReadLines(DAY, name)
+                .First();
 
-            var newSignal = new List<int>();
-            for (var i = 0; i < maxDigits; i++)
-            {
-                line.Clear();
-                var newSignalLine = signal.ToList();
-                var dupCount = i + 1;
-                var total = 0;
-                for (var j = 0; j < maxDigits; j++)
-                {
-                    var val = GetPatternDigit(dupCount, j);
+            var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
+                ?.FirstOrDefault();
 
-                    var tmp = $"{newSignalLine[j]}*{val}";
-                    line.Append($"{tmp,-5}");
-                    if (j + 1 < maxDigits)
-                        line.Append(" + ");
-                    newSignalLine[j] *= val;
-                    total += newSignalLine[j];
-                }
-                total = Helper.GetDigitRight(Math.Abs(total), 1);
-                line.Append($" = {total}");
-
-                newSignal.Add(total);
-
-                Debug(line.ToString());
-            }
-
-            signal = newSignal;
-
-            Debug("");
-            Debug($"After {phase} Phase: {ListToString(signal)}");
-            Debug("");
+            return (input, expected);
         }
 
-        var result = ListToString(signal.Take(8).ToList());
-        return result;
-    }
 
-    int GetPatternDigit(int repeatCount, int idx)
-    {
-        idx++;
-        var a = basePattern.Count * repeatCount;
-        while (idx >= a)
-            idx -= a;
-        var i = idx / repeatCount;
-        return basePattern[i];
-    }
+        [Theory]
+        [InlineData("example1")]
+        [InlineData("example2")]
+        [InlineData("example3")]
+        [InlineData("example4")]
+        [InlineData("input")]
+        public void Part1(string inputName)
+        {
+            var (input, expected) = GetTestData(inputName, 1);
 
+            var numPhases = 100;
+            var result = RunPart1(input, numPhases);
+            output.WriteLine($"first 8 digits after {numPhases} phases : {result}");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData("input")]
+        public void Part2(string inputName)
+        {
+            var (_, expected) = GetTestData(inputName, 2);
+
+            Assert.Equal(expected, string.Empty);
+        }
+
+
+
+        string ListToString(IList<int> l) => string.Join("", l.Select(x => x.ToString()));
+
+        Action<string> Debug = (t) => Console.WriteLine(t);
+
+        string RunPart1(string input, int numPhases)
+        {
+            var phase = 0;
+
+            var signal = input.Select(c => c.ToString().ToInt32()).ToList();
+            var maxDigits = signal.Count;
+
+            Debug("Input Signal: " + ListToString(signal));
+            Debug("");
+
+            var line = new StringBuilder();
+            while (phase < numPhases)
+            {
+                phase++;
+
+                var newSignal = new List<int>();
+                for (var i = 0; i < maxDigits; i++)
+                {
+                    line.Clear();
+                    var newSignalLine = signal.ToList();
+                    var dupCount = i + 1;
+                    var total = 0;
+                    for (var j = 0; j < maxDigits; j++)
+                    {
+                        var val = GetPatternDigit(dupCount, j);
+
+                        var tmp = $"{newSignalLine[j]}*{val}";
+                        line.Append($"{tmp,-5}");
+                        if (j + 1 < maxDigits)
+                            line.Append(" + ");
+                        newSignalLine[j] *= val;
+                        total += newSignalLine[j];
+                    }
+                    total = Helper.GetDigitRight(Math.Abs(total), 1);
+                    line.Append($" = {total}");
+
+                    newSignal.Add(total);
+
+                    Debug(line.ToString());
+                }
+
+                signal = newSignal;
+
+                Debug("");
+                Debug($"After {phase} Phase: {ListToString(signal)}");
+                Debug("");
+            }
+
+            var result = ListToString(signal.Take(8).ToList());
+            return result;
+        }
+
+        int GetPatternDigit(int repeatCount, int idx)
+        {
+            idx++;
+            var a = basePattern.Count * repeatCount;
+            while (idx >= a)
+                idx -= a;
+            var i = idx / repeatCount;
+            return basePattern[i];
+        }
+
+    }
 }

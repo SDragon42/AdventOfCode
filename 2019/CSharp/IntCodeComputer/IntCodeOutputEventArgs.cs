@@ -1,10 +1,13 @@
-﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
+﻿using System;
 
-public class IntCodeOutputEventArgs : EventArgs
+namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
 {
-    public IntCodeOutputEventArgs(long value) : base()
+    public class IntCodeOutputEventArgs : EventArgs
     {
-        OutputValue = value;
+        public IntCodeOutputEventArgs(long value) : base()
+        {
+            OutputValue = value;
+        }
+        public long OutputValue { get; private set; }
     }
-    public long OutputValue { get; private set; }
 }

@@ -1,12 +1,16 @@
-﻿namespace AdventOfCode.CSharp.Year2019.IntCodeComputer;
+﻿using System;
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-class OpCodeAttribute : Attribute
+namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
 {
-    public OpCodeAttribute(int opCode)
-    {
-        OpCode = opCode;
-    }
 
-    public int OpCode { get; private set; }
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    class OpCodeAttribute : Attribute
+    {
+        public OpCodeAttribute(int opCode)
+        {
+            OpCode = opCode;
+        }
+
+        public int OpCode { get; private set; }
+    }
 }

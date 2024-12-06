@@ -1,14 +1,17 @@
-﻿namespace AdventOfCode.CSharp.Year2019;
+﻿using Xunit.Abstractions;
 
-public abstract class TestBase
+namespace AdventOfCode.CSharp.Year2019
 {
-    protected readonly int DAY;
-    protected readonly ITestOutputHelper output;
-
-
-    public TestBase(ITestOutputHelper output, int day)
+    public abstract class TestBase
     {
-        this.DAY = day;
-        this.output = output;
+        protected readonly int DAY;
+        protected readonly ITestOutputHelper output;
+
+
+        public TestBase(ITestOutputHelper output, int day)
+        {
+            this.DAY = day;
+            this.output = output;
+        }
     }
 }

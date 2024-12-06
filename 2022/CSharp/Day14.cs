@@ -100,7 +100,7 @@ public class Day14_Regolith_Reservoir
 
     void RenderGrid(IDictionary<Point, char> grid)
     {
-        var text = Helper.DrawScreenGrid2D(grid,
+        var text = GridHelper.DrawScreenGrid2D(grid,
             v => (v > 0 ? v : Legend.Air).ToString());
         output.WriteLine(text);
     }
