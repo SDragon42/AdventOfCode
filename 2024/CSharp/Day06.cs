@@ -48,6 +48,25 @@ public class Day06(ITestOutputHelper output)
         Assert.Equal(expected, value);
     }
 
+    [Theory]
+    [InlineData(2, "example1")]
+    [InlineData(2, "input")]
+    public void Part2(int part, string inputName)
+    {
+        var (mapSize, startPoint, obsticalLocations, expected) = GetTestData(part, inputName);
+
+        var visited = GetDistictPositionsVisited(mapSize, startPoint, obsticalLocations)
+            .Where(p => p != startPoint)
+            .ToList();
+
+        var value = visited.Where(p => FormsLoopPath(mapSize, startPoint, obsticalLocations.Concat([p])))
+                           .Count();
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
+    }
+
 
 
     private IEnumerable<Point> GetDistictPositionsVisited(int mapSize, Point startPoint, IEnumerable<Point> obsticals)
@@ -79,6 +98,38 @@ public class Day06(ITestOutputHelper output)
         return visited;
     }
 
+    private bool FormsLoopPath(int mapSize, Point startPoint, IEnumerable<Point> obsticals)
+    {
+        var visited = new List<(Point, Direction)>();
+        var direction = Direction.Up;
+
+        while (true)
+        {
+            var foundObsticals = GetAllInDirection(startPoint, obsticals, direction).ToList();
+
+            if (foundObsticals.Count == 0)
+            {
+                return false;
+            }
+
+            var points = CreatePointsBetween(startPoint, foundObsticals.First());
+
+            startPoint = points.Last();
+
+            if (visited.Contains((startPoint, direction)))
+            {
+                return true;
+            }
+
+            foreach (var p in points)
+            {
+                visited.Add((p, direction));
+            }
+
+            direction = NextDirection(direction);
+        }
+    }
+
     private IEnumerable<Point> GetAllInDirection(Point origin, IEnumerable<Point> pointList, Direction direction)
     {
         var found = pointList.Where(SearchPredicate(origin, direction));
@@ -86,22 +137,22 @@ public class Day06(ITestOutputHelper output)
     }
 
     private Func<Point, bool> SearchPredicate(Point origin, Direction direction) => direction switch
-        {
-            Direction.Up => (p) => p.X == origin.X && p.Y < origin.Y,
-            Direction.Right => (p) => p.Y == origin.Y && p.X > origin.X,
-            Direction.Down => (p) => p.X == origin.X && p.Y > origin.Y,
-            Direction.Left => (p) => p.Y == origin.Y && p.X < origin.X,
-            _ => throw new InvalidOperationException()
-        };
+    {
+        Direction.Up => (p) => p.X == origin.X && p.Y < origin.Y,
+        Direction.Right => (p) => p.Y == origin.Y && p.X > origin.X,
+        Direction.Down => (p) => p.X == origin.X && p.Y > origin.Y,
+        Direction.Left => (p) => p.Y == origin.Y && p.X < origin.X,
+        _ => throw new InvalidOperationException()
+    };
 
     private IOrderedEnumerable<Point> OrderPoints(IEnumerable<Point> found, Direction direction) => direction switch
-        {
-            Direction.Up => found.OrderByDescending(p => p.Y),
-            Direction.Left => found.OrderByDescending(p => p.X),
-            Direction.Down => found.OrderBy(p => p.Y),
-            Direction.Right => found.OrderBy(p => p.X),
-            _ => throw new InvalidOperationException()
-        };
+    {
+        Direction.Up => found.OrderByDescending(p => p.Y),
+        Direction.Left => found.OrderByDescending(p => p.X),
+        Direction.Down => found.OrderBy(p => p.Y),
+        Direction.Right => found.OrderBy(p => p.X),
+        _ => throw new InvalidOperationException()
+    };
 
     private Point GetOutOfBoundsPoint(Point origin, Direction direction, int mapSize) => direction switch
     {
