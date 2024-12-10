@@ -36,7 +36,7 @@ public class Day08(ITestOutputHelper output)
     {
         var (frequencyMap, mapSize, expected) = GetTestData(part, inputName);
 
-        var value = FindAntinodes(frequencyMap, mapSize)
+        var value = FindAllAntinodes(frequencyMap, mapSize, FindAntinodes)
             .Distinct()
             .Count();
 
@@ -45,7 +45,27 @@ public class Day08(ITestOutputHelper output)
         Assert.Equal(expected, value);
     }
 
-    private IEnumerable<(int x, int y)> FindAntinodes(IDictionary<char, List<(int x, int y)>> frequencyMap, int mapSize)
+    [Theory]
+    [InlineData(2, "example1")]
+    [InlineData(2, "input")]
+    public void Part2(int part, string inputName)
+    {
+        var (frequencyMap, mapSize, expected) = GetTestData(part, inputName);
+
+        var value = FindAllAntinodes(frequencyMap, mapSize, FindAntinodesWithHarmonics)
+            .Distinct()
+            .Count();
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
+    }
+
+
+
+    private IEnumerable<(int x, int y)> FindAllAntinodes(IDictionary<char, List<(int x, int y)>> frequencyMap, 
+                                                         int mapSize, 
+                                                         Func<(int x, int y), (int x, int y), int, IEnumerable<(int x, int y)>> FindMethod)
     {
         //var foundAntinodes = new HashSet<(int x, int y)>();
         //foreach (var values in frequencyMap.Values)
@@ -59,7 +79,7 @@ public class Day08(ITestOutputHelper output)
                         (kvp, loc1) => new { kvp.Value, loc1 })
             .SelectMany(item => item.Value
                 .Where(loc2 => loc2 != item.loc1)
-                .SelectMany(loc2 => FindAntinodes(item.loc1, loc2, mapSize)))
+                .SelectMany(loc2 => FindMethod(item.loc1, loc2, mapSize)))
             .ToHashSet();
         return foundAntinodes;
     }
@@ -79,11 +99,44 @@ public class Day08(ITestOutputHelper output)
         return antinodes;
     }
 
-
-    private IEnumerable<(int x, int y)> GetCandidates((int x, int y) loc, (int x, int y) offset)
+    private IEnumerable<(int x, int y)> FindAntinodesWithHarmonics((int x, int y) loc1, (int x, int y) loc2, int mapSize)
     {
-        yield return (loc.x + offset.x, loc.y + offset.y);
-        yield return (loc.x + (-1 * offset.x), loc.y + (-1 * offset.y));
+        var xDiff = loc1.x - loc2.x;
+        var yDiff = loc1.y - loc2.y;
+
+        var loc1Candidates = GetCandidates(loc1, (xDiff, yDiff), mapSize);
+        var loc2Candidates = GetCandidates(loc2, (xDiff, yDiff), mapSize);
+
+        var antinodes = loc1Candidates.Union(loc2Candidates)
+                                      .Where(pt => IsInBounds(pt, mapSize));
+        return antinodes;
+    }
+
+
+    private IEnumerable<(int x, int y)> GetCandidates((int x, int y) loc, (int x, int y) offset, int? mapSize = null)
+    {
+
+        var multiplier = 1;
+        while (multiplier == 1 || mapSize.HasValue)
+        {
+            var pt = (loc.x + (offset.x * multiplier), 
+                      loc.y + (offset.y * multiplier));
+            if (mapSize is not null && !IsInBounds(pt, mapSize.Value))
+                break;
+            yield return pt;
+            multiplier++;
+        }
+
+        multiplier = -1;
+        while (multiplier == -1 || mapSize.HasValue)
+        {
+            var pt = (loc.x + (offset.x * multiplier),
+                      loc.y + (offset.y * multiplier));
+            if (mapSize is not null && !IsInBounds(pt, mapSize.Value))
+                break;
+            yield return pt;
+            multiplier--;
+        }
     }
 
     private bool IsInBounds((int x, int y) loc, int mapSize)
