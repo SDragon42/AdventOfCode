@@ -18,7 +18,6 @@ public class Day08(ITestOutputHelper output)
             .Where(p => p.frequency != '.')
             .GroupBy(p => p.frequency, p => p.location)
             .Select(p => (p.Key, p.Select(x => x).ToList()))
-            //;
             .ToDictionary();
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
