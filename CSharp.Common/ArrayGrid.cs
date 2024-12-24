@@ -7,47 +7,15 @@ namespace AdventOfCode.CSharp.Common
 {
     public class ArrayGrid<TCell> : IGrid<TCell>
     {
-        //public static ArrayGrid<char> Create(IList<string> lines)
-        //{
-        //    var ySize = lines.Count;
-        //    var xSize = lines.First().Length;
-        //    var grid = lines.SelectMany(l => l.Select(c => c)).ToArray();
-
-        //    return new ArrayGrid<char>(grid, xSize, ySize);
-        //}
-
-        //public static ArrayGrid<TCell> Create<TCellT>(IList<string> lines, Func<char, TCell> transformMethod)
-        //{
-        //    var ySize = lines.Count;
-        //    var xSize = lines.First().Length;
-        //    var grid = lines.SelectMany(l => l.Select(transformMethod)).ToArray();
-
-        //    return new ArrayGrid<TCell>(grid, xSize, ySize);
-        //}
-
-
-
         private TCell[] _grid;
         private int _xSize;
         private int _ySize;
 
-        //public ArrayGrid(IList<string> lines) : this(lines, c => c)
-        //{
-        //    //_ySize = lines.Count;
-        //    //_xSize = lines.First().Length;
-        //    //_grid = lines.SelectMany(l => l.Select(c => c)).ToArray();
-        //}
         public ArrayGrid(IList<string> lines, Func<char, TCell> transformMethod)
         {
             _ySize = lines.Count;
             _xSize = lines.First().Length;
             _grid = lines.SelectMany(l => l.Select(transformMethod)).ToArray();
-        }
-        private ArrayGrid(TCell[] grid, int xSize, int ySize)
-        {
-            _grid = grid;
-            _xSize = xSize;
-            _ySize = _grid.Length / xSize;
         }
 
 
@@ -62,11 +30,6 @@ namespace AdventOfCode.CSharp.Common
             return 0 <= point.X && point.X < _xSize
                 && 0 <= point.Y && point.Y < _ySize;
         }
-
-        //public (int x, int y) GetXY(int index)
-        //{
-
-        //}
 
         public Point IndexToPoint(int index)
         {
