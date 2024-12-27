@@ -6,14 +6,14 @@ namespace AdventOfCode.CSharp.Common
     public interface IGrid<TCell>
     {
         int Count { get; }
-        IEnumerable<TCell> Grid { get; }
+        IList<TCell> Grid { get; }
 
         bool IsInBounds(Point point);
 
         Point IndexToPoint(int index);
         int PointToIndex(Point point);
 
-        TCell GetCell(int index);
-        TCell GetCell(Point point);
+        TCell this[int i] {  get; set; }
+        TCell this[Point pt] {  get; set; }
     }
 }

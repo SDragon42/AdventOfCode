@@ -21,7 +21,7 @@ namespace AdventOfCode.CSharp.Common
 
 
         public int Count => _grid.Length;
-        public IEnumerable<TCell> Grid => _grid;
+        public IList<TCell> Grid => _grid;
 
 
 
@@ -47,19 +47,24 @@ namespace AdventOfCode.CSharp.Common
             return index;
         }
 
-        public TCell GetCell(int index)
+        public TCell this[int index]
         {
-            var point = IndexToPoint(index);
-            if (!IsInBounds(point))
-                throw new IndexOutOfRangeException();
-            return _grid[index];
+            get => IsInBounds(IndexToPoint(index))
+                        ? _grid[index]
+                        : throw new IndexOutOfRangeException();
+            set => _grid[index] = IsInBounds(IndexToPoint(index))
+                        ? value
+                        : throw new IndexOutOfRangeException();
         }
-        public TCell GetCell(Point point)
+
+        public TCell this[Point point]
         {
-            if (!IsInBounds(point))
-                throw new IndexOutOfRangeException();
-            var index = PointToIndex(point);
-            return GetCell(index);
+            get => IsInBounds(point)
+                        ? _grid[PointToIndex(point)]
+                        : throw new IndexOutOfRangeException();
+            set => _grid[PointToIndex(point)] = IsInBounds(point)
+                        ? value
+                        : throw new IndexOutOfRangeException();
         }
 
     }

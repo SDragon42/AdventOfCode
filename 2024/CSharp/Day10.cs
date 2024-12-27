@@ -74,7 +74,7 @@ public class Day10(ITestOutputHelper output)
         {
             var possible = _moveDirections.Select(d => grid.IndexToPoint(position.index) + d)
                                           .Where(grid.IsInBounds)
-                                          .Select(p => (value: grid.GetCell(p), index: grid.PointToIndex(p)))
+                                          .Select(p => (value: grid[p], index: grid.PointToIndex(p)))
                                           .Where(pair => pair.value == position.value + 1);
 
             foreach (var item in possible)
