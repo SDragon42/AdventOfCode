@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace AdventOfCode.CSharp.Year2024;
+﻿namespace AdventOfCode.CSharp.Year2024;
 
 public class Day04(ITestOutputHelper output)
 {
@@ -8,16 +6,17 @@ public class Day04(ITestOutputHelper output)
 
 
 
-    private (char[][] input, int? expected) GetTestData(int part, string inputName)
+    private (IGrid<char> grid, int? expected) GetTestData(int part, string inputName)
     {
         var input = InputHelper.ReadLines(DAY, inputName)
-            .Select(x => x.ToArray())
-            .ToArray();
+                               .ToList();
+
+        var grid = new ArrayGrid<char>(input, c => c);
 
         var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
-            ?.ToInt32();
+                                  ?.ToInt32();
 
-        return (input, expected);
+        return (grid, expected);
     }
 
 
@@ -65,47 +64,40 @@ public class Day04(ITestOutputHelper output)
     }
 
 
-    private int CountPatternInPuzzle(char[][] puzzle, IEnumerable<char> characters, IList<OffsetPoint[]> offsetPatterns, MatchType matchType)
+    private int CountPatternInPuzzle(IGrid<char> puzzle, IEnumerable<char> characters, IList<OffsetPoint[]> offsetPatterns, MatchType matchType)
     {
-        var bounds = new Bounds(xLower: 0,
-                                xUpper: puzzle[0].Length - 1,
-                                yLower: 0,
-                                yUpper: puzzle.Length - 1);
-
         var result = 0;
-        for (var y = bounds.yLower; y <= bounds.yUpper; y++)
+        for (int i = 0; i < puzzle.Count; i++)
         {
-            for (int x = bounds.xLower; x <= bounds.xUpper; x++)
-            {
-                var validPaths = GetValidPaths(new Point(x, y), offsetPatterns, bounds);
+            var p = puzzle.IndexToPoint(i);
+            var validPaths = GetValidPaths(p, offsetPatterns, puzzle);
 
-                switch (matchType)
-                {
-                    case MatchType.Any:
-                        result += validPaths.Where(p => MatchesPattern(puzzle, characters, p)
-                                                     || MatchesPattern(puzzle, characters.Reverse(), p))
-                                    .Count();
+            switch (matchType)
+            {
+                case MatchType.Any:
+                    result += validPaths.Where(p => MatchesPattern(puzzle, characters, p)
+                                                 || MatchesPattern(puzzle, characters.Reverse(), p))
+                                .Count();
+                    break;
+                case MatchType.All:
+                    if (validPaths.Count != offsetPatterns.Count)
                         break;
-                    case MatchType.All:
-                        if (validPaths.Count != offsetPatterns.Count)
-                            break;
-                        var matches = validPaths.All(p => MatchesPattern(puzzle, characters, p)
-                                                     || MatchesPattern(puzzle, characters.Reverse(), p));
-                        result += matches ? 1 : 0;
-                        break;
-                }
+                    var matches = validPaths.All(p => MatchesPattern(puzzle, characters, p)
+                                                 || MatchesPattern(puzzle, characters.Reverse(), p));
+                    result += matches ? 1 : 0;
+                    break;
             }
         }
 
         return result;
     }
 
-    private bool MatchesPattern(char[][] puzzle, IEnumerable<char> characters, Point[] searchPath)
+    private bool MatchesPattern(IGrid<char> puzzle, IEnumerable<char> characters, Point[] searchPath)
     {
         var characterEnumerator = characters.GetEnumerator();
         for (int i = 0; i < searchPath.Length; i++)
         {
-            var gridCharacter = puzzle[searchPath[i].Y][searchPath[i].X];
+            var gridCharacter = puzzle[searchPath[i]];
             if (!characterEnumerator.MoveNext())
             {
                 return false;
@@ -119,10 +111,10 @@ public class Day04(ITestOutputHelper output)
         return true;
     }
 
-    private IList<Point[]> GetValidPaths(Point origin, IList<OffsetPoint[]> offsetPatterns, Bounds bounds)
+    private IList<Point[]> GetValidPaths(Point origin, IList<OffsetPoint[]> offsetPatterns, IGrid<char> puzzle)
     {
         var x = offsetPatterns.Select(offsets => OffsetsToPath(origin, offsets))
-                              .Where(path => path.All(p => IsInBounds(p, bounds)));
+                              .Where(path => path.All(p => puzzle.IsInBounds(p)));
         return x?.ToList() ?? [];
     }
 
@@ -135,15 +127,6 @@ public class Day04(ITestOutputHelper output)
                                 origin.Y + offsets[i].yOffset);
         }
         return path;
-    }
-
-    private bool IsInBounds(Point point, Bounds bounds)
-    {
-        if (bounds.xLower > point.X || point.X > bounds.xUpper)
-            return false;
-        if (bounds.yLower > point.Y || point.Y > bounds.yUpper)
-            return false;
-        return true;
     }
 
     private static OffsetPoint[] CreatePatternArray(Point origin, int length, OffsetPoint step)
@@ -167,10 +150,6 @@ public class Day04(ITestOutputHelper output)
     }
 
     private enum MatchType { Any, All }
-    private record Bounds(int xLower,
-                          int xUpper,
-                          int yLower,
-                          int yUpper);
-
+    
     public record OffsetPoint(int xOffset, int yOffset);
 }
