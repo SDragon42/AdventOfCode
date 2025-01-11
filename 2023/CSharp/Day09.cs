@@ -21,11 +21,11 @@ public class Day09
 
     private (List<Number[]> input, Number? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = Services.Input.ReadLines(DAY, inputName)
             .Select(x => x.Split(' ').Select(c => c.ToNumber()).ToArray())
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = Services.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToNumber();
 
         return (input, expected);

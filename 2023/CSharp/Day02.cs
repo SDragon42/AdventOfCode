@@ -18,11 +18,11 @@ public class Day02
         var redRegex   = new Regex("(?<num>.*) red");
         var greenRegex = new Regex("(?<num>.*) green");
 
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = Services.Input.ReadLines(DAY, inputName)
             .Select(ParseInput)
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = Services.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

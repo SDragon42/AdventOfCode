@@ -19,11 +19,11 @@ public class Day04
         var inputRegex = new Regex("Card (?<cardNum>.*): (?<winningNums>.*) [|] (?<cardNums>.*)"); // (?<id>.*): (?<plays>.*)");
         var splitter = new char[] { ' ' };
 
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = Services.Input.ReadLines(DAY, inputName)
             .Select(ParseInput)
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = Services.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

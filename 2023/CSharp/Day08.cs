@@ -14,7 +14,7 @@ public class Day08
 
     private (char[] instructions, MapDictionary maps, int? expected) GetTestData(int part, string inputName)
     {
-        var lines = InputHelper.ReadLines(DAY, inputName)
+        var lines = Services.Input.ReadLines(DAY, inputName)
             .ToList();
 
         var instructions = lines[0].ToArray();
@@ -37,7 +37,7 @@ public class Day08
         }
 
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = Services.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (instructions, maps, expected);

@@ -14,7 +14,7 @@ public class Day06
 
     private (List<RaceData> input, int? expected) GetTestData(int part, string inputName)
     {
-        var lines = InputHelper.ReadLines(DAY, inputName).ToArray();
+        var lines = Services.Input.ReadLines(DAY, inputName).ToArray();
         var times = SplitNumbers(lines[0], 1);
         var dists = SplitNumbers(lines[1], 1);
 
@@ -22,7 +22,7 @@ public class Day06
         for (var i = 0; i < times.Length; i++)
             input.Add(new RaceData(times[i], dists[i]));
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = Services.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

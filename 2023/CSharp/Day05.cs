@@ -104,7 +104,7 @@ public class Day05
 
     private (Number[] seeds, InputMaps maps, Number? expected) GetTestData(int part, string inputName)
     {
-        var lines = InputHelper.ReadLines(DAY, inputName);
+        var lines = Services.Input.ReadLines(DAY, inputName);
 
         var en = lines.GetEnumerator();
         en.MoveNext();
@@ -112,7 +112,7 @@ public class Day05
 
         var maps = new InputMaps(en);
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = Services.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToNumber();
 
         return (seeds, maps, expected);
