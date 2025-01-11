@@ -5,7 +5,7 @@ open System.IO
 module InputHelper =
 
     let Filename (day: int, name: string) =
-        $@".\input\Day%02i{day}\%s{name}.txt";
+        $@"../../../../../../AdventOfCode.Input/2021/Day%02i{day}/%s{name}.txt";
 
 
     let LoadText = 
