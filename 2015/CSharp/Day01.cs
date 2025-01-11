@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using NUnit.Framework;
 
 namespace AdventOfCode.CSharp.Year2015
@@ -14,11 +14,11 @@ namespace AdventOfCode.CSharp.Year2015
 
         private (List<char> input, int? expected) GetTestData(int part, string inputName)
         {
-            var input = InputHelper.ReadText(DAY, inputName, _rootPath)
+            var input = Input.ReadText(DAY, inputName)
                 .Select(c => c)
                 .ToList();
 
-            var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}", _rootPath)
+            var expected = Input.ReadText(DAY, $"{inputName}-answer{part}")
                 ?.ToInt32();
 
             return (input, expected);

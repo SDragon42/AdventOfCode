@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using NUnit.Framework;
 
 namespace AdventOfCode.CSharp.Year2015
@@ -31,12 +31,12 @@ namespace AdventOfCode.CSharp.Year2015
         {
             var inputRegex = new Regex("(?<reindeer>.*) can fly (?<velocity>.*) km/s for (?<flyTime>.*) seconds, but then must rest for (?<restTime>.*) seconds\\.");
 
-            var input = InputHelper.ReadLines(DAY, inputName, _rootPath)
+            var input = Input.ReadLines(DAY, inputName)
                 .Select(ParseInput)
                 .ToDictionary(d => d.reindeer,
                               v => v.stats);
 
-            var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}", _rootPath)
+            var expected = Input.ReadText(DAY, $"{inputName}-answer{part}")
                 ?.ToInt32();
 
             return (input, expected);

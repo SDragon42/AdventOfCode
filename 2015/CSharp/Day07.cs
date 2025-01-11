@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using NUnit.Framework;
 
 namespace AdventOfCode.CSharp.Year2015
@@ -29,12 +29,12 @@ namespace AdventOfCode.CSharp.Year2015
         {
             var splitter1 = new string[] { " -> " };
 
-            var input = InputHelper.ReadLines(DAY, inputName, _rootPath)
+            var input = Input.ReadLines(DAY, inputName)
                 .Select(l => l.Split(splitter1, 2, StringSplitOptions.None))
                 .Select(p => new InputActions(p[0], p[1]))
                 .ToList();
 
-            var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}", _rootPath)
+            var expected = Input.ReadText(DAY, $"{inputName}-answer{part}")
                 ?.ToInt32();
 
             return (input, expected);

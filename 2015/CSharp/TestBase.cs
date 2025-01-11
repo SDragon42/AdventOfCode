@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AdventOfCode.Common.Services;
+using AdventOfCode.Common.Services.Interfaces;
 using NUnit.Framework;
 
 namespace AdventOfCode.CSharp.Year2015
 {
     public abstract class TestBase
     {
-        protected readonly string _rootPath = TestContext.CurrentContext.TestDirectory;
 
         protected void Output(string text)
         {
             TestContext.Out.WriteLine(text);
         }
+
+        private const string INPUT_ROOT_PATH = @"../../../../../../AdventOfCode.Input/2015";
+        public IInputReaderService Input { get; } = new InputReaderService(TestContext.CurrentContext.TestDirectory + "/" + INPUT_ROOT_PATH);
     }
 }

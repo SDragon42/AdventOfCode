@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using NUnit.Framework;
 
 
@@ -40,11 +40,11 @@ namespace AdventOfCode.CSharp.Year2015
         {
             var inputRegex = new Regex("(?<ingredient>.*): capacity (?<capacity>.*), durability (?<durability>.*), flavor (?<flavor>.*), texture (?<texture>.*), calories (?<calories>.*)");
 
-            var input = InputHelper.ReadLines(DAY, inputName, _rootPath)
+            var input = Input.ReadLines(DAY, inputName)
                 .Select(ParseInput)
                 .ToList();
 
-            var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}", _rootPath)
+            var expected = Input.ReadText(DAY, $"{inputName}-answer{part}")
                 ?.ToInt32();
 
             return (input, expected);
