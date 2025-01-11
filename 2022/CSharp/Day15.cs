@@ -17,11 +17,11 @@ public class Day15_Beacon_Exclusion_Zone
 
     private (List<SensorBeaconInfo> input, long? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(ParseInput)
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt64();
 
         return (input, expected);

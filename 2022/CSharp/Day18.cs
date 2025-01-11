@@ -11,11 +11,11 @@ public class Day18_Boiling_Boulders
 
     private (List<int> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(l => l.ToInt32())
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

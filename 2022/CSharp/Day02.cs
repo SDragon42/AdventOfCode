@@ -35,7 +35,7 @@ public class Day02_Rock_Paper_Scissors
 
     private (List<StrategyGuideMoves> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             .Select(l => new StrategyGuideMoves
             {
@@ -44,7 +44,7 @@ public class Day02_Rock_Paper_Scissors
             })
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

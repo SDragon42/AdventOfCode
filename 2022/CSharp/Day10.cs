@@ -18,10 +18,10 @@ public class Day10_Cathode_Ray_Tube
 
     private (List<string> input, int? expected) GetTestData_Part1(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);
@@ -29,10 +29,10 @@ public class Day10_Cathode_Ray_Tube
 
     private (List<string> input, string expected) GetTestData_Part2(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}");
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}");
 
         return (input, expected);
     }

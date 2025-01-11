@@ -13,14 +13,14 @@ public class Day16_Copy
 
     private (IDictionary<string, (int flowRate, string[] toValues)> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
                 .Select(str => (str[6..8],
                                 int.Parse(str[23..25].Trim(';')),
                                 (str.Contains("valves") ? str.Split("valves ")[1] : str.Split("valve ")[1]).Split(", ").ToArray()
                         ))
                 .ToDictionary(tp => tp.Item1, tp => (tp.Item2, tp.Item3));
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

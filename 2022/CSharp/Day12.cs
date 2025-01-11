@@ -13,7 +13,7 @@ public class Day12_Hill_Climbing_Algorithm
 
     private (char[][] input, Point start, Point end, int? expected) GetTestData(int part, string inputName)
     {
-        var grid = InputHelper.ReadLines(DAY, inputName)
+        var grid = TestServices.Input.ReadLines(DAY, inputName)
             .Select(x => x.ToArray())
             .ToArray();
 
@@ -37,7 +37,7 @@ public class Day12_Hill_Climbing_Algorithm
             }
         }
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (grid, start, end, expected);

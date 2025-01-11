@@ -11,9 +11,9 @@ public class Day06_Tuning_Trouble
 
     private (string input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadText(DAY, inputName);
+        var input = TestServices.Input.ReadText(DAY, inputName);
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

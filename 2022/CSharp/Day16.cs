@@ -19,11 +19,11 @@ public class Day16_Proboscidea_Volcanium
 
     private (IDictionary<string, ValveState> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(ParseInputLine)
             .ToDictionary(k => k.Name, v => v);
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

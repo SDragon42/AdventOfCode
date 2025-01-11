@@ -12,11 +12,11 @@ public class Day08_Treetop_Tree_House
 
     private (IntGrid input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(l => l.AsEnumerable().Select(c => c - 48).ToList())
             .ToList();
 
-        var expected = InputHelper.ReadLines(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadLines(DAY, $"{inputName}-answer{part}")
             ?.FirstOrDefault()
             ?.ToInt32();
 

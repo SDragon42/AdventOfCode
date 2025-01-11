@@ -18,9 +18,9 @@ public class Day11_Monkey_in_the_Middle
 
     private (string input, ItemType? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadText(DAY, inputName);
+        var input = TestServices.Input.ReadText(DAY, inputName);
 
-        var expectedTxt = InputHelper.ReadText(DAY, $"{inputName}-answer{part}");
+        var expectedTxt = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}");
         ItemType? expected = null;
         if (expectedTxt is not null)
             expected = ItemType.Parse(expectedTxt);
