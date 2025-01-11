@@ -8,13 +8,13 @@ public class Day01(ITestOutputHelper output)
 
     private (List<int> leftInput, List<int> rightInput, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(line => line.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             .ToList();
         var left = input.Select(x => x[0].ToInt32()).ToList();
         var right = input.Select(x => x[1].ToInt32()).ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (left, right, expected);

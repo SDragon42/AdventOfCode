@@ -8,7 +8,7 @@ public class Day07(ITestOutputHelper output)
 
     private (IList<(long testValue, long[] numbers)> input, long? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(line =>
             {
                 var parts = line.Split(':', 2);
@@ -22,7 +22,7 @@ public class Day07(ITestOutputHelper output)
             })
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt64();
 
         return (input, expected);

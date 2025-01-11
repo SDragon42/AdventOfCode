@@ -8,7 +8,7 @@ public class Day08(ITestOutputHelper output)
 
     private (IDictionary<char, List<(int x, int y)>> antennaMap, int mapSize, int? expected) GetTestData(int part, string inputName)
     {
-        var inputLines = InputHelper.ReadLines(DAY, inputName)
+        var inputLines = TestServices.Input.ReadLines(DAY, inputName)
             .ToList();
 
         var mapSize = inputLines.Count;
@@ -20,7 +20,7 @@ public class Day08(ITestOutputHelper output)
             .Select(p => (p.Key, p.Select(x => x).ToList()))
             .ToDictionary();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (antennaMap, mapSize, expected);

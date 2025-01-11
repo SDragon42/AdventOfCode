@@ -10,13 +10,13 @@ public class Day02(ITestOutputHelper output)
 
     private (List<List<int>> input, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(line => line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                                 .Select(v => v.ToInt32())
                                 .ToList())
             .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (input, expected);

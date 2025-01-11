@@ -8,12 +8,12 @@ public class Day12(ITestOutputHelper output)
 
     private (IGrid<char> map, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
                                .ToList();
 
         var map = new ArrayGrid<char>(input, c => c);
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
                                   ?.ToInt32();
 
         return (map, expected);
@@ -47,6 +47,28 @@ public class Day12(ITestOutputHelper output)
 
         Assert.Equal(expected, value);
     }
+
+    [Theory]
+    [InlineData(2, "example1")]
+    //[InlineData(2, "example2")]
+    //[InlineData(2, "example3")]
+    //[InlineData(2, "input")]
+    public void Part2(int part, string inputName)
+    {
+        var (map, expected) = GetTestData(part, inputName);
+
+        var regions = BreakIntoRegions(map).ToList();
+
+        var value = regions.Select(r => (parimeter: r.Sum(a => a.sides),
+                                         area: r.Count()))
+                           .Sum(r => r.parimeter * r.area);
+
+        output.WriteLine($"Answer: {value}");
+
+        Assert.Equal(expected, value);
+    }
+
+
 
     private IEnumerable<IList<(Point point, int sides)>> BreakIntoRegions(IGrid<char> map)
     {
@@ -93,4 +115,6 @@ public class Day12(ITestOutputHelper output)
             }
         }
     }
+
+    //private IEnumerable<int> Get
 }

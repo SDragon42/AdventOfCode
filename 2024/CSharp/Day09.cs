@@ -8,11 +8,11 @@ public class Day09(ITestOutputHelper output)
 
     private (IList<int> input, long? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadText(DAY, inputName)
+        var input = TestServices.Input.ReadText(DAY, inputName)
                                .Select(c => Convert.ToInt32(c) - 48)
                                .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt64();
 
         return (input, expected);

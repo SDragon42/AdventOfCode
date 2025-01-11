@@ -8,14 +8,14 @@ public class Day11(ITestOutputHelper output)
 
     private (IDictionary<long, long> input, long? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadText(DAY, inputName)
+        var input = TestServices.Input.ReadText(DAY, inputName)
                                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                                .Select(long.Parse)
                                .GroupBy(key => key)
                                .Select(g => (g.Key, (long)g.Count()))
                                .ToDictionary();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
                                   ?.ToInt64();
 
         return (input, expected);

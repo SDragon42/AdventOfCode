@@ -8,7 +8,7 @@ public class Day05(ITestOutputHelper output)
 
     private (IList<(int, int)> pageOrderRules, IList<int[]> pageUpdates, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName);
+        var input = TestServices.Input.ReadLines(DAY, inputName);
 
         var inputEnumerator = input.GetEnumerator();
 
@@ -28,7 +28,7 @@ public class Day05(ITestOutputHelper output)
             pageUpdates.Add(value);
         }
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (pageOrderRules, pageUpdates, expected);

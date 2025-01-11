@@ -8,7 +8,7 @@ public class Day06(ITestOutputHelper output)
 
     private (int mapSize, Point startPoint, IList<Point> obsticalLocations, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
             .Select(x => x.ToArray())
             .ToArray();
 
@@ -26,7 +26,7 @@ public class Day06(ITestOutputHelper output)
                                      .Select(x => GridHelper.IndexToPoint(x.Index, mapSize))
                                      .ToList();
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
             ?.ToInt32();
 
         return (mapSize, startPoint, obsticalLocations, expected);

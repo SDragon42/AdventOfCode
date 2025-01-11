@@ -8,12 +8,12 @@ public class Day04(ITestOutputHelper output)
 
     private (IGrid<char> grid, int? expected) GetTestData(int part, string inputName)
     {
-        var input = InputHelper.ReadLines(DAY, inputName)
+        var input = TestServices.Input.ReadLines(DAY, inputName)
                                .ToList();
 
         var grid = new ArrayGrid<char>(input, c => c);
 
-        var expected = InputHelper.ReadText(DAY, $"{inputName}-answer{part}")
+        var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
                                   ?.ToInt32();
 
         return (grid, expected);
