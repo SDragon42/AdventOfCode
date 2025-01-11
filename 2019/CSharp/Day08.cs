@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,7 +16,7 @@ namespace AdventOfCode.CSharp.Year2019
 
         private List<int> GetInput(string name)
         {
-            var input = InputHelper.ReadLines(DAY, name)
+            var input = Input.ReadLines(DAY, name)
                 .First()
                 .Select(c => (int)char.GetNumericValue(c))
                 .ToList();
@@ -25,7 +25,7 @@ namespace AdventOfCode.CSharp.Year2019
 
         private int? GetPart1Expected(string name)
         {
-            var expected = InputHelper.ReadLines(DAY, $"{name}-answer1")
+            var expected = Input.ReadLines(DAY, $"{name}-answer1")
                 ?.FirstOrDefault()
                 ?.ToInt32();
             return expected;
@@ -33,7 +33,7 @@ namespace AdventOfCode.CSharp.Year2019
 
         private string GetPart2Expected(string name)
         {
-            var expected = InputHelper.ReadLines(DAY, $"{name}-answer2");
+            var expected = Input.ReadLines(DAY, $"{name}-answer2");
             return string.Join("\r\n", expected);
         }
 

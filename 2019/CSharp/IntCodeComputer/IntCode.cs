@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 
 namespace AdventOfCode.CSharp.Year2019.IntCodeComputer
 {

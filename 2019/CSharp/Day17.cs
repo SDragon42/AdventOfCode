@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using AdventOfCode.CSharp.Year2019.IntCodeComputer;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,13 +20,13 @@ namespace AdventOfCode.CSharp.Year2019
 
         private (List<long>, long?) GetTestData(string name, int part)
         {
-            var input = InputHelper.ReadLines(DAY, name)
+            var input = Input.ReadLines(DAY, name)
                 .First()
                 .Split(',')
                 .Select(v => v.ToInt64())
                 .ToList();
 
-            var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
+            var expected = Input.ReadLines(DAY, $"{name}-answer{part}")
                 ?.FirstOrDefault()
                 ?.ToInt64();
 
@@ -36,7 +36,7 @@ namespace AdventOfCode.CSharp.Year2019
         private (List<List<char>>, long?) GetMapDataFromInput(string name, int part)
         {
             var map = new List<List<char>>();
-            var lines = InputHelper.ReadLines(DAY, name);
+            var lines = Input.ReadLines(DAY, name);
             foreach (var line in lines)
             {
                 var t = line.Select(c => c).ToList();
@@ -45,7 +45,7 @@ namespace AdventOfCode.CSharp.Year2019
 
             return (
                 map,
-                InputHelper.ReadLines(DAY, $"{name}-answer{part}")?.FirstOrDefault()?.ToInt64()
+                Input.ReadLines(DAY, $"{name}-answer{part}")?.FirstOrDefault()?.ToInt64()
             );
         }
 

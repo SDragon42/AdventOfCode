@@ -1,4 +1,6 @@
-﻿using Xunit.Abstractions;
+﻿using AdventOfCode.Common.Services.Interfaces;
+using AdventOfCode.Common.Services;
+using Xunit.Abstractions;
 
 namespace AdventOfCode.CSharp.Year2019
 {
@@ -13,5 +15,8 @@ namespace AdventOfCode.CSharp.Year2019
             this.DAY = day;
             this.output = output;
         }
+
+        private const string INPUT_ROOT_PATH = @"../../../../../../AdventOfCode.Input/2019";
+        public static IInputReaderService Input { get; } = new InputReaderService(INPUT_ROOT_PATH);
     }
 }

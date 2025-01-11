@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
+using AdventOfCode.Common.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -19,10 +20,10 @@ namespace AdventOfCode.CSharp.Year2019
 
         private (List<string>, long?) GetTestData(string name, int part)
         {
-            var input = InputHelper.ReadLines(DAY, name)
+            var input = Input.ReadLines(DAY, name)
                 .ToList();
 
-            var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
+            var expected = Input.ReadLines(DAY, $"{name}-answer{part}")
                 ?.FirstOrDefault()
                 ?.ToInt64();
 

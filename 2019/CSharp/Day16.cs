@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AdventOfCode.CSharp.Common;
+using AdventOfCode.Common.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,10 +20,10 @@ namespace AdventOfCode.CSharp.Year2019
 
         private (string, string) GetTestData(string name, int part)
         {
-            var input = InputHelper.ReadLines(DAY, name)
+            var input = Input.ReadLines(DAY, name)
                 .First();
 
-            var expected = InputHelper.ReadLines(DAY, $"{name}-answer{part}")
+            var expected = Input.ReadLines(DAY, $"{name}-answer{part}")
                 ?.FirstOrDefault();
 
             return (input, expected);
@@ -95,7 +95,7 @@ namespace AdventOfCode.CSharp.Year2019
                         newSignalLine[j] *= val;
                         total += newSignalLine[j];
                     }
-                    total = Helper.GetDigitRight(Math.Abs(total), 1);
+                    total = Math.Abs(total).GetDigit(1);
                     line.Append($" = {total}");
 
                     newSignal.Add(total);
