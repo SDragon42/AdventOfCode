@@ -6,11 +6,11 @@ public class Day02(ITestOutputHelper output)
 
 
 
-    private (IList<string> input, long? expected) GetTestData(int part, string inputName)
+    private (string[] input, long? expected) GetTestData(int part, string inputName)
     {
         var input = TestServices.Input.ReadLines(DAY, inputName)
                                       .SelectMany(l => l.Split(','))
-                                      .ToList();
+                                      .ToArray();
 
         var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
                                          ?.ToInt64();

@@ -6,10 +6,10 @@ public class Day01(ITestOutputHelper output)
 
 
 
-    private (IList<string> input, int? expected) GetTestData(int part, string inputName)
+    private (string[] input, int? expected) GetTestData(int part, string inputName)
     {
         var input = TestServices.Input.ReadLines(DAY, inputName)
-                                      .ToList();
+                                      .ToArray();
 
         var expected = TestServices.Input.ReadText(DAY, $"{inputName}-answer{part}")
                                          ?.ToInt32();
