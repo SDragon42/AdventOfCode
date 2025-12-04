@@ -4,8 +4,8 @@ open System.IO
 
 module InputHelper =
 
-    let Filename (day: int, name: string) =
-        $@"../../../../../../AdventOfCode.Input/2021/Day%02i{day}/%s{name}.txt";
+    let Filename (year: int, day: int, name: string) =
+        $@"../../../../../../AdventOfCode.Input/%i{year}/Day%02i{day}/%s{name}.txt";
 
 
     let LoadText = 
@@ -16,8 +16,8 @@ module InputHelper =
         Filename >> File.ReadLines
 
 
-    let LoadAnswer (day: int, name: string) =
-        try LoadText(day, name) |> Some
+    let LoadAnswer (year: int, day: int, name: string) =
+        try LoadText(year, day, name) |> Some
         with | ex -> None
 
 

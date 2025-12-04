@@ -1,13 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "2019\\FSharp"
+			"path": "2019/FSharp"
 		},
 		{
-			"path": "FSharp.Common"
-		},
-		{
-			"path": "2019\\Input"
+			"path": "../AdventOfCode.Input/2019"
 		}
 	],
 	"settings": {
@@ -17,7 +14,6 @@
 			"**/obj": true,
 			"**/.ionide": true,
 			"*.fsproj.user": true
-			// "*.sln": true
 		}
 	},
 	"extensions": {},
@@ -28,7 +24,7 @@
 				"type": "coreclr",
 				"request": "launch",
 				"preLaunchTask": "build",
-				"program": "${workspaceFolder:FSharp}/bin/Debug/net6.0/AOC2019.exe",
+				"program": "${workspaceFolder:FSharp}/bin/Debug/net6.0/Advent Of Code 2019 FS.dll",
 				"args": ["-be", ""],
 				"cwd": "${workspaceFolder:FSharp}/bin/Debug/net6.0",
 				"stopAtEntry": false,

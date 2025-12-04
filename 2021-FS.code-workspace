@@ -1,13 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "2021\\FSharp"
+			"path": "2021/FSharp"
 		},
 		{
-			"path": "FSharp.Common"
-		},
-		{
-			"path": "2021\\Input"
+			"path": "../AdventOfCode.Input/2021"
 		}
 	],
 	"settings": {
@@ -28,7 +25,7 @@
 				"type": "coreclr",
 				"request": "launch",
 				"preLaunchTask": "build",
-				"program": "${workspaceFolder:FSharp}/bin/Debug/net6.0/AOC2021.exe",
+				"program": "${workspaceFolder:FSharp}/bin/Debug/net6.0/Advent Of Code 2021 FS.dll",
 				"args": ["-be", ""],
 				"cwd": "${workspaceFolder:FSharp}/bin/Debug/net6.0",
 				"stopAtEntry": false,

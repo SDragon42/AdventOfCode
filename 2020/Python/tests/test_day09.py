@@ -12,12 +12,12 @@ _DAY = 9
 
 class Day09(unittest.TestCase):
     def get_test_data(self, name:str, part:int) -> tuple[List[int], int, int]:
-        lines = inputHelper.load_file(_DAY, name).splitlines()
+        lines = inputHelper.load_file(2020, _DAY, name).splitlines()
         input = [int(l) for l in lines]
 
-        windowSize = int(inputHelper.load_file(_DAY, f"{name}-windowsize"))
+        windowSize = int(inputHelper.load_file(2020, _DAY, f"{name}-windowsize"))
 
-        expectedAnswer = inputHelper.load_file(_DAY, f"{name}-answer{part}")
+        expectedAnswer = inputHelper.load_file(2020, _DAY, f"{name}-answer{part}")
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 

@@ -115,12 +115,12 @@ module ``Day 06: Lanternfish`` =
 
     let private GetPuzzleInput (part:int) (name:string) =
         let input =
-            InputHelper.LoadText(day, name).Split(',')
+            InputHelper.LoadText(2021, day, name).Split(',')
             |> Seq.map int
             |> Seq.toList
         
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsUInt64
             
         input, answer

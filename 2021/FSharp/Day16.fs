@@ -246,10 +246,10 @@ module ``Day 16: Packet Decoder`` =
 
     let private GetPuzzleInput (part:int) (name:string) =
         let input =
-            InputHelper.LoadText (day, name)
+            InputHelper.LoadText (2021, day, name)
 
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt64
         
         input, answer

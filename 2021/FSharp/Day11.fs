@@ -153,7 +153,7 @@ module ``Day 11: Dumbo Octopus`` =
 
     let private GetPuzzleInput (part:int) (name:string) =
         let rawinput =
-            InputHelper.LoadLines (day, name)
+            InputHelper.LoadLines (2021, day, name)
             |> Seq.toList
         let xMax = rawinput[0].Length
         let yMax = rawinput.Length
@@ -165,7 +165,7 @@ module ``Day 11: Dumbo Octopus`` =
 
 
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
         
         let data = new PuzzleInput(input, xMax, yMax)

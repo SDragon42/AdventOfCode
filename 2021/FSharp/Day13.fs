@@ -105,7 +105,7 @@ module ``Day 13: Transparent Origami`` =
         
         
     let private GetPuzzleInput (part:int) (name:string) =
-        let inputParts = InputHelper.LoadText(day, name).Split("\n\n")
+        let inputParts = InputHelper.LoadText(2021, day, name).Split("\n\n")
         
         let input =
             inputParts[0].Split("\n")
@@ -120,7 +120,7 @@ module ``Day 13: Transparent Origami`` =
             |> Seq.toList
         
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
                     
         input, folds, answer
                 

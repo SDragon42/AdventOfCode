@@ -12,11 +12,11 @@ _DAY = 3
 
 class Day03(unittest.TestCase):
     def get_test_data(self, name:str, part:int) -> tuple[List[str], List[str], int]:
-        input = inputHelper.load_file(_DAY, name).splitlines()
+        input = inputHelper.load_file(2020, _DAY, name).splitlines()
 
-        slopes = inputHelper.load_file(_DAY, f'slopes{part}').split(',')
+        slopes = inputHelper.load_file(2020, _DAY, f'slopes{part}').split(',')
 
-        expectedAnswer = inputHelper.load_file(_DAY, f"{name}-answer{part}")
+        expectedAnswer = inputHelper.load_file(2020, _DAY, f"{name}-answer{part}")
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 
