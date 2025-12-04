@@ -47,12 +47,12 @@ module ``Day 1: The Tyranny of the Rocket Equation`` =
 
     let private GetPuzzleInput (part:int) (name:string) =
         let input = 
-            InputHelper.LoadLines(day, name)
+            InputHelper.LoadLines(2019, day, name)
             |> Seq.map int
             |> Seq.toList
         
         let answer =
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer(2019, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
 
         input, answer

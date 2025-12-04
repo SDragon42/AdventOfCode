@@ -128,7 +128,7 @@ module ``Day 17: Trick Shot`` =
         let lineRegEx = "x=([0-9]+)..([0-9]+), y=([-]*[0-9]+)..([-]*[0-9]+)"
         
         let input =
-            InputHelper.LoadText (day, name)
+            InputHelper.LoadText (2021, day, name)
             |> (fun t -> Regex.Match (t, lineRegEx))
             |> (fun m -> m.Groups)
             |> Seq.skip 1
@@ -137,7 +137,7 @@ module ``Day 17: Trick Shot`` =
             |> (fun ln -> Area(ln[0], ln[1], ln[2], ln[3]))
         
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
                     
         input, answer

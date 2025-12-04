@@ -125,7 +125,7 @@ module ``Day 04: Giant Squid`` =
 
     let private GetPuzzleInput (part:int) (name:string) =
         let tempInput =
-            InputHelper.LoadText(day, name).Split(Environment.NewLine+Environment.NewLine)
+            InputHelper.LoadText(2021, day, name).Split(Environment.NewLine+Environment.NewLine)
             |> Array.toList
 
         let input =
@@ -139,7 +139,7 @@ module ``Day 04: Giant Squid`` =
             |> List.map (fun b -> new BingoBoard(b))
         
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
             
         input, answer, boardsData

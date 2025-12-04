@@ -81,12 +81,12 @@ module ``Day 07: The Treachery of Whales`` =
         
     let private GetPuzzleInput (part:int) (name:string) =
         let input =
-            InputHelper.LoadText(day, name).Split(',')
+            InputHelper.LoadText(2021, day, name).Split(',')
             |> Array.toList
             |> List.map int
                 
         let answer = 
-            InputHelper.LoadAnswer (day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer (2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
                     
         input, answer

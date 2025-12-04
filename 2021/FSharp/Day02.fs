@@ -104,12 +104,12 @@ module ``Day 02: Dive!`` =
             new PilotAction(parts[0], parts[1] |> int)
 
         let input = 
-            InputHelper.LoadLines(day, name)
+            InputHelper.LoadLines(2021, day, name)
             |> Seq.map makePilotAction
             |> Seq.toList
 
         let answer = 
-            InputHelper.LoadAnswer(day, $"%s{name}-answer%i{part}")
+            InputHelper.LoadAnswer(2021, day, $"%s{name}-answer%i{part}")
             |> InputHelper.AsInt
 
         input, answer
