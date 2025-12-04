@@ -1,0 +1,65 @@
+{
+	"folders": [
+		{
+			"path": "2025/CSharp"
+		},
+		{
+			"path": "../AdventOfCode.Input/2025"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.vs": true,
+			"**/bin": true,
+			"**/obj": true
+		}
+	},
+	"extensions": {},
+	"launch": {
+		"configurations": [
+			{
+				"name": "AOC2025",
+				"type": "coreclr",
+				"request": "launch",
+				"preLaunchTask": "build",
+				// If you have changed target frameworks, make sure to update the program path.
+				"program": "${workspaceFolder:CSharp}/bin/Debug/net10.0/Advent Of Code 2025 CS.dll",
+				"args": [],
+				"cwd": "${workspaceFolder:CSharp}/bin/Debug/net10.0",
+				// For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+				"console": "internalConsole",
+				"stopAtEntry": false
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "build",
+				"command": "dotnet",
+				"type": "process",
+				"args": [
+					"build",
+					"${workspaceFolder:CSharp}/Advent Of Code 2025 CS.csproj",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary"
+				],
+				"problemMatcher": "$msCompile"
+			},
+			{
+				"label": "test",
+				"command": "dotnet",
+				"type": "process",
+				"args": [
+					"test",
+					"${workspaceFolder:CSharp}/Advent Of Code 2025 CS.csproj",
+					"/property:GenerateFullPaths=true",
+					"/consoleloggerparameters:NoSummary"
+				],
+				"problemMatcher": "$msCompile"
+			}
+		]
+	}
+}
