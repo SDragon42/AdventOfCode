@@ -17,9 +17,9 @@ class Day04(unittest.TestCase):
     """
 
     def get_test_data(self, name:str, part:int) -> tuple[str, int]:
-        input = inputHelper.load_file(_DAY, name)
+        input = inputHelper.load_file(2019, _DAY, name)
 
-        expectedAnswer = inputHelper.load_file(_DAY, f'{name}-answer{part}')
+        expectedAnswer = inputHelper.load_file(2019, _DAY, f'{name}-answer{part}')
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 

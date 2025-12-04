@@ -17,18 +17,18 @@ class Day08(unittest.TestCase):
     """
 
     def _get_input_data(self, name:str) -> List[int]:
-        input = [int(c) for c in inputHelper.load_file(_DAY, name)]
+        input = [int(c) for c in inputHelper.load_file(2019, _DAY, name)]
         return input
 
     def _get_answer_part1(self, name:str) -> int:
-        expectedAnswer = inputHelper.load_file(_DAY, f'{name}-answer1')
+        expectedAnswer = inputHelper.load_file(2019, _DAY, f'{name}-answer1')
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 
         return expectedAnswer
 
     def _get_answer_part2(self, name:str) -> str:
-        expectedAnswer = inputHelper.load_file(_DAY, f'{name}-answer2')
+        expectedAnswer = inputHelper.load_file(2019, _DAY, f'{name}-answer2')
         return expectedAnswer
 
 

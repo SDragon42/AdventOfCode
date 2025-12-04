@@ -12,11 +12,11 @@ _DAY = 15
 
 class Day15(unittest.TestCase):
     def get_test_data(self, name:str, part:int) -> tuple[List[str], int, int]:
-        input = inputHelper.load_file(_DAY, name).splitlines()
+        input = inputHelper.load_file(2020, _DAY, name).splitlines()
 
-        lastTurn = int(inputHelper.load_file(_DAY, name+f'-lastturn{part}'))
+        lastTurn = int(inputHelper.load_file(2020, _DAY, name+f'-lastturn{part}'))
 
-        expectedAnswer = inputHelper.load_file(_DAY, f"{name}-answer{part}")
+        expectedAnswer = inputHelper.load_file(2020, _DAY, f"{name}-answer{part}")
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 

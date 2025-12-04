@@ -19,13 +19,13 @@ class Day07(unittest.TestCase):
     """
 
     def _get_test_data(self, name:str, part:int) -> tuple[List[int], List[int], int]:
-        text = inputHelper.load_file(_DAY, name).splitlines()
+        text = inputHelper.load_file(2019, _DAY, name).splitlines()
         input = string_to_int_list(text[0])
         phase = None
         if len(text) > 1:
             phase = string_to_int_list(text[1])
 
-        expectedAnswer = inputHelper.load_file(_DAY, f'{name}-answer{part}')
+        expectedAnswer = inputHelper.load_file(2019, _DAY, f'{name}-answer{part}')
         if expectedAnswer is not None:
             expectedAnswer = int(expectedAnswer)
 

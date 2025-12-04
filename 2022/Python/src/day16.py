@@ -1,25 +1,10 @@
-import sys, re
+import re
 from typing import Dict
+
+# this adds the 'src' folder to the path. Needed to get the src imports to work in unit tests.
 # import config
-# import inputHelper
 
-def load_file(day: int, name: str) -> str:
-    """Loads the contents of a data file.
-
-    Args:
-        day (int): The puzzle date
-        name (str): The name of the file (without the .TXT extention)
-
-    Returns:
-        str: The file contents
-        None: None if the file was not found.
-    """
-    filename = f'.\\..\\input\\day{day:02d}\\{name}.txt'
-    try:
-        with open(filename) as dataFile:
-            return dataFile.read()
-    except OSError:
-        return None
+import inputHelper
 
 
 
@@ -42,7 +27,7 @@ def RenderMap(map: Dict[str, Dict[str, float]]) -> str:
 
 
 def main():
-    lines = [re.split('[\\s=;,]+', x) for x in load_file(16, 'example1').splitlines()]
+    lines = [re.split('[\\s=;,]+', x) for x in inputHelper.load_file(2022, 16, 'example1').splitlines()]
 
     # lines = [re.split('[\\s=;,]+', x) for x in sys.stdin.read().splitlines()]
 

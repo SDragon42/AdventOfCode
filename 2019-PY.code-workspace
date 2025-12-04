@@ -4,10 +4,10 @@
 			"path": "Python.Common"
 		},
 		{
-			"path": "2019\\Python"
+			"path": "2019/Python"
 		},
 		{
-			"path": "2019\\Input"
+			"path": "../AdventOfCode.Input/2019"
 		}
 	],
 	"settings": {
