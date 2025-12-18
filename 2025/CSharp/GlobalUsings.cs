@@ -1,5 +1,4 @@
-﻿global using System.Drawing;
-global using System.Text.RegularExpressions;
+﻿global using System.Text.RegularExpressions;
 global using AdventOfCode.Common.Extensions;
 global using AdventOfCode.Common.Models;
 global using AdventOfCode.Common.Models.Interfaces;
